@@ -261,10 +261,10 @@ let doZ3Exe =
         doZ3Exe' fresh input
 
 let z3_options () =
-    "(set-option :global-decls false)\
-     (set-option :smt.mbqi false)\
-     (set-option :auto_config false)\
-     (set-option :produce-unsat-cores true)"
+    "(set-option :global-decls false)\n\
+     (set-option :smt.mbqi false)\n\
+     (set-option :auto_config false)\n\
+     (set-option :produce-unsat-cores true)\n"
 
 type job<'a> = {
     job:unit -> 'a;
