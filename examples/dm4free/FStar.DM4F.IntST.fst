@@ -66,8 +66,8 @@ reifiable let ifc (h:bool) : StNull int =
 
 let ni_ifc = assert (forall h0 h1 s0. reify (ifc h0) s0 = reify (ifc h1) s0)
 
-// Although we have STINT?.get and STINT?.put now as actions,
-// we can also "rederive" them using reflection
+(* Although we have STINT?.get and STINT?.put now as actions, *)
+(* we can also "rederive" them using reflection *)
 
 val action_get: (u:unit) -> repr int (fun n post -> post (n, n))
 let action_get () i = (i, i)

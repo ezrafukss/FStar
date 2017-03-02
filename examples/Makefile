@@ -4,7 +4,6 @@ include Makefile.include
 ALL_EXAMPLE_DIRS=\
 bug-reports \
 hello \
-low-level \
 data_structures \
 algorithms \
 crypto \
@@ -24,7 +23,8 @@ incl \
 struct \
 micro-benchmarks \
 bytes \
-tactics
+tactics \
+low-level
 
 # WARNING: this target shouldn't depend on anything other than the F*
 # binary; in particular it shouldn't depend on OCaml, F#, git, etc.
