@@ -239,7 +239,7 @@ let ask_and_report_errors env all_labels prefix query suffix =
 
         and cb used_hint (prev_fuel, prev_ifuel, rlimit) (p:decl) alt (result, elapsed_time) =
             if used_hint then (Z3.refresh(); record_hint_stat hint_opt result elapsed_time (Env.get_range env));
-            if Options.z3_refresh() || Options.print_z3_statistics() then Z3.refresh();
+            if Options.z3_refresh() || Options.print_z3_statistics() || Options.check_hints() then Z3.refresh();
             let query_info tag =
                  if Options.log_queries() then BU.print "\t[%s]\n" [at_log_file()] ;
                  BU.print "\tQuery (%s, %s)\t%s%s in %s milliseconds with fuel %s and ifuel %s and rlimit %s\n"
@@ -259,6 +259,8 @@ let ask_and_report_errors env all_labels prefix query suffix =
                     let current_core = BU.mk_ref unsat_core in
                     let hint_worked = BU.mk_ref false in
                     let rec refine_hint (core_exp_limit:int) =
+                        if Options.hint_info() then
+                            (BU.print "\tHint refinement (limit=%s)\n" [(string_of_int core_exp_limit)]) ;
                         if not !hint_worked then
                             let hint_check_cb (result, elapsed_time) =
                                 (BU.print "\tHint replay %s in %s milliseconds w/ rlimit %s\n"
@@ -267,6 +269,7 @@ let ask_and_report_errors env all_labels prefix query suffix =
                                 | Inr _ -> "failed") ;
                                 BU.string_of_int elapsed_time ;
                                 BU.string_of_int rlimit ] ) in
+                            Z3.refresh() ;
                             Z3.ask !current_core all_labels
                                 (with_fuel [] p (prev_fuel, prev_ifuel, rlimit))
                                 (hint_check_cb) ;
@@ -277,25 +280,28 @@ let ask_and_report_errors env all_labels prefix query suffix =
                                         (Options.String (format "smt.core.extend_patterns.max_distance=%s" [ (BU.string_of_int core_exp_limit) ])) ])
                                 ;
                                 let hint_refinement_cb (result, elapsed_time) =
-                                    (BU.print "\tHint refinement %s in %s ms w/ core exp. limit %s\n"
+                                    if Options.hint_info() then
+                                        (BU.print "\tHint refinement %s in %s ms w/ core exp. limit %s\n"
                                     [(match result with
                                         | Inl uc -> refinement_ok := true; current_core := uc ; "ok"
                                         | Inr errs -> "FAILED. No core, falling back to previously obtained core.") ;
                                         BU.string_of_int elapsed_time ;
                                         BU.string_of_int core_exp_limit]) in
+                                Z3.refresh() ;
                                 Z3.ask None all_labels
                                     (with_fuel [] p (prev_fuel, prev_ifuel, max_int)) // <-- no rlimit.
                                     (hint_refinement_cb) ;
                                 // TODO: update rlimit in hint?
                                 if (!refinement_ok && core_exp_limit <> max_int) then
-                                    let lim = if (core_exp_limit) > 10 then max_int else core_exp_limit + 1 in
+                                    let lim = if (core_exp_limit) >= 10 then max_int else core_exp_limit + 1 in
                                     refine_hint (lim)
                             ) else (
-                                BU.print_string "\tNew working hint: " ;
-                                match !current_core with
-                                | None -> BU.print_string "<empty>"
-                                | Some core -> ignore (List.map (fun x -> print_string (" " ^ x)) core) ;
-                                BU.print_string "\n"
+                                if Options.hint_info() then
+                                    BU.print_string "\tNew working hint: " ;
+                                    match !current_core with
+                                    | None -> BU.print_string "<empty>"
+                                    | Some core -> ignore (List.map (fun x -> print_string (" " ^ x)) core) ;
+                                    BU.print_string "\n"
                             ) in
                     (if Options.check_hints() then
                         let z3cliopts_before = Options.z3_cliopt() in
