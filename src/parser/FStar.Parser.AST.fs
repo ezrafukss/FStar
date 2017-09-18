@@ -275,6 +275,13 @@ let mkLexList r elts =
   let nil = mk_term (Construct(C.lextop_lid, [])) r Expr in
   List.fold_right (fun e tl -> lexConsTerm r e tl) elts nil
 
+// ZVectors
+let vconsPat r hd tl = PatApp(mk_pattern (PatName C.vcons_lid) r, [hd;tl])
+let vconsTerm r hd tl = mk_term (Construct(C.vcons_lid, [(hd, Nothing);(tl, Nothing)])) r Expr
+let mkVConsList r elts =
+  let vnil = mk_term (Construct(C.vnil_lid, [])) r Expr in
+    List.fold_right (fun e tl -> vconsTerm r e tl) elts vnil
+
 let ml_comp t =
     let ml = mk_term (Name C.effect_ML_lid) t.range Expr in
     let t = mk_term (App(ml, t, Nothing)) t.range Expr in

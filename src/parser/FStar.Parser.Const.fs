@@ -120,6 +120,12 @@ let string_of_int_lid = p2l ["Prims"; "string_of_int"]
 let string_of_bool_lid = p2l ["Prims"; "string_of_bool"]
 let string_compare = p2l ["FStar"; "String"; "compare"]
 
+
+// ZVectors
+let vnil_lid  = p2l ["Zen"; "Vector"; "VNil"]
+let vcons_lid = p2l ["Zen"; "Vector"; "VCons"]
+
+
 (* Primitive operators *)
 let op_Eq              = pconst "op_Equality"
 let op_notEq           = pconst "op_disEquality"

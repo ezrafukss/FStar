@@ -805,7 +805,7 @@ projectionLHS:
         mkExplicitApp (mk_term (Var (array_mk_array_lid)) pos Expr) [l] pos
       }
   | LBRACK es=semiColonTermList RBRACK
-      { mkConsList (rhs2 parseState 1 3) es }
+      { mkVConsList (rhs2 parseState 1 3) es }
   | PERCENT_LBRACK es=semiColonTermList RBRACK
       { mkLexList (rhs2 parseState 1 3) es }
   | BANG_LBRACE es=separated_list(COMMA, appTerm) RBRACE
