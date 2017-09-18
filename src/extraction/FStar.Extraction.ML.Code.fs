@@ -133,11 +133,13 @@ let infix_prim_ops = [
 ]
 
 (* -------------------------------------------------------------------- *)
-let prim_uni_ops = [
-    ("op_Negation", "not");
-    ("op_Minus", "~-");
-    ("op_Bang","Support.ST.read")
-]
+let prim_uni_ops = 
+    let op_minus = if Util.codegen_fsharp() 
+                        then "-" 
+                        else "~-" in 
+    [ ("op_Negation", "not");
+      ("op_Minus", op_minus);
+      ("op_Bang","Support.ST.read") ]
 
 (* -------------------------------------------------------------------- *)
 let prim_types = []
@@ -238,7 +240,9 @@ let string_of_mlconstant (sctt : mlconstant) =
   | MLC_Unit -> "()"
   | MLC_Bool true  -> "true"
   | MLC_Bool false -> "false"
-  | MLC_Char c -> "'"^ escape_or escape_char_hex c ^"'"
+  | MLC_Char c -> (* Unicode characters, in OCaml we use BatUChar (wraper for int) *)
+    let nc = Char.int_of_char c in (string_of_int nc)
+    ^(if nc >= 32 && nc <= 127 && nc <> 34 then " (*" ^ (string_of_char c) ^"*)" else "")
   | MLC_Int (s, Some (Signed, Int32)) -> s ^"l"
   | MLC_Int (s, Some (Signed, Int64)) -> s ^"L"
   | MLC_Int (s, Some (_, Int8))
@@ -313,7 +317,7 @@ let rec doc_of_expr (currentModule : mlsymbol) (outer : level) (e : mlexpr) : do
     | MLE_Coerce (e, t, t') ->
       let doc = doc_of_expr currentModule (min_op_prec, NonAssoc) e in
       if Util.codegen_fsharp()
-      then parens (reduce [text "Prims.checked_cast"; doc])
+      then parens (reduce [text "Prims.unsafe_coerce "; doc])
       else parens (reduce [text "Obj.magic "; parens doc])
 
     | MLE_Seq es ->
