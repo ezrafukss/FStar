@@ -105,6 +105,7 @@ and pattern' =
   | PatName     of lid
   | PatTvar     of ident * option<arg_qualifier>
   | PatList     of list<pattern>
+  | PatVector   of list<pattern>
   | PatTuple    of list<pattern> * bool (* dependent if flag is set *)
   | PatRecord   of list<(lid * pattern)>
   | PatAscribed of pattern * term
@@ -597,6 +598,7 @@ and pat_to_string x = match x.pat with
   | PatVar (i,  aq) -> Util.format2 "%s%s" (aqual_to_string aq) i.idText
   | PatName l -> l.str
   | PatList l -> Util.format1 "[%s]" (to_string_l "; " pat_to_string l)
+  | PatVector l -> Util.format1 "[|%s|]" (to_string_l "; " pat_to_string l)
   | PatTuple (l, false) -> Util.format1 "(%s)" (to_string_l ", " pat_to_string l)
   | PatTuple (l, true) -> Util.format1 "(|%s|)" (to_string_l ", " pat_to_string l)
   | PatRecord l -> Util.format1 "{%s}" (to_string_l "; " (fun (f,e) -> Util.format2 "%s=%s" (f.str) (e |> pat_to_string)) l)

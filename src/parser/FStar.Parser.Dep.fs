@@ -514,6 +514,7 @@ let collect_one
     | PatTvar _ ->
         ()
     | PatList ps
+    | PatVector ps
     | PatOr ps
     | PatTuple (ps, _) ->
         collect_patterns ps

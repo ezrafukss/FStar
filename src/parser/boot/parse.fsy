@@ -1016,6 +1016,13 @@ let pats =
       ( xs )
 in
       ( mk_pattern (PatList pats) (rhs2 parseState 1 3) )}
+| LBRACK_BAR loption_separated_nonempty_list_SEMICOLON_tuplePattern__ BAR_RBRACK
+    {let (_1, xs0, _3) = ((), $2, ()) in
+let pats =
+  let xs = xs0 in
+      ( xs )
+in
+      ( mk_pattern (PatVector pats) (rhs2 parseState 1 3) )}
 | LBRACE separated_nonempty_list_SEMICOLON_fieldPattern_ RBRACE
     {let (_1, record_pat, _3) = ((), $2, ()) in
       ( mk_pattern (PatRecord record_pat) (rhs2 parseState 1 3) )}
@@ -2159,11 +2166,7 @@ let es =
   let l = l0 in
                                                   ( l )
 in
-      (
-        let l = mkConsList (rhs2 parseState 1 3) es in
-        let pos = (rhs2 parseState 1 3) in
-        mkExplicitApp (mk_term (Var (array_mk_array_lid)) pos Expr) [l] pos
-      )}
+      ( mkVConsList (rhs2 parseState 1 3) es )}
 | LBRACK right_flexible_list_SEMICOLON_noSeqTerm_ RBRACK
     {let (_1, l0, _3) = ((), $2, ()) in
 let es =

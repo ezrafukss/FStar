@@ -833,6 +833,10 @@ and resugar_pat (p:S.pat) : A.pattern =
       let args = List.map(fun (p, b) -> aux p (Some b)) args in
       mk (A.PatList(args))
 
+    | Pat_cons(fv, args) when lid_equals fv.fv_name.v C.vcons_lid ->
+      let args = List.map(fun (p, b) -> aux p (Some b)) args in
+      mk (A.PatVector(args))
+
     | Pat_cons(fv, args) when C.is_tuple_data_lid' fv.fv_name.v || C.is_dtuple_data_lid' fv.fv_name.v ->
       let args = List.map(fun (p, b) -> aux p (Some b)) args in
       if (C.is_dtuple_data_lid' fv.fv_name.v) then

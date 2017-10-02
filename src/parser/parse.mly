@@ -374,6 +374,8 @@ atomicPattern:
       }
   | LBRACK pats=separated_list(SEMICOLON, tuplePattern) RBRACK
       { mk_pattern (PatList pats) (rhs2 parseState 1 3) }
+  | LBRACK_BAR pats=separated_list(SEMICOLON, tuplePattern) BAR_RBRACK
+      { mk_pattern (PatVector pats) (rhs2 parseState 1 3) }
   | LBRACE record_pat=separated_nonempty_list(SEMICOLON, fieldPattern) RBRACE
       { mk_pattern (PatRecord record_pat) (rhs2 parseState 1 3) }
   | LENS_PAREN_LEFT pat0=constructorPattern COMMA pats=separated_nonempty_list(COMMA, constructorPattern) LENS_PAREN_RIGHT
@@ -797,13 +799,9 @@ projectionLHS:
         in mk_term (Paren e1) (rhs2 parseState 1 4) (e.level)
       }
   | LBRACK_BAR es=semiColonTermList BAR_RBRACK
-      {
-        let l = mkConsList (rhs2 parseState 1 3) es in
-        let pos = (rhs2 parseState 1 3) in
-        mkExplicitApp (mk_term (Var (array_mk_array_lid)) pos Expr) [l] pos
-      }
-  | LBRACK es=semiColonTermList RBRACK
       { mkVConsList (rhs2 parseState 1 3) es }
+  | LBRACK es=semiColonTermList RBRACK
+      { mkConsList (rhs2 parseState 1 3) es }
   | PERCENT_LBRACK es=semiColonTermList RBRACK
       { mkLexList (rhs2 parseState 1 3) es }
   | BANG_LBRACE es=separated_list(COMMA, appTerm) RBRACE

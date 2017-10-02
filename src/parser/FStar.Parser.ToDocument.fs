@@ -736,6 +736,8 @@ and p_atomicPattern p = match p.pat with
     end
   | PatList pats ->
     surround 2 0 lbracket (separate_break_map semi p_tuplePattern pats) rbracket
+  | PatVector pats ->
+    surround 2 0 (lbracket ^^ bar) (separate_break_map semi p_tuplePattern pats) (bar ^^ rbracket)
   | PatRecord pats ->
     let p_recordFieldPat (lid, pat) = infix2 equals (p_qlident lid) (p_tuplePattern pat) in
     soft_braces_with_nesting (separate_break_map semi p_recordFieldPat pats)
@@ -1307,5 +1309,3 @@ let modul_with_comments_to_document (m:modul) comments =
   comment_stack := [] ;
   should_print_fs_typ_app := false ;
   (initial_comment ^^ doc, comments)
-
-

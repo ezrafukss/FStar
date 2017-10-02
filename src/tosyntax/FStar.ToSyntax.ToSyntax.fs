@@ -325,6 +325,7 @@ let rec gather_pattern_bound_vars_maybe_top acc p =
   | PatApp (phead, pats) -> gather_pattern_bound_vars_from_list (phead::pats)
   | PatVar (x, _) -> set_add x acc
   | PatList pats
+  | PatVector pats
   | PatTuple  (pats, _)
   | PatOr pats -> gather_pattern_bound_vars_from_list pats
   | PatRecord guarded_pats -> gather_pattern_bound_vars_from_list (List.map snd guarded_pats)
@@ -549,6 +550,17 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
             let r = Range.union_ranges hd.p tl.p in
             pos_r r <| Pat_cons(S.lid_as_fv C.cons_lid Delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
                         (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.nil_lid Delta_constant (Some Data_ctor), [])) in
+        let x = S.new_bv (Some p.prange) tun in
+        loc, env, LocalBinder(x, None), pat, false
+
+      | PatVector pats ->
+        let loc, env, pats = List.fold_right (fun pat (loc, env, pats) ->
+          let loc,env,_,pat, _ = aux loc env pat in
+          loc, env, pat::pats) pats (loc, env, []) in
+        let pat = List.fold_right (fun hd tl ->
+            let r = Range.union_ranges hd.p tl.p in
+            pos_r r <| Pat_cons(S.lid_as_fv C.vcons_lid Delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
+                        (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.vnil_lid Delta_constant (Some Data_ctor), [])) in
         let x = S.new_bv (Some p.prange) tun in
         loc, env, LocalBinder(x, None), pat, false
 
@@ -2511,7 +2523,7 @@ let ast_modul_to_modul modul : withenv<S.modul> =
          modul,env
 
 let decls_to_sigelts decls : withenv<S.sigelts> =
-    fun env -> 
+    fun env ->
         let env, sigelts = desugar_decls env decls in
         sigelts, env
 

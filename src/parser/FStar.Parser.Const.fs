@@ -121,10 +121,10 @@ let string_of_bool_lid = p2l ["Prims"; "string_of_bool"]
 let string_compare = p2l ["FStar"; "String"; "compare"]
 
 
-// ZVectors
+(* ZVectors *)
 let vnil_lid  = p2l ["Zen"; "Vector"; "VNil"]
 let vcons_lid = p2l ["Zen"; "Vector"; "VCons"]
-
+let vector_lid = p2l ["Zen"; "Vector"; "vector"]
 
 (* Primitive operators *)
 let op_Eq              = pconst "op_Equality"
