@@ -191,10 +191,10 @@ and fv = {
     fv_qual :option<fv_qual>
 }
 and free_vars = {
-    free_names:set<bv>;
-    free_uvars:uvars;
-    free_univs:set<universe_uvar>;
-    free_univ_names:fifo_set<univ_name>;
+    free_names:list<bv>;
+    free_uvars:list<(uvar*typ)>;
+    free_univs:list<universe_uvar>;
+    free_univ_names:list<univ_name>; //fifo
 }
 and lcomp = {
     eff_name: lident;
@@ -372,6 +372,8 @@ type modul = {
   exports: sigelts;
   is_interface:bool;
 }
+val mod_name: modul -> lident
+
 type path = list<string>
 type subst_t = list<subst_elt>
 type mk_t_a<'a> = option<unit> -> range -> syntax<'a>
@@ -406,6 +408,7 @@ val order_bv:        bv -> bv -> Tot<int>
 val range_of_lbname: lbname -> range
 val range_of_bv:     bv -> range
 val set_range_of_bv: bv -> range -> bv
+val order_univ_name: univ_name -> univ_name -> Tot<int>
 
 val tun:      term
 val teff:     term
@@ -474,4 +477,3 @@ val t_tac_unit    : term
 val t_list_of     : term -> term
 val t_option_of   : term -> term
 val unit_const    : term
-
