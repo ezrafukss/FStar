@@ -150,6 +150,7 @@ let keywords =
     ALWAYS, "calc"       ,CALC;
     ALWAYS, "class"      ,CLASS;
     FSHARP, "default"    ,DEFAULT;
+    ALWAYS, "do"         ,DO;
     ALWAYS, "effect"     ,EFFECT;
     ALWAYS, "else"       ,ELSE;
     ALWAYS, "end"        ,END;

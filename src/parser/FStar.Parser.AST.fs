@@ -58,7 +58,7 @@ type term' =
   | Let       of let_qualifier * list<(option<attributes_> * (pattern * term))> * term
   | LetOpen   of lid * term
   | Seq       of term * term
-  | Bind      of ident * term * term
+  | Bind      of pattern * term * term
   | If        of term * term * term
   | Match     of term * list<branch>
   | TryWith   of term * list<branch>

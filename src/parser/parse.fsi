@@ -128,6 +128,7 @@ type token =
   | DOT_LBRACK
   | DOT
   | DOLLAR
+  | DO
   | DISJUNCTION
   | DEFAULT
   | CONJUNCTION
@@ -281,6 +282,7 @@ type tokenId =
     | TOKEN_DOT_LBRACK
     | TOKEN_DOT
     | TOKEN_DOLLAR
+    | TOKEN_DO
     | TOKEN_DISJUNCTION
     | TOKEN_DEFAULT
     | TOKEN_CONJUNCTION

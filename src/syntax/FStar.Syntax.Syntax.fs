@@ -688,6 +688,7 @@ let rec eq_pat (p1 : pat) (p2 : pat) : bool =
 ///////////////////////////////////////////////////////////////////////
 //Some common constants
 ///////////////////////////////////////////////////////////////////////
+module C = FStar.Parser.Const
 let delta_constant = Delta_constant_at_level 0
 let delta_equational = Delta_equational_at_level 0
 let fvconst l = lid_as_fv l delta_constant None
@@ -697,6 +698,14 @@ let tdataconstr l = fv_to_tm (lid_as_fv l delta_constant (Some Data_ctor))
 let t_unit      = tconst PC.unit_lid
 let t_bool      = tconst PC.bool_lid
 let t_int       = tconst PC.int_lid
+let t_int8      = tabbrev C.int8_lid
+let t_uint8     = tabbrev C.uint8_lid
+let t_int16     = tabbrev C.int16_lid
+let t_uint16    = tabbrev C.uint16_lid
+let t_int32     = tabbrev C.int32_lid
+let t_uint32    = tabbrev C.uint32_lid
+let t_int64     = tabbrev C.int64_lid
+let t_uint64    = tabbrev C.uint64_lid
 let t_string    = tconst PC.string_lid
 let t_exn       = tconst PC.exn_lid
 let t_float     = tconst PC.float_lid

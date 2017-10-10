@@ -58,7 +58,7 @@ let logic_qualifier_deprecation_warning =
 %token TYP_APP_LESS TYP_APP_GREATER SUBTYPE SUBKIND BY
 %token AND ASSERT SYNTH BEGIN ELSE END
 %token EXCEPTION FALSE FUN FUNCTION IF IN MODULE DEFAULT
-%token MATCH OF
+%token MATCH OF DO
 %token FRIEND OPEN REC THEN TRUE TRY TYPE CALC CLASS INSTANCE EFFECT VAL
 %token INCLUDE
 %token WHEN WITH HASH AMP LPAREN RPAREN LPAREN_RPAREN COMMA LONG_LEFT_ARROW LARROW RARROW
@@ -578,10 +578,9 @@ term:
 (* ... which is actually be benign, since the same conflict already *)
 (*     exists for the previous production *)
   | e1=noSeqTerm SEMICOLON_SEMICOLON e2=term
-      { mk_term (Bind(gen (rhs parseState 2), e1, e2)) (rhs2 parseState 1 3) Expr }
-  | x=lidentOrUnderscore LONG_LEFT_ARROW e1=noSeqTerm SEMICOLON e2=term
-      { mk_term (Bind(x, e1, e2)) (rhs2 parseState 1 5) Expr }
-
+      { mk_term (Bind(mk_pattern PatWild (rhs parseState 2), e1, e2)) (rhs2 parseState 1 3) Expr }
+  | DO x=tuplePattern LONG_LEFT_ARROW e1=noSeqTerm SEMICOLON e2=term
+      { mk_term (Bind(x, e1, e2)) (rhs2 parseState 1 6) Expr }
 noSeqTerm:
   | t=typ  { t }
   | e=tmIff SUBTYPE t=tmIff tactic_opt=option(BY tactic=thunk(typ) {tactic})
