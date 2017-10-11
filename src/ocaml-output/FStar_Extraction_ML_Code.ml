@@ -351,16 +351,16 @@ let string_of_mlconstant:
            else "")
     | FStar_Extraction_ML_Syntax.MLC_Int
         (s,FStar_Pervasives_Native.Some
-         (FStar_Const.Signed ,FStar_Const.Int32 ))
+         (FStar_Util.Signed ,FStar_Util.Int32 ))
         -> Prims.strcat s "l"
     | FStar_Extraction_ML_Syntax.MLC_Int
         (s,FStar_Pervasives_Native.Some
-         (FStar_Const.Signed ,FStar_Const.Int64 ))
+         (FStar_Util.Signed ,FStar_Util.Int64 ))
         -> Prims.strcat s "L"
     | FStar_Extraction_ML_Syntax.MLC_Int
-        (s,FStar_Pervasives_Native.Some (uu____1153,FStar_Const.Int8 )) -> s
+        (s,FStar_Pervasives_Native.Some (uu____1153,FStar_Util.Int8 )) -> s
     | FStar_Extraction_ML_Syntax.MLC_Int
-        (s,FStar_Pervasives_Native.Some (uu____1165,FStar_Const.Int16 )) -> s
+        (s,FStar_Pervasives_Native.Some (uu____1165,FStar_Util.Int16 )) -> s
     | FStar_Extraction_ML_Syntax.MLC_Int (s,FStar_Pervasives_Native.None ) ->
         Prims.strcat "(Prims.parse_int \"" (Prims.strcat s "\")")
     | FStar_Extraction_ML_Syntax.MLC_Float d -> FStar_Util.string_of_float d
