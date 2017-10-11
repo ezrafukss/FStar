@@ -49,6 +49,7 @@ let () =
   Hashtbl.add keywords "begin"         BEGIN       ;
   Hashtbl.add keywords "by"            BY          ;
   Hashtbl.add keywords "default"       DEFAULT     ;
+  Hashtbl.add keywords "do"            DO          ;
   Hashtbl.add keywords "effect"        EFFECT      ;
   Hashtbl.add keywords "else"          ELSE        ;
   Hashtbl.add keywords "end"           END         ;
@@ -184,7 +185,7 @@ let is_typ_app_gt () =
   then (decr n_typ_apps; true)
   else false
 
-let rec mknewline n lexbuf = 
+let rec mknewline n lexbuf =
   if n = 0 then ()
   else (L.new_line lexbuf; mknewline (n-1) lexbuf)
 
@@ -367,10 +368,6 @@ let rec token = lexer
  | "#light" -> FStar_Options.add_light_off_file (L.source_file lexbuf); PRAGMALIGHT
  | "#set-options" -> PRAGMA_SET_OPTIONS
  | "#reset-options" -> PRAGMA_RESET_OPTIONS
- | '#' ' ' (digit)* ->
-   let n = int_of_string (trim_left lexbuf 2) in
-   mknewline (n - (L.current_line lexbuf)) lexbuf;
-   cpp_filename lexbuf
  | "__SOURCE_FILE__" -> STRING (L.source_file lexbuf)
  | "__LINE__" -> INT (string_of_int (L.current_line lexbuf), false)
 
@@ -400,7 +397,7 @@ let rec token = lexer
  | uint64 -> UINT64 (clean_number (L.lexeme lexbuf))
  | int64 -> INT64 (clean_number (L.lexeme lexbuf), false)
  | (ieee64 | xieee64) -> IEEE64 (float_of_string (L.lexeme lexbuf))
- 
+
  | (integer | xinteger | ieee64 | xieee64) ident_char+ ->
    failwith "This is not a valid numeric literal."
 
@@ -421,7 +418,7 @@ let rec token = lexer
  | op_token  -> L.lexeme lexbuf |> Hashtbl.find operators
  | "<"       -> if is_typ_app lexbuf then TYP_APP_LESS else OPINFIX0c("<")
  | ">"       -> if is_typ_app_gt () then TYP_APP_GREATER else symbolchar_parser lexbuf
- 
+
  (* Operators. *)
  | op_prefix  symbolchar* -> OPPREFIX (L.lexeme lexbuf)
  | op_infix0a symbolchar* -> OPINFIX0a (L.lexeme lexbuf)
@@ -448,7 +445,7 @@ and string buffer = lexer
  | newline ->
    Buffer.add_string buffer (L.lexeme lexbuf);
    L.new_line lexbuf; string buffer lexbuf
- | escape_char -> 
+ | escape_char ->
    Buffer.add_string buffer (BatUTF8.init 1 (fun _ -> unescape (L.ulexeme lexbuf) |> BatUChar.chr));
    string buffer lexbuf
  | '"' -> STRING (Buffer.contents buffer)
@@ -500,9 +497,6 @@ and fsdoc_kw_arg (n, doc, kw, kwn, kwa) = lexer
    L.new_line lexbuf;
    fsdoc (n, doc, (kwn, kwa)::kw) lexbuf
  | _ -> fsdoc_kw_arg (n, doc, kw, kwn, kwa^(L.lexeme lexbuf)) lexbuf
-
-and cpp_filename = lexer
- | " \"" [^ '"' 10 13 0x2028 0x2029]+ '"' -> ignore_endline lexbuf
 
 and ignore_endline = lexer
  | ' '* newline -> token lexbuf
