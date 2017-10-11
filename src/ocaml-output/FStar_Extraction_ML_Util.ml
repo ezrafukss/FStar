@@ -3,7 +3,7 @@ let (codegen_fsharp : unit -> Prims.bool) =
   fun uu____6  ->
     let uu____7 = FStar_Options.codegen ()  in
     uu____7 = (FStar_Pervasives_Native.Some FStar_Options.FSharp)
-  
+
 let pruneNones :
   'a . 'a FStar_Pervasives_Native.option Prims.list -> 'a Prims.list =
   fun l  ->
@@ -13,17 +13,17 @@ let pruneNones :
            match x with
            | FStar_Pervasives_Native.Some xs -> xs :: ll
            | FStar_Pervasives_Native.None  -> ll) l []
-  
+
 let (mk_range_mle : FStar_Extraction_ML_Syntax.mlexpr) =
   FStar_All.pipe_left
     (FStar_Extraction_ML_Syntax.with_ty FStar_Extraction_ML_Syntax.MLTY_Top)
     (FStar_Extraction_ML_Syntax.MLE_Name (["Prims"], "mk_range"))
-  
+
 let (dummy_range_mle : FStar_Extraction_ML_Syntax.mlexpr) =
   FStar_All.pipe_left
     (FStar_Extraction_ML_Syntax.with_ty FStar_Extraction_ML_Syntax.MLTY_Top)
     (FStar_Extraction_ML_Syntax.MLE_Name (["FStar"; "Range"], "dummyRange"))
-  
+
 let (mlconst_of_const' :
   FStar_Const.sconst -> FStar_Extraction_ML_Syntax.mlconstant) =
   fun sctt  ->
@@ -48,7 +48,7 @@ let (mlconst_of_const' :
         failwith "Unhandled constant: reify/reflect"
     | FStar_Const.Const_reflect uu____118 ->
         failwith "Unhandled constant: reify/reflect"
-  
+
 let (mlconst_of_const :
   FStar_Range.range ->
     FStar_Const.sconst -> FStar_Extraction_ML_Syntax.mlconstant)
@@ -65,7 +65,7 @@ let (mlconst_of_const :
               uu____138 uu____140
              in
           failwith uu____136
-  
+
 let (mlexpr_of_range :
   FStar_Range.range -> FStar_Extraction_ML_Syntax.mlexpr') =
   fun r  ->
@@ -128,7 +128,7 @@ let (mlexpr_of_range :
         uu____203 :: uu____207  in
       (mk_range_mle, uu____200)  in
     FStar_Extraction_ML_Syntax.MLE_App uu____193
-  
+
 let (mlexpr_of_const :
   FStar_Range.range ->
     FStar_Const.sconst -> FStar_Extraction_ML_Syntax.mlexpr')
@@ -140,7 +140,7 @@ let (mlexpr_of_const :
       | uu____257 ->
           let uu____258 = mlconst_of_const p c  in
           FStar_Extraction_ML_Syntax.MLE_Const uu____258
-  
+
 let rec (subst_aux :
   (FStar_Extraction_ML_Syntax.mlident * FStar_Extraction_ML_Syntax.mlty)
     Prims.list ->
@@ -175,7 +175,7 @@ let rec (subst_aux :
           FStar_Extraction_ML_Syntax.MLTY_Tuple uu____364
       | FStar_Extraction_ML_Syntax.MLTY_Top  -> t
       | FStar_Extraction_ML_Syntax.MLTY_Erased  -> t
-  
+
 let (try_subst :
   FStar_Extraction_ML_Syntax.mltyscheme ->
     FStar_Extraction_ML_Syntax.mlty Prims.list ->
@@ -192,7 +192,7 @@ let (try_subst :
                let uu____395 = FStar_List.zip formals args  in
                subst_aux uu____395 t  in
              FStar_Pervasives_Native.Some uu____394)
-  
+
 let (subst :
   (FStar_Extraction_ML_Syntax.mlidents * FStar_Extraction_ML_Syntax.mlty) ->
     FStar_Extraction_ML_Syntax.mlty Prims.list ->
@@ -206,7 +206,7 @@ let (subst :
           failwith
             "Substitution must be fully applied (see GitHub issue #490)"
       | FStar_Pervasives_Native.Some t -> t
-  
+
 let (udelta_unfold :
   FStar_Extraction_ML_UEnv.uenv ->
     FStar_Extraction_ML_Syntax.mlty ->
@@ -240,7 +240,7 @@ let (udelta_unfold :
                     FStar_Pervasives_Native.Some r)
            | uu____477 -> FStar_Pervasives_Native.None)
       | uu____480 -> FStar_Pervasives_Native.None
-  
+
 let (eff_leq :
   FStar_Extraction_ML_Syntax.e_tag ->
     FStar_Extraction_ML_Syntax.e_tag -> Prims.bool)
@@ -254,14 +254,14 @@ let (eff_leq :
       | (FStar_Extraction_ML_Syntax.E_IMPURE
          ,FStar_Extraction_ML_Syntax.E_IMPURE ) -> true
       | uu____498 -> false
-  
+
 let (eff_to_string : FStar_Extraction_ML_Syntax.e_tag -> Prims.string) =
   fun uu___273_510  ->
     match uu___273_510 with
     | FStar_Extraction_ML_Syntax.E_PURE  -> "Pure"
     | FStar_Extraction_ML_Syntax.E_GHOST  -> "Ghost"
     | FStar_Extraction_ML_Syntax.E_IMPURE  -> "Impure"
-  
+
 let (join :
   FStar_Range.range ->
     FStar_Extraction_ML_Syntax.e_tag ->
@@ -302,7 +302,7 @@ let (join :
                 uu____540 uu____542
                in
             failwith uu____536
-  
+
 let (join_l :
   FStar_Range.range ->
     FStar_Extraction_ML_Syntax.e_tag Prims.list ->
@@ -311,7 +311,7 @@ let (join_l :
   fun r  ->
     fun fs  ->
       FStar_List.fold_left (join r) FStar_Extraction_ML_Syntax.E_PURE fs
-  
+
 let (mk_ty_fun :
   (FStar_Extraction_ML_Syntax.mlident * FStar_Extraction_ML_Syntax.mlty)
     Prims.list ->
@@ -324,7 +324,7 @@ let (mk_ty_fun :
          | (uu____592,t0) ->
              FStar_Extraction_ML_Syntax.MLTY_Fun
                (t0, FStar_Extraction_ML_Syntax.E_PURE, t))
-  
+
 type unfold_t =
   FStar_Extraction_ML_Syntax.mlty ->
     FStar_Extraction_ML_Syntax.mlty FStar_Pervasives_Native.option
@@ -512,14 +512,14 @@ let rec (erase_effect_annotations :
           (uu____1213, FStar_Extraction_ML_Syntax.E_PURE, uu____1214)  in
         FStar_Extraction_ML_Syntax.MLTY_Fun uu____1206
     | uu____1215 -> t
-  
+
 let is_type_abstraction :
   'a 'b 'c . (('a,'b) FStar_Util.either * 'c) Prims.list -> Prims.bool =
   fun uu___274_1243  ->
     match uu___274_1243 with
     | (FStar_Util.Inl uu____1255,uu____1256)::uu____1257 -> true
     | uu____1281 -> false
-  
+
 let (is_xtuple :
   (Prims.string Prims.list * Prims.string) ->
     Prims.int FStar_Pervasives_Native.option)
@@ -538,7 +538,7 @@ let (is_xtuple :
             FStar_Util.int_of_char uu____1345  in
           FStar_Pervasives_Native.Some uu____1343
         else FStar_Pervasives_Native.None
-  
+
 let (resugar_exp :
   FStar_Extraction_ML_Syntax.mlexpr -> FStar_Extraction_ML_Syntax.mlexpr) =
   fun e  ->
@@ -553,7 +553,7 @@ let (resugar_exp :
                (FStar_Extraction_ML_Syntax.MLE_Tuple args)
          | uu____1371 -> e)
     | uu____1375 -> e
-  
+
 let (record_field_path :
   FStar_Ident.lident Prims.list -> Prims.string Prims.list) =
   fun uu___275_1386  ->
@@ -565,7 +565,7 @@ let (record_field_path :
              FStar_All.pipe_right ns
                (FStar_List.map (fun id1  -> id1.FStar_Ident.idText)))
     | uu____1420 -> failwith "impos"
-  
+
 let record_fields :
   'a .
     FStar_Ident.lident Prims.list ->
@@ -576,7 +576,7 @@ let record_fields :
       FStar_List.map2
         (fun f  -> fun e  -> (((f.FStar_Ident.ident).FStar_Ident.idText), e))
         fs vs
-  
+
 let (is_xtuple_ty :
   (Prims.string Prims.list * Prims.string) ->
     Prims.int FStar_Pervasives_Native.option)
@@ -595,7 +595,7 @@ let (is_xtuple_ty :
             FStar_Util.int_of_char uu____1522  in
           FStar_Pervasives_Native.Some uu____1520
         else FStar_Pervasives_Native.None
-  
+
 let (resugar_mlty :
   FStar_Extraction_ML_Syntax.mlty -> FStar_Extraction_ML_Syntax.mlty) =
   fun t  ->
@@ -607,14 +607,14 @@ let (resugar_mlty :
              FStar_Extraction_ML_Syntax.MLTY_Tuple args
          | uu____1548 -> t)
     | uu____1552 -> t
-  
+
 let (flatten_ns : Prims.string Prims.list -> Prims.string) =
   fun ns  ->
     let uu____1566 = codegen_fsharp ()  in
     if uu____1566
     then FStar_String.concat "." ns
     else FStar_String.concat "_" ns
-  
+
 let (flatten_mlpath :
   (Prims.string Prims.list * Prims.string) -> Prims.string) =
   fun uu____1588  ->
@@ -624,7 +624,7 @@ let (flatten_mlpath :
         if uu____1608
         then FStar_String.concat "." (FStar_List.append ns [n1])
         else FStar_String.concat "_" (FStar_List.append ns [n1])
-  
+
 let (mlpath_of_lid :
   FStar_Ident.lident -> (Prims.string Prims.list * Prims.string)) =
   fun l  ->
@@ -633,7 +633,7 @@ let (mlpath_of_lid :
         (FStar_List.map (fun i  -> i.FStar_Ident.idText))
        in
     (uu____1636, ((l.FStar_Ident.ident).FStar_Ident.idText))
-  
+
 let rec (erasableType :
   unfold_t -> FStar_Extraction_ML_Syntax.mlty -> Prims.bool) =
   fun unfold_ty  ->
@@ -646,7 +646,7 @@ let rec (erasableType :
          match uu____1677 with
          | FStar_Pervasives_Native.Some t1 -> erasableType unfold_ty t1
          | FStar_Pervasives_Native.None  -> false)
-  
+
 let rec (eraseTypeDeep :
   unfold_t ->
     FStar_Extraction_ML_Syntax.mlty -> FStar_Extraction_ML_Syntax.mlty)
@@ -677,12 +677,12 @@ let rec (eraseTypeDeep :
           let uu____1756 = FStar_List.map (eraseTypeDeep unfold_ty) lty  in
           FStar_Extraction_ML_Syntax.MLTY_Tuple uu____1756
       | uu____1762 -> t
-  
+
 let (prims_op_equality : FStar_Extraction_ML_Syntax.mlexpr) =
   FStar_All.pipe_left
     (FStar_Extraction_ML_Syntax.with_ty FStar_Extraction_ML_Syntax.MLTY_Top)
     (FStar_Extraction_ML_Syntax.MLE_Name (["Prims"], "op_Equality"))
-  
+
 let (prims_op_amp_amp : FStar_Extraction_ML_Syntax.mlexpr) =
   let uu____1773 =
     let uu____1778 =
@@ -694,7 +694,7 @@ let (prims_op_amp_amp : FStar_Extraction_ML_Syntax.mlexpr) =
     FStar_Extraction_ML_Syntax.with_ty uu____1778  in
   FStar_All.pipe_left uu____1773
     (FStar_Extraction_ML_Syntax.MLE_Name (["Prims"], "op_AmpAmp"))
-  
+
 let (conjoin :
   FStar_Extraction_ML_Syntax.mlexpr ->
     FStar_Extraction_ML_Syntax.mlexpr -> FStar_Extraction_ML_Syntax.mlexpr)
@@ -705,7 +705,7 @@ let (conjoin :
         (FStar_Extraction_ML_Syntax.with_ty
            FStar_Extraction_ML_Syntax.ml_bool_ty)
         (FStar_Extraction_ML_Syntax.MLE_App (prims_op_amp_amp, [e1; e2]))
-  
+
 let (conjoin_opt :
   FStar_Extraction_ML_Syntax.mlexpr FStar_Pervasives_Native.option ->
     FStar_Extraction_ML_Syntax.mlexpr FStar_Pervasives_Native.option ->
@@ -723,13 +723,13 @@ let (conjoin_opt :
       | (FStar_Pervasives_Native.Some x,FStar_Pervasives_Native.Some y) ->
           let uu____1866 = conjoin x y  in
           FStar_Pervasives_Native.Some uu____1866
-  
+
 let (mlloc_of_range : FStar_Range.range -> (Prims.int * Prims.string)) =
   fun r  ->
     let pos = FStar_Range.start_of_range r  in
     let line = FStar_Range.line_of_pos pos  in
     let uu____1882 = FStar_Range.file_of_range r  in (line, uu____1882)
-  
+
 let rec (doms_and_cod :
   FStar_Extraction_ML_Syntax.mlty ->
     (FStar_Extraction_ML_Syntax.mlty Prims.list *
@@ -741,7 +741,7 @@ let rec (doms_and_cod :
         let uu____1907 = doms_and_cod b  in
         (match uu____1907 with | (ds,c) -> ((a :: ds), c))
     | uu____1928 -> ([], t)
-  
+
 let (argTypes :
   FStar_Extraction_ML_Syntax.mlty ->
     FStar_Extraction_ML_Syntax.mlty Prims.list)
@@ -749,7 +749,7 @@ let (argTypes :
   fun t  ->
     let uu____1941 = doms_and_cod t  in
     FStar_Pervasives_Native.fst uu____1941
-  
+
 let rec (uncurry_mlty_fun :
   FStar_Extraction_ML_Syntax.mlty ->
     (FStar_Extraction_ML_Syntax.mlty Prims.list *
@@ -761,18 +761,18 @@ let rec (uncurry_mlty_fun :
         let uu____1971 = uncurry_mlty_fun b  in
         (match uu____1971 with | (args,res) -> ((a :: args), res))
     | uu____1992 -> ([], t)
-  
-exception NoTacticEmbedding of Prims.string 
+
+exception NoTacticEmbedding of Prims.string
 let (uu___is_NoTacticEmbedding : Prims.exn -> Prims.bool) =
   fun projectee  ->
     match projectee with
     | NoTacticEmbedding uu____2008 -> true
     | uu____2011 -> false
-  
+
 let (__proj__NoTacticEmbedding__item__uu___ : Prims.exn -> Prims.string) =
   fun projectee  ->
     match projectee with | NoTacticEmbedding uu____2022 -> uu____2022
-  
+
 let (not_implemented_warning :
   FStar_Range.range -> Prims.string -> Prims.string -> unit) =
   fun r  ->
@@ -785,28 +785,28 @@ let (not_implemented_warning :
              in
           (FStar_Errors.Warning_CallNotImplementedAsWarning, uu____2050)  in
         FStar_Errors.log_issue r uu____2044
-  
+
 type emb_loc =
-  | Syntax_term 
-  | Refl_emb 
-  | NBE_t 
-  | NBERefl_emb 
+  | Syntax_term
+  | Refl_emb
+  | NBE_t
+  | NBERefl_emb
 let (uu___is_Syntax_term : emb_loc -> Prims.bool) =
   fun projectee  ->
     match projectee with | Syntax_term  -> true | uu____2063 -> false
-  
+
 let (uu___is_Refl_emb : emb_loc -> Prims.bool) =
   fun projectee  ->
     match projectee with | Refl_emb  -> true | uu____2074 -> false
-  
+
 let (uu___is_NBE_t : emb_loc -> Prims.bool) =
   fun projectee  ->
     match projectee with | NBE_t  -> true | uu____2085 -> false
-  
+
 let (uu___is_NBERefl_emb : emb_loc -> Prims.bool) =
   fun projectee  ->
     match projectee with | NBERefl_emb  -> true | uu____2096 -> false
-  
+
 type wrapped_term =
   (FStar_Extraction_ML_Syntax.mlexpr * FStar_Extraction_ML_Syntax.mlexpr *
     Prims.int * Prims.bool)
@@ -1715,4 +1715,3 @@ let (interpret_plugin_as_term_fun :
                                  not_implemented_warning
                                    t1.FStar_Syntax_Syntax.pos uu____5694 msg);
                                 FStar_Pervasives_Native.None))))
-  

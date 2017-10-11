@@ -1,700 +1,700 @@
 open Prims
 type decl =
   | DGlobal of (flag Prims.list * (Prims.string Prims.list * Prims.string) *
-  Prims.int * typ * expr) 
+  Prims.int * typ * expr)
   | DFunction of (cc FStar_Pervasives_Native.option * flag Prims.list *
   Prims.int * typ * (Prims.string Prims.list * Prims.string) * binder
-  Prims.list * expr) 
+  Prims.list * expr)
   | DTypeAlias of ((Prims.string Prims.list * Prims.string) * flag Prims.list
-  * Prims.int * typ) 
+  * Prims.int * typ)
   | DTypeFlat of ((Prims.string Prims.list * Prims.string) * flag Prims.list
-  * Prims.int * (Prims.string * (typ * Prims.bool)) Prims.list) 
+  * Prims.int * (Prims.string * (typ * Prims.bool)) Prims.list)
   | DExternal of (cc FStar_Pervasives_Native.option * flag Prims.list *
-  (Prims.string Prims.list * Prims.string) * typ) 
+  (Prims.string Prims.list * Prims.string) * typ)
   | DTypeVariant of ((Prims.string Prims.list * Prims.string) * flag
   Prims.list * Prims.int * (Prims.string * (Prims.string * (typ *
-  Prims.bool)) Prims.list) Prims.list) 
-  | DTypeAbstractStruct of (Prims.string Prims.list * Prims.string) 
+  Prims.bool)) Prims.list) Prims.list)
+  | DTypeAbstractStruct of (Prims.string Prims.list * Prims.string)
 and cc =
-  | StdCall 
-  | CDecl 
-  | FastCall 
+  | StdCall
+  | CDecl
+  | FastCall
 and flag =
-  | Private 
-  | WipeBody 
-  | CInline 
-  | Substitute 
-  | GCType 
-  | Comment of Prims.string 
-  | MustDisappear 
-  | Const of Prims.string 
-  | Prologue of Prims.string 
-  | Epilogue of Prims.string 
-  | Abstract 
+  | Private
+  | WipeBody
+  | CInline
+  | Substitute
+  | GCType
+  | Comment of Prims.string
+  | MustDisappear
+  | Const of Prims.string
+  | Prologue of Prims.string
+  | Epilogue of Prims.string
+  | Abstract
 and lifetime =
-  | Eternal 
-  | Stack 
-  | ManuallyManaged 
+  | Eternal
+  | Stack
+  | ManuallyManaged
 and expr =
-  | EBound of Prims.int 
-  | EQualified of (Prims.string Prims.list * Prims.string) 
-  | EConstant of (width * Prims.string) 
-  | EUnit 
-  | EApp of (expr * expr Prims.list) 
-  | ETypApp of (expr * typ Prims.list) 
-  | ELet of (binder * expr * expr) 
-  | EIfThenElse of (expr * expr * expr) 
-  | ESequence of expr Prims.list 
-  | EAssign of (expr * expr) 
-  | EBufCreate of (lifetime * expr * expr) 
-  | EBufRead of (expr * expr) 
-  | EBufWrite of (expr * expr * expr) 
-  | EBufSub of (expr * expr) 
-  | EBufBlit of (expr * expr * expr * expr * expr) 
-  | EMatch of (expr * (pattern * expr) Prims.list) 
-  | EOp of (op * width) 
-  | ECast of (expr * typ) 
-  | EPushFrame 
-  | EPopFrame 
-  | EBool of Prims.bool 
-  | EAny 
-  | EAbort 
-  | EReturn of expr 
-  | EFlat of (typ * (Prims.string * expr) Prims.list) 
-  | EField of (typ * expr * Prims.string) 
-  | EWhile of (expr * expr) 
-  | EBufCreateL of (lifetime * expr Prims.list) 
-  | ETuple of expr Prims.list 
-  | ECons of (typ * Prims.string * expr Prims.list) 
-  | EBufFill of (expr * expr * expr) 
-  | EString of Prims.string 
-  | EFun of (binder Prims.list * expr * typ) 
-  | EAbortS of Prims.string 
-  | EBufFree of expr 
-  | EBufCreateNoInit of (lifetime * expr) 
+  | EBound of Prims.int
+  | EQualified of (Prims.string Prims.list * Prims.string)
+  | EConstant of (width * Prims.string)
+  | EUnit
+  | EApp of (expr * expr Prims.list)
+  | ETypApp of (expr * typ Prims.list)
+  | ELet of (binder * expr * expr)
+  | EIfThenElse of (expr * expr * expr)
+  | ESequence of expr Prims.list
+  | EAssign of (expr * expr)
+  | EBufCreate of (lifetime * expr * expr)
+  | EBufRead of (expr * expr)
+  | EBufWrite of (expr * expr * expr)
+  | EBufSub of (expr * expr)
+  | EBufBlit of (expr * expr * expr * expr * expr)
+  | EMatch of (expr * (pattern * expr) Prims.list)
+  | EOp of (op * width)
+  | ECast of (expr * typ)
+  | EPushFrame
+  | EPopFrame
+  | EBool of Prims.bool
+  | EAny
+  | EAbort
+  | EReturn of expr
+  | EFlat of (typ * (Prims.string * expr) Prims.list)
+  | EField of (typ * expr * Prims.string)
+  | EWhile of (expr * expr)
+  | EBufCreateL of (lifetime * expr Prims.list)
+  | ETuple of expr Prims.list
+  | ECons of (typ * Prims.string * expr Prims.list)
+  | EBufFill of (expr * expr * expr)
+  | EString of Prims.string
+  | EFun of (binder Prims.list * expr * typ)
+  | EAbortS of Prims.string
+  | EBufFree of expr
+  | EBufCreateNoInit of (lifetime * expr)
 and op =
-  | Add 
-  | AddW 
-  | Sub 
-  | SubW 
-  | Div 
-  | DivW 
-  | Mult 
-  | MultW 
-  | Mod 
-  | BOr 
-  | BAnd 
-  | BXor 
-  | BShiftL 
-  | BShiftR 
-  | BNot 
-  | Eq 
-  | Neq 
-  | Lt 
-  | Lte 
-  | Gt 
-  | Gte 
-  | And 
-  | Or 
-  | Xor 
-  | Not 
+  | Add
+  | AddW
+  | Sub
+  | SubW
+  | Div
+  | DivW
+  | Mult
+  | MultW
+  | Mod
+  | BOr
+  | BAnd
+  | BXor
+  | BShiftL
+  | BShiftR
+  | BNot
+  | Eq
+  | Neq
+  | Lt
+  | Lte
+  | Gt
+  | Gte
+  | And
+  | Or
+  | Xor
+  | Not
 and pattern =
-  | PUnit 
-  | PBool of Prims.bool 
-  | PVar of binder 
-  | PCons of (Prims.string * pattern Prims.list) 
-  | PTuple of pattern Prims.list 
-  | PRecord of (Prims.string * pattern) Prims.list 
-  | PConstant of (width * Prims.string) 
+  | PUnit
+  | PBool of Prims.bool
+  | PVar of binder
+  | PCons of (Prims.string * pattern Prims.list)
+  | PTuple of pattern Prims.list
+  | PRecord of (Prims.string * pattern) Prims.list
+  | PConstant of (width * Prims.string)
 and width =
-  | UInt8 
-  | UInt16 
-  | UInt32 
-  | UInt64 
-  | Int8 
-  | Int16 
-  | Int32 
-  | Int64 
-  | Bool 
-  | CInt 
+  | UInt8
+  | UInt16
+  | UInt32
+  | UInt64
+  | Int8
+  | Int16
+  | Int32
+  | Int64
+  | Bool
+  | CInt
 and binder = {
   name: Prims.string ;
   typ: typ ;
   mut: Prims.bool }
 and typ =
-  | TInt of width 
-  | TBuf of typ 
-  | TUnit 
-  | TQualified of (Prims.string Prims.list * Prims.string) 
-  | TBool 
-  | TAny 
-  | TArrow of (typ * typ) 
-  | TBound of Prims.int 
-  | TApp of ((Prims.string Prims.list * Prims.string) * typ Prims.list) 
-  | TTuple of typ Prims.list 
+  | TInt of width
+  | TBuf of typ
+  | TUnit
+  | TQualified of (Prims.string Prims.list * Prims.string)
+  | TBool
+  | TAny
+  | TArrow of (typ * typ)
+  | TBound of Prims.int
+  | TApp of ((Prims.string Prims.list * Prims.string) * typ Prims.list)
+  | TTuple of typ Prims.list
 let (uu___is_DGlobal : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with | DGlobal _0 -> true | uu____696 -> false
-  
+
 let (__proj__DGlobal__item___0 :
   decl ->
     (flag Prims.list * (Prims.string Prims.list * Prims.string) * Prims.int *
       typ * expr))
-  = fun projectee  -> match projectee with | DGlobal _0 -> _0 
+  = fun projectee  -> match projectee with | DGlobal _0 -> _0
 let (uu___is_DFunction : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with | DFunction _0 -> true | uu____808 -> false
-  
+
 let (__proj__DFunction__item___0 :
   decl ->
     (cc FStar_Pervasives_Native.option * flag Prims.list * Prims.int * typ *
       (Prims.string Prims.list * Prims.string) * binder Prims.list * expr))
-  = fun projectee  -> match projectee with | DFunction _0 -> _0 
+  = fun projectee  -> match projectee with | DFunction _0 -> _0
 let (uu___is_DTypeAlias : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with | DTypeAlias _0 -> true | uu____934 -> false
-  
+
 let (__proj__DTypeAlias__item___0 :
   decl ->
     ((Prims.string Prims.list * Prims.string) * flag Prims.list * Prims.int *
       typ))
-  = fun projectee  -> match projectee with | DTypeAlias _0 -> _0 
+  = fun projectee  -> match projectee with | DTypeAlias _0 -> _0
 let (uu___is_DTypeFlat : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with | DTypeFlat _0 -> true | uu____1042 -> false
-  
+
 let (__proj__DTypeFlat__item___0 :
   decl ->
     ((Prims.string Prims.list * Prims.string) * flag Prims.list * Prims.int *
       (Prims.string * (typ * Prims.bool)) Prims.list))
-  = fun projectee  -> match projectee with | DTypeFlat _0 -> _0 
+  = fun projectee  -> match projectee with | DTypeFlat _0 -> _0
 let (uu___is_DExternal : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with | DExternal _0 -> true | uu____1175 -> false
-  
+
 let (__proj__DExternal__item___0 :
   decl ->
     (cc FStar_Pervasives_Native.option * flag Prims.list * (Prims.string
       Prims.list * Prims.string) * typ))
-  = fun projectee  -> match projectee with | DExternal _0 -> _0 
+  = fun projectee  -> match projectee with | DExternal _0 -> _0
 let (uu___is_DTypeVariant : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with | DTypeVariant _0 -> true | uu____1293 -> false
-  
+
 let (__proj__DTypeVariant__item___0 :
   decl ->
     ((Prims.string Prims.list * Prims.string) * flag Prims.list * Prims.int *
       (Prims.string * (Prims.string * (typ * Prims.bool)) Prims.list)
       Prims.list))
-  = fun projectee  -> match projectee with | DTypeVariant _0 -> _0 
+  = fun projectee  -> match projectee with | DTypeVariant _0 -> _0
 let (uu___is_DTypeAbstractStruct : decl -> Prims.bool) =
   fun projectee  ->
     match projectee with
     | DTypeAbstractStruct _0 -> true
     | uu____1435 -> false
-  
+
 let (__proj__DTypeAbstractStruct__item___0 :
   decl -> (Prims.string Prims.list * Prims.string)) =
-  fun projectee  -> match projectee with | DTypeAbstractStruct _0 -> _0 
+  fun projectee  -> match projectee with | DTypeAbstractStruct _0 -> _0
 let (uu___is_StdCall : cc -> Prims.bool) =
   fun projectee  ->
     match projectee with | StdCall  -> true | uu____1478 -> false
-  
+
 let (uu___is_CDecl : cc -> Prims.bool) =
   fun projectee  ->
     match projectee with | CDecl  -> true | uu____1489 -> false
-  
+
 let (uu___is_FastCall : cc -> Prims.bool) =
   fun projectee  ->
     match projectee with | FastCall  -> true | uu____1500 -> false
-  
+
 let (uu___is_Private : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Private  -> true | uu____1511 -> false
-  
+
 let (uu___is_WipeBody : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | WipeBody  -> true | uu____1522 -> false
-  
+
 let (uu___is_CInline : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | CInline  -> true | uu____1533 -> false
-  
+
 let (uu___is_Substitute : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Substitute  -> true | uu____1544 -> false
-  
+
 let (uu___is_GCType : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | GCType  -> true | uu____1555 -> false
-  
+
 let (uu___is_Comment : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Comment _0 -> true | uu____1568 -> false
-  
+
 let (__proj__Comment__item___0 : flag -> Prims.string) =
-  fun projectee  -> match projectee with | Comment _0 -> _0 
+  fun projectee  -> match projectee with | Comment _0 -> _0
 let (uu___is_MustDisappear : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | MustDisappear  -> true | uu____1590 -> false
-  
+
 let (uu___is_Const : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Const _0 -> true | uu____1603 -> false
-  
+
 let (__proj__Const__item___0 : flag -> Prims.string) =
-  fun projectee  -> match projectee with | Const _0 -> _0 
+  fun projectee  -> match projectee with | Const _0 -> _0
 let (uu___is_Prologue : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Prologue _0 -> true | uu____1627 -> false
-  
+
 let (__proj__Prologue__item___0 : flag -> Prims.string) =
-  fun projectee  -> match projectee with | Prologue _0 -> _0 
+  fun projectee  -> match projectee with | Prologue _0 -> _0
 let (uu___is_Epilogue : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Epilogue _0 -> true | uu____1651 -> false
-  
+
 let (__proj__Epilogue__item___0 : flag -> Prims.string) =
-  fun projectee  -> match projectee with | Epilogue _0 -> _0 
+  fun projectee  -> match projectee with | Epilogue _0 -> _0
 let (uu___is_Abstract : flag -> Prims.bool) =
   fun projectee  ->
     match projectee with | Abstract  -> true | uu____1673 -> false
-  
+
 let (uu___is_Eternal : lifetime -> Prims.bool) =
   fun projectee  ->
     match projectee with | Eternal  -> true | uu____1684 -> false
-  
+
 let (uu___is_Stack : lifetime -> Prims.bool) =
   fun projectee  ->
     match projectee with | Stack  -> true | uu____1695 -> false
-  
+
 let (uu___is_ManuallyManaged : lifetime -> Prims.bool) =
   fun projectee  ->
     match projectee with | ManuallyManaged  -> true | uu____1706 -> false
-  
+
 let (uu___is_EBound : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBound _0 -> true | uu____1719 -> false
-  
+
 let (__proj__EBound__item___0 : expr -> Prims.int) =
-  fun projectee  -> match projectee with | EBound _0 -> _0 
+  fun projectee  -> match projectee with | EBound _0 -> _0
 let (uu___is_EQualified : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EQualified _0 -> true | uu____1750 -> false
-  
+
 let (__proj__EQualified__item___0 :
   expr -> (Prims.string Prims.list * Prims.string)) =
-  fun projectee  -> match projectee with | EQualified _0 -> _0 
+  fun projectee  -> match projectee with | EQualified _0 -> _0
 let (uu___is_EConstant : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EConstant _0 -> true | uu____1799 -> false
-  
+
 let (__proj__EConstant__item___0 : expr -> (width * Prims.string)) =
-  fun projectee  -> match projectee with | EConstant _0 -> _0 
+  fun projectee  -> match projectee with | EConstant _0 -> _0
 let (uu___is_EUnit : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EUnit  -> true | uu____1833 -> false
-  
+
 let (uu___is_EApp : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EApp _0 -> true | uu____1851 -> false
-  
+
 let (__proj__EApp__item___0 : expr -> (expr * expr Prims.list)) =
-  fun projectee  -> match projectee with | EApp _0 -> _0 
+  fun projectee  -> match projectee with | EApp _0 -> _0
 let (uu___is_ETypApp : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | ETypApp _0 -> true | uu____1895 -> false
-  
+
 let (__proj__ETypApp__item___0 : expr -> (expr * typ Prims.list)) =
-  fun projectee  -> match projectee with | ETypApp _0 -> _0 
+  fun projectee  -> match projectee with | ETypApp _0 -> _0
 let (uu___is_ELet : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | ELet _0 -> true | uu____1939 -> false
-  
+
 let (__proj__ELet__item___0 : expr -> (binder * expr * expr)) =
-  fun projectee  -> match projectee with | ELet _0 -> _0 
+  fun projectee  -> match projectee with | ELet _0 -> _0
 let (uu___is_EIfThenElse : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EIfThenElse _0 -> true | uu____1983 -> false
-  
+
 let (__proj__EIfThenElse__item___0 : expr -> (expr * expr * expr)) =
-  fun projectee  -> match projectee with | EIfThenElse _0 -> _0 
+  fun projectee  -> match projectee with | EIfThenElse _0 -> _0
 let (uu___is_ESequence : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | ESequence _0 -> true | uu____2023 -> false
-  
+
 let (__proj__ESequence__item___0 : expr -> expr Prims.list) =
-  fun projectee  -> match projectee with | ESequence _0 -> _0 
+  fun projectee  -> match projectee with | ESequence _0 -> _0
 let (uu___is_EAssign : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EAssign _0 -> true | uu____2053 -> false
-  
+
 let (__proj__EAssign__item___0 : expr -> (expr * expr)) =
-  fun projectee  -> match projectee with | EAssign _0 -> _0 
+  fun projectee  -> match projectee with | EAssign _0 -> _0
 let (uu___is_EBufCreate : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufCreate _0 -> true | uu____2091 -> false
-  
+
 let (__proj__EBufCreate__item___0 : expr -> (lifetime * expr * expr)) =
-  fun projectee  -> match projectee with | EBufCreate _0 -> _0 
+  fun projectee  -> match projectee with | EBufCreate _0 -> _0
 let (uu___is_EBufRead : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufRead _0 -> true | uu____2133 -> false
-  
+
 let (__proj__EBufRead__item___0 : expr -> (expr * expr)) =
-  fun projectee  -> match projectee with | EBufRead _0 -> _0 
+  fun projectee  -> match projectee with | EBufRead _0 -> _0
 let (uu___is_EBufWrite : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufWrite _0 -> true | uu____2171 -> false
-  
+
 let (__proj__EBufWrite__item___0 : expr -> (expr * expr * expr)) =
-  fun projectee  -> match projectee with | EBufWrite _0 -> _0 
+  fun projectee  -> match projectee with | EBufWrite _0 -> _0
 let (uu___is_EBufSub : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufSub _0 -> true | uu____2213 -> false
-  
+
 let (__proj__EBufSub__item___0 : expr -> (expr * expr)) =
-  fun projectee  -> match projectee with | EBufSub _0 -> _0 
+  fun projectee  -> match projectee with | EBufSub _0 -> _0
 let (uu___is_EBufBlit : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufBlit _0 -> true | uu____2255 -> false
-  
+
 let (__proj__EBufBlit__item___0 : expr -> (expr * expr * expr * expr * expr))
-  = fun projectee  -> match projectee with | EBufBlit _0 -> _0 
+  = fun projectee  -> match projectee with | EBufBlit _0 -> _0
 let (uu___is_EMatch : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EMatch _0 -> true | uu____2315 -> false
-  
+
 let (__proj__EMatch__item___0 : expr -> (expr * (pattern * expr) Prims.list))
-  = fun projectee  -> match projectee with | EMatch _0 -> _0 
+  = fun projectee  -> match projectee with | EMatch _0 -> _0
 let (uu___is_EOp : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EOp _0 -> true | uu____2369 -> false
-  
+
 let (__proj__EOp__item___0 : expr -> (op * width)) =
-  fun projectee  -> match projectee with | EOp _0 -> _0 
+  fun projectee  -> match projectee with | EOp _0 -> _0
 let (uu___is_ECast : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | ECast _0 -> true | uu____2405 -> false
-  
+
 let (__proj__ECast__item___0 : expr -> (expr * typ)) =
-  fun projectee  -> match projectee with | ECast _0 -> _0 
+  fun projectee  -> match projectee with | ECast _0 -> _0
 let (uu___is_EPushFrame : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EPushFrame  -> true | uu____2436 -> false
-  
+
 let (uu___is_EPopFrame : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EPopFrame  -> true | uu____2447 -> false
-  
+
 let (uu___is_EBool : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBool _0 -> true | uu____2460 -> false
-  
+
 let (__proj__EBool__item___0 : expr -> Prims.bool) =
-  fun projectee  -> match projectee with | EBool _0 -> _0 
+  fun projectee  -> match projectee with | EBool _0 -> _0
 let (uu___is_EAny : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EAny  -> true | uu____2482 -> false
-  
+
 let (uu___is_EAbort : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EAbort  -> true | uu____2493 -> false
-  
+
 let (uu___is_EReturn : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EReturn _0 -> true | uu____2505 -> false
-  
+
 let (__proj__EReturn__item___0 : expr -> expr) =
-  fun projectee  -> match projectee with | EReturn _0 -> _0 
+  fun projectee  -> match projectee with | EReturn _0 -> _0
 let (uu___is_EFlat : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EFlat _0 -> true | uu____2536 -> false
-  
+
 let (__proj__EFlat__item___0 :
   expr -> (typ * (Prims.string * expr) Prims.list)) =
-  fun projectee  -> match projectee with | EFlat _0 -> _0 
+  fun projectee  -> match projectee with | EFlat _0 -> _0
 let (uu___is_EField : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EField _0 -> true | uu____2596 -> false
-  
+
 let (__proj__EField__item___0 : expr -> (typ * expr * Prims.string)) =
-  fun projectee  -> match projectee with | EField _0 -> _0 
+  fun projectee  -> match projectee with | EField _0 -> _0
 let (uu___is_EWhile : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EWhile _0 -> true | uu____2641 -> false
-  
+
 let (__proj__EWhile__item___0 : expr -> (expr * expr)) =
-  fun projectee  -> match projectee with | EWhile _0 -> _0 
+  fun projectee  -> match projectee with | EWhile _0 -> _0
 let (uu___is_EBufCreateL : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufCreateL _0 -> true | uu____2679 -> false
-  
+
 let (__proj__EBufCreateL__item___0 : expr -> (lifetime * expr Prims.list)) =
-  fun projectee  -> match projectee with | EBufCreateL _0 -> _0 
+  fun projectee  -> match projectee with | EBufCreateL _0 -> _0
 let (uu___is_ETuple : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | ETuple _0 -> true | uu____2719 -> false
-  
+
 let (__proj__ETuple__item___0 : expr -> expr Prims.list) =
-  fun projectee  -> match projectee with | ETuple _0 -> _0 
+  fun projectee  -> match projectee with | ETuple _0 -> _0
 let (uu___is_ECons : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | ECons _0 -> true | uu____2754 -> false
-  
+
 let (__proj__ECons__item___0 :
   expr -> (typ * Prims.string * expr Prims.list)) =
-  fun projectee  -> match projectee with | ECons _0 -> _0 
+  fun projectee  -> match projectee with | ECons _0 -> _0
 let (uu___is_EBufFill : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufFill _0 -> true | uu____2807 -> false
-  
+
 let (__proj__EBufFill__item___0 : expr -> (expr * expr * expr)) =
-  fun projectee  -> match projectee with | EBufFill _0 -> _0 
+  fun projectee  -> match projectee with | EBufFill _0 -> _0
 let (uu___is_EString : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EString _0 -> true | uu____2846 -> false
-  
+
 let (__proj__EString__item___0 : expr -> Prims.string) =
-  fun projectee  -> match projectee with | EString _0 -> _0 
+  fun projectee  -> match projectee with | EString _0 -> _0
 let (uu___is_EFun : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EFun _0 -> true | uu____2877 -> false
-  
+
 let (__proj__EFun__item___0 : expr -> (binder Prims.list * expr * typ)) =
-  fun projectee  -> match projectee with | EFun _0 -> _0 
+  fun projectee  -> match projectee with | EFun _0 -> _0
 let (uu___is_EAbortS : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EAbortS _0 -> true | uu____2922 -> false
-  
+
 let (__proj__EAbortS__item___0 : expr -> Prims.string) =
-  fun projectee  -> match projectee with | EAbortS _0 -> _0 
+  fun projectee  -> match projectee with | EAbortS _0 -> _0
 let (uu___is_EBufFree : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufFree _0 -> true | uu____2945 -> false
-  
+
 let (__proj__EBufFree__item___0 : expr -> expr) =
-  fun projectee  -> match projectee with | EBufFree _0 -> _0 
+  fun projectee  -> match projectee with | EBufFree _0 -> _0
 let (uu___is_EBufCreateNoInit : expr -> Prims.bool) =
   fun projectee  ->
     match projectee with | EBufCreateNoInit _0 -> true | uu____2969 -> false
-  
+
 let (__proj__EBufCreateNoInit__item___0 : expr -> (lifetime * expr)) =
-  fun projectee  -> match projectee with | EBufCreateNoInit _0 -> _0 
+  fun projectee  -> match projectee with | EBufCreateNoInit _0 -> _0
 let (uu___is_Add : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Add  -> true | uu____3000 -> false 
+  fun projectee  -> match projectee with | Add  -> true | uu____3000 -> false
 let (uu___is_AddW : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | AddW  -> true | uu____3011 -> false
-  
+
 let (uu___is_Sub : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Sub  -> true | uu____3022 -> false 
+  fun projectee  -> match projectee with | Sub  -> true | uu____3022 -> false
 let (uu___is_SubW : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | SubW  -> true | uu____3033 -> false
-  
+
 let (uu___is_Div : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Div  -> true | uu____3044 -> false 
+  fun projectee  -> match projectee with | Div  -> true | uu____3044 -> false
 let (uu___is_DivW : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | DivW  -> true | uu____3055 -> false
-  
+
 let (uu___is_Mult : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | Mult  -> true | uu____3066 -> false
-  
+
 let (uu___is_MultW : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | MultW  -> true | uu____3077 -> false
-  
+
 let (uu___is_Mod : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Mod  -> true | uu____3088 -> false 
+  fun projectee  -> match projectee with | Mod  -> true | uu____3088 -> false
 let (uu___is_BOr : op -> Prims.bool) =
-  fun projectee  -> match projectee with | BOr  -> true | uu____3099 -> false 
+  fun projectee  -> match projectee with | BOr  -> true | uu____3099 -> false
 let (uu___is_BAnd : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | BAnd  -> true | uu____3110 -> false
-  
+
 let (uu___is_BXor : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | BXor  -> true | uu____3121 -> false
-  
+
 let (uu___is_BShiftL : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | BShiftL  -> true | uu____3132 -> false
-  
+
 let (uu___is_BShiftR : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | BShiftR  -> true | uu____3143 -> false
-  
+
 let (uu___is_BNot : op -> Prims.bool) =
   fun projectee  ->
     match projectee with | BNot  -> true | uu____3154 -> false
-  
+
 let (uu___is_Eq : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Eq  -> true | uu____3165 -> false 
+  fun projectee  -> match projectee with | Eq  -> true | uu____3165 -> false
 let (uu___is_Neq : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Neq  -> true | uu____3176 -> false 
+  fun projectee  -> match projectee with | Neq  -> true | uu____3176 -> false
 let (uu___is_Lt : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Lt  -> true | uu____3187 -> false 
+  fun projectee  -> match projectee with | Lt  -> true | uu____3187 -> false
 let (uu___is_Lte : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Lte  -> true | uu____3198 -> false 
+  fun projectee  -> match projectee with | Lte  -> true | uu____3198 -> false
 let (uu___is_Gt : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Gt  -> true | uu____3209 -> false 
+  fun projectee  -> match projectee with | Gt  -> true | uu____3209 -> false
 let (uu___is_Gte : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Gte  -> true | uu____3220 -> false 
+  fun projectee  -> match projectee with | Gte  -> true | uu____3220 -> false
 let (uu___is_And : op -> Prims.bool) =
-  fun projectee  -> match projectee with | And  -> true | uu____3231 -> false 
+  fun projectee  -> match projectee with | And  -> true | uu____3231 -> false
 let (uu___is_Or : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Or  -> true | uu____3242 -> false 
+  fun projectee  -> match projectee with | Or  -> true | uu____3242 -> false
 let (uu___is_Xor : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Xor  -> true | uu____3253 -> false 
+  fun projectee  -> match projectee with | Xor  -> true | uu____3253 -> false
 let (uu___is_Not : op -> Prims.bool) =
-  fun projectee  -> match projectee with | Not  -> true | uu____3264 -> false 
+  fun projectee  -> match projectee with | Not  -> true | uu____3264 -> false
 let (uu___is_PUnit : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PUnit  -> true | uu____3275 -> false
-  
+
 let (uu___is_PBool : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PBool _0 -> true | uu____3288 -> false
-  
+
 let (__proj__PBool__item___0 : pattern -> Prims.bool) =
-  fun projectee  -> match projectee with | PBool _0 -> _0 
+  fun projectee  -> match projectee with | PBool _0 -> _0
 let (uu___is_PVar : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PVar _0 -> true | uu____3311 -> false
-  
+
 let (__proj__PVar__item___0 : pattern -> binder) =
-  fun projectee  -> match projectee with | PVar _0 -> _0 
+  fun projectee  -> match projectee with | PVar _0 -> _0
 let (uu___is_PCons : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PCons _0 -> true | uu____3338 -> false
-  
+
 let (__proj__PCons__item___0 :
   pattern -> (Prims.string * pattern Prims.list)) =
-  fun projectee  -> match projectee with | PCons _0 -> _0 
+  fun projectee  -> match projectee with | PCons _0 -> _0
 let (uu___is_PTuple : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PTuple _0 -> true | uu____3381 -> false
-  
+
 let (__proj__PTuple__item___0 : pattern -> pattern Prims.list) =
-  fun projectee  -> match projectee with | PTuple _0 -> _0 
+  fun projectee  -> match projectee with | PTuple _0 -> _0
 let (uu___is_PRecord : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PRecord _0 -> true | uu____3414 -> false
-  
+
 let (__proj__PRecord__item___0 :
   pattern -> (Prims.string * pattern) Prims.list) =
-  fun projectee  -> match projectee with | PRecord _0 -> _0 
+  fun projectee  -> match projectee with | PRecord _0 -> _0
 let (uu___is_PConstant : pattern -> Prims.bool) =
   fun projectee  ->
     match projectee with | PConstant _0 -> true | uu____3460 -> false
-  
+
 let (__proj__PConstant__item___0 : pattern -> (width * Prims.string)) =
-  fun projectee  -> match projectee with | PConstant _0 -> _0 
+  fun projectee  -> match projectee with | PConstant _0 -> _0
 let (uu___is_UInt8 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | UInt8  -> true | uu____3494 -> false
-  
+
 let (uu___is_UInt16 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | UInt16  -> true | uu____3505 -> false
-  
+
 let (uu___is_UInt32 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | UInt32  -> true | uu____3516 -> false
-  
+
 let (uu___is_UInt64 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | UInt64  -> true | uu____3527 -> false
-  
+
 let (uu___is_Int8 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | Int8  -> true | uu____3538 -> false
-  
+
 let (uu___is_Int16 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | Int16  -> true | uu____3549 -> false
-  
+
 let (uu___is_Int32 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | Int32  -> true | uu____3560 -> false
-  
+
 let (uu___is_Int64 : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | Int64  -> true | uu____3571 -> false
-  
+
 let (uu___is_Bool : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | Bool  -> true | uu____3582 -> false
-  
+
 let (uu___is_CInt : width -> Prims.bool) =
   fun projectee  ->
     match projectee with | CInt  -> true | uu____3593 -> false
-  
+
 let (__proj__Mkbinder__item__name : binder -> Prims.string) =
-  fun projectee  -> match projectee with | { name; typ; mut;_} -> name 
+  fun projectee  -> match projectee with | { name; typ; mut;_} -> name
 let (__proj__Mkbinder__item__typ : binder -> typ) =
-  fun projectee  -> match projectee with | { name; typ; mut;_} -> typ 
+  fun projectee  -> match projectee with | { name; typ; mut;_} -> typ
 let (__proj__Mkbinder__item__mut : binder -> Prims.bool) =
-  fun projectee  -> match projectee with | { name; typ; mut;_} -> mut 
+  fun projectee  -> match projectee with | { name; typ; mut;_} -> mut
 let (uu___is_TInt : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TInt _0 -> true | uu____3642 -> false
-  
+
 let (__proj__TInt__item___0 : typ -> width) =
-  fun projectee  -> match projectee with | TInt _0 -> _0 
+  fun projectee  -> match projectee with | TInt _0 -> _0
 let (uu___is_TBuf : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TBuf _0 -> true | uu____3662 -> false
-  
+
 let (__proj__TBuf__item___0 : typ -> typ) =
-  fun projectee  -> match projectee with | TBuf _0 -> _0 
+  fun projectee  -> match projectee with | TBuf _0 -> _0
 let (uu___is_TUnit : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TUnit  -> true | uu____3681 -> false
-  
+
 let (uu___is_TQualified : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TQualified _0 -> true | uu____3701 -> false
-  
+
 let (__proj__TQualified__item___0 :
   typ -> (Prims.string Prims.list * Prims.string)) =
-  fun projectee  -> match projectee with | TQualified _0 -> _0 
+  fun projectee  -> match projectee with | TQualified _0 -> _0
 let (uu___is_TBool : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TBool  -> true | uu____3744 -> false
-  
+
 let (uu___is_TAny : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TAny  -> true | uu____3755 -> false
-  
+
 let (uu___is_TArrow : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TArrow _0 -> true | uu____3771 -> false
-  
+
 let (__proj__TArrow__item___0 : typ -> (typ * typ)) =
-  fun projectee  -> match projectee with | TArrow _0 -> _0 
+  fun projectee  -> match projectee with | TArrow _0 -> _0
 let (uu___is_TBound : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TBound _0 -> true | uu____3804 -> false
-  
+
 let (__proj__TBound__item___0 : typ -> Prims.int) =
-  fun projectee  -> match projectee with | TBound _0 -> _0 
+  fun projectee  -> match projectee with | TBound _0 -> _0
 let (uu___is_TApp : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TApp _0 -> true | uu____3841 -> false
-  
+
 let (__proj__TApp__item___0 :
   typ -> ((Prims.string Prims.list * Prims.string) * typ Prims.list)) =
-  fun projectee  -> match projectee with | TApp _0 -> _0 
+  fun projectee  -> match projectee with | TApp _0 -> _0
 let (uu___is_TTuple : typ -> Prims.bool) =
   fun projectee  ->
     match projectee with | TTuple _0 -> true | uu____3905 -> false
-  
+
 let (__proj__TTuple__item___0 : typ -> typ Prims.list) =
-  fun projectee  -> match projectee with | TTuple _0 -> _0 
+  fun projectee  -> match projectee with | TTuple _0 -> _0
 type program = decl Prims.list
 type ident = Prims.string
 type fields_t = (Prims.string * (typ * Prims.bool)) Prims.list
@@ -707,21 +707,21 @@ type constant = (width * Prims.string)
 type var = Prims.int
 type lident = (Prims.string Prims.list * Prims.string)
 type version = Prims.int
-let (current_version : version) = (Prims.parse_int "27") 
+let (current_version : version) = (Prims.parse_int "27")
 type file = (Prims.string * program)
 type binary_format = (version * file Prims.list)
 let fst3 :
   'Auu____4008 'Auu____4009 'Auu____4010 .
     ('Auu____4008 * 'Auu____4009 * 'Auu____4010) -> 'Auu____4008
-  = fun uu____4021  -> match uu____4021 with | (x,uu____4029,uu____4030) -> x 
+  = fun uu____4021  -> match uu____4021 with | (x,uu____4029,uu____4030) -> x
 let snd3 :
   'Auu____4040 'Auu____4041 'Auu____4042 .
     ('Auu____4040 * 'Auu____4041 * 'Auu____4042) -> 'Auu____4041
-  = fun uu____4053  -> match uu____4053 with | (uu____4060,x,uu____4062) -> x 
+  = fun uu____4053  -> match uu____4053 with | (uu____4060,x,uu____4062) -> x
 let thd3 :
   'Auu____4072 'Auu____4073 'Auu____4074 .
     ('Auu____4072 * 'Auu____4073 * 'Auu____4074) -> 'Auu____4074
-  = fun uu____4085  -> match uu____4085 with | (uu____4092,uu____4093,x) -> x 
+  = fun uu____4085  -> match uu____4085 with | (uu____4092,uu____4093,x) -> x
 let (mk_width : Prims.string -> width FStar_Pervasives_Native.option) =
   fun uu___281_4103  ->
     match uu___281_4103 with
@@ -734,7 +734,7 @@ let (mk_width : Prims.string -> width FStar_Pervasives_Native.option) =
     | "Int32" -> FStar_Pervasives_Native.Some Int32
     | "Int64" -> FStar_Pervasives_Native.Some Int64
     | uu____4115 -> FStar_Pervasives_Native.None
-  
+
 let (mk_bool_op : Prims.string -> op FStar_Pervasives_Native.option) =
   fun uu___282_4125  ->
     match uu___282_4125 with
@@ -744,9 +744,9 @@ let (mk_bool_op : Prims.string -> op FStar_Pervasives_Native.option) =
     | "op_Equality" -> FStar_Pervasives_Native.Some Eq
     | "op_disEquality" -> FStar_Pervasives_Native.Some Neq
     | uu____4134 -> FStar_Pervasives_Native.None
-  
+
 let (is_bool_op : Prims.string -> Prims.bool) =
-  fun op  -> (mk_bool_op op) <> FStar_Pervasives_Native.None 
+  fun op  -> (mk_bool_op op) <> FStar_Pervasives_Native.None
 let (mk_op : Prims.string -> op FStar_Pervasives_Native.option) =
   fun uu___283_4155  ->
     match uu___283_4155 with
@@ -792,11 +792,11 @@ let (mk_op : Prims.string -> op FStar_Pervasives_Native.option) =
     | "op_Less_Equals_Hat" -> FStar_Pervasives_Native.Some Lte
     | "lte" -> FStar_Pervasives_Native.Some Lte
     | uu____4200 -> FStar_Pervasives_Native.None
-  
+
 let (is_op : Prims.string -> Prims.bool) =
-  fun op  -> (mk_op op) <> FStar_Pervasives_Native.None 
+  fun op  -> (mk_op op) <> FStar_Pervasives_Native.None
 let (is_machine_int : Prims.string -> Prims.bool) =
-  fun m  -> (mk_width m) <> FStar_Pervasives_Native.None 
+  fun m  -> (mk_width m) <> FStar_Pervasives_Native.None
 type env =
   {
   names: name Prims.list ;
@@ -807,19 +807,19 @@ and name = {
 let (__proj__Mkenv__item__names : env -> name Prims.list) =
   fun projectee  ->
     match projectee with | { names; names_t; module_name;_} -> names
-  
+
 let (__proj__Mkenv__item__names_t : env -> Prims.string Prims.list) =
   fun projectee  ->
     match projectee with | { names; names_t; module_name;_} -> names_t
-  
+
 let (__proj__Mkenv__item__module_name : env -> Prims.string Prims.list) =
   fun projectee  ->
     match projectee with | { names; names_t; module_name;_} -> module_name
-  
+
 let (__proj__Mkname__item__pretty : name -> Prims.string) =
-  fun projectee  -> match projectee with | { pretty = pretty1;_} -> pretty1 
+  fun projectee  -> match projectee with | { pretty = pretty1;_} -> pretty1
 let (empty : Prims.string Prims.list -> env) =
-  fun module_name  -> { names = []; names_t = []; module_name } 
+  fun module_name  -> { names = []; names_t = []; module_name }
 let (extend : env -> Prims.string -> env) =
   fun env  ->
     fun x  ->
@@ -829,7 +829,7 @@ let (extend : env -> Prims.string -> env) =
         names_t = (uu___289_4356.names_t);
         module_name = (uu___289_4356.module_name)
       }
-  
+
 let (extend_t : env -> Prims.string -> env) =
   fun env  ->
     fun x  ->
@@ -839,7 +839,7 @@ let (extend_t : env -> Prims.string -> env) =
         names_t = (x :: (env.names_t));
         module_name = (uu___290_4370.module_name)
       }
-  
+
 let (find_name : env -> Prims.string -> name) =
   fun env  ->
     fun x  ->
@@ -849,7 +849,7 @@ let (find_name : env -> Prims.string -> name) =
       | FStar_Pervasives_Native.Some name -> name
       | FStar_Pervasives_Native.None  ->
           failwith "internal error: name not found"
-  
+
 let (find : env -> Prims.string -> Prims.int) =
   fun env  ->
     fun x  ->
@@ -863,7 +863,7 @@ let (find : env -> Prims.string -> Prims.int) =
           let uu____4418 =
             FStar_Util.format1 "Internal error: name not found %s\n" x  in
           failwith uu____4418
-  
+
 let (find_t : env -> Prims.string -> Prims.int) =
   fun env  ->
     fun x  ->
@@ -876,7 +876,7 @@ let (find_t : env -> Prims.string -> Prims.int) =
           let uu____4449 =
             FStar_Util.format1 "Internal error: name not found %s\n" x  in
           failwith uu____4449
-  
+
 let add_binders :
   'Auu____4460 . env -> (Prims.string * 'Auu____4460) Prims.list -> env =
   fun env  ->
@@ -886,7 +886,7 @@ let add_binders :
            fun uu____4495  ->
              match uu____4495 with | (name,uu____4502) -> extend env1 name)
         env binders
-  
+
 let (list_elements :
   FStar_Extraction_ML_Syntax.mlexpr ->
     FStar_Extraction_ML_Syntax.mlexpr Prims.list)
@@ -903,7 +903,7 @@ let (list_elements :
           failwith "Argument of FStar.Buffer.createL is not a list literal!"
        in
     list_elements [] e2
-  
+
 let rec (translate : FStar_Extraction_ML_Syntax.mllib -> file Prims.list) =
   fun uu____4773  ->
     match uu____4773 with

@@ -1,87 +1,87 @@
 open Prims
 type assoc =
-  | ILeft 
-  | IRight 
-  | Left 
-  | Right 
-  | NonAssoc 
+  | ILeft
+  | IRight
+  | Left
+  | Right
+  | NonAssoc
 let (uu___is_ILeft : assoc -> Prims.bool) =
-  fun projectee  -> match projectee with | ILeft  -> true | uu____9 -> false 
+  fun projectee  -> match projectee with | ILeft  -> true | uu____9 -> false
 let (uu___is_IRight : assoc -> Prims.bool) =
   fun projectee  ->
     match projectee with | IRight  -> true | uu____20 -> false
-  
+
 let (uu___is_Left : assoc -> Prims.bool) =
-  fun projectee  -> match projectee with | Left  -> true | uu____31 -> false 
+  fun projectee  -> match projectee with | Left  -> true | uu____31 -> false
 let (uu___is_Right : assoc -> Prims.bool) =
-  fun projectee  -> match projectee with | Right  -> true | uu____42 -> false 
+  fun projectee  -> match projectee with | Right  -> true | uu____42 -> false
 let (uu___is_NonAssoc : assoc -> Prims.bool) =
   fun projectee  ->
     match projectee with | NonAssoc  -> true | uu____53 -> false
-  
+
 type fixity =
-  | Prefix 
-  | Postfix 
-  | Infix of assoc 
+  | Prefix
+  | Postfix
+  | Infix of assoc
 let (uu___is_Prefix : fixity -> Prims.bool) =
   fun projectee  ->
     match projectee with | Prefix  -> true | uu____69 -> false
-  
+
 let (uu___is_Postfix : fixity -> Prims.bool) =
   fun projectee  ->
     match projectee with | Postfix  -> true | uu____80 -> false
-  
+
 let (uu___is_Infix : fixity -> Prims.bool) =
   fun projectee  ->
     match projectee with | Infix _0 -> true | uu____92 -> false
-  
+
 let (__proj__Infix__item___0 : fixity -> assoc) =
-  fun projectee  -> match projectee with | Infix _0 -> _0 
+  fun projectee  -> match projectee with | Infix _0 -> _0
 type opprec = (Prims.int * fixity)
 type level = (opprec * assoc)
 let (t_prio_fun : (Prims.int * fixity)) =
-  ((Prims.parse_int "10"), (Infix Right)) 
+  ((Prims.parse_int "10"), (Infix Right))
 let (t_prio_tpl : (Prims.int * fixity)) =
-  ((Prims.parse_int "20"), (Infix NonAssoc)) 
-let (t_prio_name : (Prims.int * fixity)) = ((Prims.parse_int "30"), Postfix) 
+  ((Prims.parse_int "20"), (Infix NonAssoc))
+let (t_prio_name : (Prims.int * fixity)) = ((Prims.parse_int "30"), Postfix)
 let (e_bin_prio_lambda : (Prims.int * fixity)) =
-  ((Prims.parse_int "5"), Prefix) 
-let (e_bin_prio_if : (Prims.int * fixity)) = ((Prims.parse_int "15"), Prefix) 
+  ((Prims.parse_int "5"), Prefix)
+let (e_bin_prio_if : (Prims.int * fixity)) = ((Prims.parse_int "15"), Prefix)
 let (e_bin_prio_letin : (Prims.int * fixity)) =
-  ((Prims.parse_int "19"), Prefix) 
+  ((Prims.parse_int "19"), Prefix)
 let (e_bin_prio_or : (Prims.int * fixity)) =
-  ((Prims.parse_int "20"), (Infix Left)) 
+  ((Prims.parse_int "20"), (Infix Left))
 let (e_bin_prio_and : (Prims.int * fixity)) =
-  ((Prims.parse_int "25"), (Infix Left)) 
+  ((Prims.parse_int "25"), (Infix Left))
 let (e_bin_prio_eq : (Prims.int * fixity)) =
-  ((Prims.parse_int "27"), (Infix NonAssoc)) 
+  ((Prims.parse_int "27"), (Infix NonAssoc))
 let (e_bin_prio_order : (Prims.int * fixity)) =
-  ((Prims.parse_int "29"), (Infix NonAssoc)) 
+  ((Prims.parse_int "29"), (Infix NonAssoc))
 let (e_bin_prio_op1 : (Prims.int * fixity)) =
-  ((Prims.parse_int "30"), (Infix Left)) 
+  ((Prims.parse_int "30"), (Infix Left))
 let (e_bin_prio_op2 : (Prims.int * fixity)) =
-  ((Prims.parse_int "40"), (Infix Left)) 
+  ((Prims.parse_int "40"), (Infix Left))
 let (e_bin_prio_op3 : (Prims.int * fixity)) =
-  ((Prims.parse_int "50"), (Infix Left)) 
+  ((Prims.parse_int "50"), (Infix Left))
 let (e_bin_prio_op4 : (Prims.int * fixity)) =
-  ((Prims.parse_int "60"), (Infix Left)) 
+  ((Prims.parse_int "60"), (Infix Left))
 let (e_bin_prio_comb : (Prims.int * fixity)) =
-  ((Prims.parse_int "70"), (Infix Left)) 
+  ((Prims.parse_int "70"), (Infix Left))
 let (e_bin_prio_seq : (Prims.int * fixity)) =
-  ((Prims.parse_int "100"), (Infix Left)) 
+  ((Prims.parse_int "100"), (Infix Left))
 let (e_app_prio : (Prims.int * fixity)) =
-  ((Prims.parse_int "10000"), (Infix Left)) 
+  ((Prims.parse_int "10000"), (Infix Left))
 let (min_op_prec : (Prims.int * fixity)) =
-  ((~- (Prims.parse_int "1")), (Infix NonAssoc)) 
+  ((~- (Prims.parse_int "1")), (Infix NonAssoc))
 let (max_op_prec : (Prims.int * fixity)) =
-  (FStar_Util.max_int, (Infix NonAssoc)) 
+  (FStar_Util.max_int, (Infix NonAssoc))
 let rec in_ns : 'a . ('a Prims.list * 'a Prims.list) -> Prims.bool =
   fun x  ->
     match x with
     | ([],uu____290) -> true
     | (x1::t1,x2::t2) when x1 = x2 -> in_ns (t1, t2)
     | (uu____314,uu____315) -> false
-  
+
 let (path_of_ns :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     Prims.string Prims.list -> Prims.string Prims.list)
@@ -118,7 +118,7 @@ let (path_of_ns :
          match found with
          | FStar_Pervasives_Native.None  -> [ns']
          | FStar_Pervasives_Native.Some x -> x)
-  
+
 let (mlpath_of_mlpath :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     FStar_Extraction_ML_Syntax.mlpath -> FStar_Extraction_ML_Syntax.mlpath)
@@ -135,7 +135,7 @@ let (mlpath_of_mlpath :
            | (ns,x1) ->
                let uu____527 = path_of_ns currentModule ns  in
                (uu____527, x1))
-  
+
 let (ptsym_of_symbol :
   FStar_Extraction_ML_Syntax.mlsymbol -> FStar_Extraction_ML_Syntax.mlsymbol)
   =
@@ -147,7 +147,7 @@ let (ptsym_of_symbol :
       let uu____552 = FStar_String.get s (Prims.parse_int "0")  in
       uu____547 <> uu____552  in
     if uu____545 then Prims.strcat "l__" s else s
-  
+
 let (ptsym :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     FStar_Extraction_ML_Syntax.mlpath -> FStar_Extraction_ML_Syntax.mlsymbol)
@@ -165,7 +165,7 @@ let (ptsym :
                  let uu____608 = ptsym_of_symbol s  in [uu____608]  in
                FStar_List.append p uu____604  in
              FStar_String.concat "." uu____600)
-  
+
 let (ptctor :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     FStar_Extraction_ML_Syntax.mlpath -> FStar_Extraction_ML_Syntax.mlsymbol)
@@ -184,7 +184,7 @@ let (ptctor :
               uu____645 <> uu____650  in
             if uu____643 then Prims.strcat "U__" s else s  in
           FStar_String.concat "." (FStar_List.append p [s1])
-  
+
 let (infix_prim_ops :
   (Prims.string * (Prims.int * fixity) * Prims.string) Prims.list) =
   [("op_Addition", e_bin_prio_op1, "+");
@@ -200,7 +200,7 @@ let (infix_prim_ops :
   ("op_GreaterThanOrEqual", e_bin_prio_order, ">=");
   ("op_LessThan", e_bin_prio_order, "<");
   ("op_GreaterThan", e_bin_prio_order, ">");
-  ("op_Modulus", e_bin_prio_order, "mod")] 
+  ("op_Modulus", e_bin_prio_order, "mod")]
 let (prim_uni_ops : unit -> (Prims.string * Prims.string) Prims.list) =
   fun uu____1013  ->
     let op_minus =
@@ -211,14 +211,14 @@ let (prim_uni_ops : unit -> (Prims.string * Prims.string) Prims.list) =
     [("op_Negation", "not");
     ("op_Minus", op_minus);
     ("op_Bang", "Support.ST.read")]
-  
+
 let prim_types : 'Auu____1067 . unit -> 'Auu____1067 Prims.list =
-  fun uu____1070  -> [] 
+  fun uu____1070  -> []
 let (prim_constructors : (Prims.string * Prims.string) Prims.list) =
-  [("Some", "Some"); ("None", "None"); ("Nil", "[]"); ("Cons", "::")] 
+  [("Some", "Some"); ("None", "None"); ("Nil", "[]"); ("Cons", "::")]
 let (is_prims_ns :
   FStar_Extraction_ML_Syntax.mlsymbol Prims.list -> Prims.bool) =
-  fun ns  -> ns = ["Prims"] 
+  fun ns  -> ns = ["Prims"]
 let (as_bin_op :
   FStar_Extraction_ML_Syntax.mlpath ->
     (FStar_Extraction_ML_Syntax.mlsymbol * (Prims.int * fixity) *
@@ -234,12 +234,12 @@ let (as_bin_op :
                match uu____1224 with | (y,uu____1240,uu____1241) -> x = y)
             infix_prim_ops
         else FStar_Pervasives_Native.None
-  
+
 let (is_bin_op : FStar_Extraction_ML_Syntax.mlpath -> Prims.bool) =
   fun p  ->
     let uu____1279 = as_bin_op p  in
     uu____1279 <> FStar_Pervasives_Native.None
-  
+
 let (as_uni_op :
   FStar_Extraction_ML_Syntax.mlpath ->
     (FStar_Extraction_ML_Syntax.mlsymbol * Prims.string)
@@ -255,14 +255,14 @@ let (as_uni_op :
             (fun uu____1382  ->
                match uu____1382 with | (y,uu____1391) -> x = y) uu____1364
         else FStar_Pervasives_Native.None
-  
+
 let (is_uni_op : FStar_Extraction_ML_Syntax.mlpath -> Prims.bool) =
   fun p  ->
     let uu____1412 = as_uni_op p  in
     uu____1412 <> FStar_Pervasives_Native.None
-  
+
 let (is_standard_type : FStar_Extraction_ML_Syntax.mlpath -> Prims.bool) =
-  fun p  -> false 
+  fun p  -> false
 let (as_standard_constructor :
   FStar_Extraction_ML_Syntax.mlpath ->
     (FStar_Extraction_ML_Syntax.mlsymbol * Prims.string)
@@ -278,13 +278,13 @@ let (as_standard_constructor :
                match uu____1493 with | (y,uu____1502) -> x = y)
             prim_constructors
         else FStar_Pervasives_Native.None
-  
+
 let (is_standard_constructor :
   FStar_Extraction_ML_Syntax.mlpath -> Prims.bool) =
   fun p  ->
     let uu____1523 = as_standard_constructor p  in
     uu____1523 <> FStar_Pervasives_Native.None
-  
+
 let (maybe_paren :
   ((Prims.int * fixity) * assoc) ->
     (Prims.int * fixity) -> FStar_Format.doc -> FStar_Format.doc)
@@ -319,11 +319,11 @@ let (maybe_paren :
             if noparens inner outer side
             then doc1
             else FStar_Format.parens doc1
-  
+
 let (escape_byte_hex : FStar_BaseTypes.byte -> Prims.string) =
-  fun x  -> Prims.strcat "\\x" (FStar_Util.hex_string_of_byte x) 
+  fun x  -> Prims.strcat "\\x" (FStar_Util.hex_string_of_byte x)
 let (escape_char_hex : FStar_BaseTypes.char -> Prims.string) =
-  fun x  -> escape_byte_hex (FStar_Util.byte_of_char x) 
+  fun x  -> escape_byte_hex (FStar_Util.byte_of_char x)
 let (escape_or :
   (FStar_BaseTypes.char -> Prims.string) ->
     FStar_BaseTypes.char -> Prims.string)
@@ -363,7 +363,7 @@ let (escape_or :
                           if FStar_Util.is_symbol uu___273_1710
                           then FStar_Util.string_of_char uu___273_1710
                           else fallback uu___273_1710
-  
+
 let (string_of_mlconstant :
   FStar_Extraction_ML_Syntax.mlconstant -> Prims.string) =
   fun sctt  ->
@@ -385,11 +385,11 @@ let (string_of_mlconstant :
            else "")
     | FStar_Extraction_ML_Syntax.MLC_Int
         (s,FStar_Pervasives_Native.Some
-         (FStar_Const.Signed ,FStar_Const.Int32 ))
+         (FStar_Util.Signed ,FStar_Util.Int32 ))
         -> Prims.strcat s "l"
     | FStar_Extraction_ML_Syntax.MLC_Int
         (s,FStar_Pervasives_Native.Some
-         (FStar_Const.Signed ,FStar_Const.Int64 ))
+         (FStar_Util.Signed ,FStar_Util.Int64 ))
         -> Prims.strcat s "L"
     | FStar_Extraction_ML_Syntax.MLC_Int
         (s,FStar_Pervasives_Native.Some (uu____1821,FStar_Const.Int8 )) -> s
@@ -413,7 +413,7 @@ let (string_of_mlconstant :
         Prims.strcat "\"" uu____1875
     | uu____1881 ->
         failwith "TODO: extract integer constants properly into OCaml"
-  
+
 let rec (doc_of_mltype' :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     level -> FStar_Extraction_ML_Syntax.mlty -> FStar_Format.doc)
@@ -1315,7 +1315,7 @@ let (doc_of_mltydecl :
           FStar_Format.reduce1 uu____3646
         else FStar_Format.text ""  in
       doc2
-  
+
 let rec (doc_of_sig1 :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     FStar_Extraction_ML_Syntax.mlsig1 -> FStar_Format.doc)
@@ -1425,7 +1425,7 @@ let (doc_of_mod1 :
             (FStar_Format.text "let") :: uu____3824  in
           FStar_Format.reduce1 uu____3821
       | FStar_Extraction_ML_Syntax.MLM_Loc loc -> doc_of_loc loc
-  
+
 let (doc_of_mod :
   FStar_Extraction_ML_Syntax.mlsymbol ->
     FStar_Extraction_ML_Syntax.mlmodule -> FStar_Format.doc)
@@ -1444,7 +1444,7 @@ let (doc_of_mod :
              FStar_Format.hardline]) m
          in
       FStar_Format.reduce (FStar_List.flatten docs)
-  
+
 let rec (doc_of_mllib_r :
   FStar_Extraction_ML_Syntax.mllib ->
     (Prims.string * FStar_Format.doc) Prims.list)
@@ -1493,7 +1493,7 @@ let rec (doc_of_mllib_r :
                 (FStar_Format.cat head1 FStar_Format.hardline) :: uu____4037
                  in
               FStar_Format.reduce uu____4034
-        
+
         and for1_mod istop uu____4046 =
           match uu____4046 with
           | (mod_name1,sigmod,FStar_Extraction_ML_Syntax.MLLib sub1) ->
@@ -1591,11 +1591,11 @@ let rec (doc_of_mllib_r :
                    (uu____4341, uu____4343)) mllib
            in
         docs
-  
+
 let (doc_of_mllib :
   FStar_Extraction_ML_Syntax.mllib ->
     (Prims.string * FStar_Format.doc) Prims.list)
-  = fun mllib  -> doc_of_mllib_r mllib 
+  = fun mllib  -> doc_of_mllib_r mllib
 let (string_of_mlexpr :
   FStar_Extraction_ML_Syntax.mlpath ->
     FStar_Extraction_ML_Syntax.mlexpr -> Prims.string)
@@ -1606,7 +1606,7 @@ let (string_of_mlexpr :
         let uu____4386 = FStar_Extraction_ML_Util.flatten_mlpath cmod  in
         doc_of_expr uu____4386 (min_op_prec, NonAssoc) e  in
       FStar_Format.pretty (Prims.parse_int "0") doc1
-  
+
 let (string_of_mlty :
   FStar_Extraction_ML_Syntax.mlpath ->
     FStar_Extraction_ML_Syntax.mlty -> Prims.string)
@@ -1617,4 +1617,3 @@ let (string_of_mlty :
         let uu____4402 = FStar_Extraction_ML_Util.flatten_mlpath cmod  in
         doc_of_mltype uu____4402 (min_op_prec, NonAssoc) e  in
       FStar_Format.pretty (Prims.parse_int "0") doc1
-  
