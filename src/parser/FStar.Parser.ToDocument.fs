@@ -1026,7 +1026,7 @@ and p_term (ps:bool) (pb:bool) (e:term) = match e.tm with
        * that swallows branches but not semicolons (meaning ps implies pb). *)
       group (p_noSeqTerm true false e1 ^^ semi) ^/^ p_term ps pb e2
   | Bind(x, e1, e2) ->
-      group ((p_tuplePattern x ^^ space ^^ long_left_arrow) ^/+^ (p_noSeqTerm true false e1 ^^ space ^^ semi)) ^/^ p_term ps pb e2
+      group ((str "do" ^^ space ^^ p_tuplePattern x ^^ space ^^ long_left_arrow) ^/+^ (maybe_paren (p_noSeqTerm true false e1) ^^ space ^^ semi)) ^/^ p_term ps pb e2
   | _ ->
       group (p_noSeqTerm ps pb e)
 
