@@ -137,4 +137,3 @@ let from_tactic_13 (t:'t1 -> 't2 -> 't3 -> 't4 -> 't5 -> 't6 -> 't7 -> 't8 -> 't
     (fun (ps: proofstate) ->
        BU.print_string "In compiled code (13)\n";
        interpret_tactic ps (t a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13)) |> mk_tac
-

@@ -160,4 +160,4 @@ let parse_warn_error s =
     with e ->
       failwith (FStar_Util.format1 "Malformed warn-error list: %s" s)
   in
-  FStar_Errors.update_flags user_flags 
+  FStar_Errors.update_flags user_flags
