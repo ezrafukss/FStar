@@ -2,6 +2,7 @@ open Prims
 open FStar_Tactics_Result
 open FStar_Tactics_Types
 open FStar_Tactics_Effect
+module N = FStar_TypeChecker_Normalize
 module E = FStar_Tactics_Effect
 module B = FStar_Tactics_Basic
 module RT = FStar_Reflection_Types
@@ -74,8 +75,8 @@ let trivial: unit -> unit __tac = fun () -> __trivial
 let __norm (s: norm_step list): unit __tac = from_tac_1 B.norm (tr_repr_steps s)
 let norm: norm_step list -> unit -> unit __tac = fun s -> fun () -> __norm s
 
-let __norm_term (s: norm_step list) (t: RT.term) : RT.term __tac = from_tac_2 B.norm_term (tr_repr_steps s) t
-let norm_term: norm_step list -> RT.term -> unit -> RT.term __tac = fun s t -> fun () -> __norm_term s t
+let __norm_term_env (e:RT.env) (s: norm_step list) (t: RT.term) : RT.term __tac = from_tac_3 B.norm_term_env e (tr_repr_steps s) t
+let norm_term_env: RT.env -> norm_step list -> RT.term -> unit -> RT.term __tac = fun e s t -> fun () -> __norm_term_env e s t
 
 let __intro: RT.binder __tac = from_tac_0 B.intro
 let intro: unit -> RT.binder __tac = fun () -> __intro
@@ -135,10 +136,10 @@ let apply_lemma: RT.term E.tactic -> unit -> unit __tac =
 let __print (s: string): unit __tac = from_tac_1 (fun x -> B.ret (B.tacprint x)) s
 let print: string -> unit -> unit __tac = fun s -> fun () -> __print s
 
-let __dump (s: string): unit __tac = from_tac_1 B.print_proof_state s
+let __dump (s: string): unit __tac = from_tac_1 (B.print_proof_state N.null_psc) s
 let dump: string -> unit -> unit __tac = fun s -> fun () -> __dump s
 
-let __dump1 (s: string): unit __tac = from_tac_1 B.print_proof_state1 s
+let __dump1 (s: string): unit __tac = from_tac_1 (B.print_proof_state1 N.null_psc) s
 let dump1: string -> unit -> unit __tac = fun s -> fun () -> __dump1 s
 
 let __trefl: unit __tac = from_tac_0 B.trefl
