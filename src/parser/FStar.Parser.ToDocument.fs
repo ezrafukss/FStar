@@ -226,7 +226,7 @@ let is_general_application e =
   not (is_array e || is_ref_set e)
 
 let is_general_construction e =
-  not (is_list e || is_lex_list e)
+  not (is_list e || is_lex_list e || is_zvector e)
 
 let is_general_prefix_op op =
   let op_starting_char =  char_at (Ident.text_of_id op) 0 in
