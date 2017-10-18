@@ -190,6 +190,8 @@ let is_list_structure cons_lid nil_lid =
   in aux
 
 let is_list = is_list_structure C.cons_lid C.nil_lid
+let is_zvector = is_list_structure C.vcons_lid C.vnil_lid
+
 let is_lex_list = is_list_structure C.lexcons_lid C.lextop_lid
 
 (* [extract_from_list e] assumes that [is_list_structure xxx yyy e] holds *)
@@ -224,7 +226,7 @@ let is_general_application e =
   not (is_array e || is_ref_set e)
 
 let is_general_construction e =
-  not (is_list e || is_lex_list e)
+  not (is_list e || is_lex_list e || is_zvector e)
 
 let is_general_prefix_op op =
   let op_starting_char =  char_at (Ident.text_of_id op) 0 in
@@ -1157,6 +1159,9 @@ and p_projectionLHS e = match (unparen e).tm with
     surround 2 0 lbracket (separate_map_or_flow (semi ^^ break1) p_noSeqTerm (extract_from_list e)) rbracket
   | _ when is_lex_list e ->
     surround 2 1 (percent ^^ lbracket) (separate_map_or_flow (semi ^^ break1) p_noSeqTerm (extract_from_list e)) rbracket
+  | _ when is_zvector e ->
+    let es = extract_from_list e in
+    surround 2 0 (lbracket ^^ bar) (separate_map_or_flow (semi ^^ break1) p_noSeqTerm es) (bar ^^ rbracket)
   | _ when is_ref_set e ->
     let es = extract_from_ref_set e in
     surround 2 0 (bang ^^ lbrace) (separate_map_or_flow (comma ^^ break1) p_appTerm es) rbrace
