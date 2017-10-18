@@ -2418,14 +2418,11 @@ and desugar_term_maybe_top:
                   mk1 (FStar_Syntax_Syntax.Tm_app (head1, args)) in
             aux [] top
         | FStar_Parser_AST.Bind (x,t1,t2) ->
-            let xpat =
-              FStar_Parser_AST.mk_pattern
-                (FStar_Parser_AST.PatVar (x, FStar_Pervasives_Native.None))
-                x.FStar_Ident.idRange in
             let k =
-              FStar_Parser_AST.mk_term (FStar_Parser_AST.Abs ([xpat], t2))
+              FStar_Parser_AST.mk_term (FStar_Parser_AST.Abs ([x], t2))
                 t2.FStar_Parser_AST.range t2.FStar_Parser_AST.level in
             let bind1 =
+<<<<<<< HEAD
               let uu____6471 =
                 let uu____6472 =
                   FStar_Ident.lid_of_path ["bind"] x.FStar_Ident.idRange in
@@ -2440,6 +2437,22 @@ and desugar_term_maybe_top:
             let uu____6476 =
               let uu____6477 =
                 let uu____6484 =
+=======
+              let uu____6364 =
+                let uu____6365 =
+                  FStar_Ident.lid_of_path ["bind"] x.FStar_Parser_AST.prange in
+                FStar_Parser_AST.Var uu____6365 in
+              FStar_Parser_AST.mk_term uu____6364 x.FStar_Parser_AST.prange
+                FStar_Parser_AST.Expr in
+            let uu____6366 =
+              FStar_Parser_AST.mkExplicitApp bind1 [t1; k]
+                top.FStar_Parser_AST.range in
+            desugar_term env uu____6366
+        | FStar_Parser_AST.Seq (t1,t2) ->
+            let uu____6369 =
+              let uu____6370 =
+                let uu____6377 =
+>>>>>>> upstream/amanning-bind-patterns
                   desugar_term env
                     (FStar_Parser_AST.mk_term
                        (FStar_Parser_AST.Let
@@ -3808,7 +3821,7 @@ let mk_indexed_projector_names:
                                        FStar_List.filter
                                          (fun uu___230_11335  ->
                                             match uu___230_11335 with
-                                            | FStar_Syntax_Syntax.Abstract 
+                                            | FStar_Syntax_Syntax.Abstract
                                                 -> false
                                             | uu____11336 -> true) q in
                                      FStar_Syntax_Syntax.Assumption ::
@@ -3820,9 +3833,9 @@ let mk_indexed_projector_names:
                                        (FStar_List.filter
                                           (fun uu___231_11349  ->
                                              match uu___231_11349 with
-                                             | FStar_Syntax_Syntax.Abstract 
+                                             | FStar_Syntax_Syntax.Abstract
                                                  -> true
-                                             | FStar_Syntax_Syntax.Private 
+                                             | FStar_Syntax_Syntax.Private
                                                  -> true
                                              | uu____11350 -> false)) in
                                    quals (FStar_Syntax_Syntax.OnlyName ::
@@ -4457,7 +4470,7 @@ let rec desugar_tycon:
                                               t1) in
                                  let uu____14557 =
                                    let uu____14578 =
-                                     mk_typ_abbrev id uvs tpars k t1 
+                                     mk_typ_abbrev id uvs tpars k t1
                                        [id] quals1 rng in
                                    ((id, (d.FStar_Parser_AST.doc)), [],
                                      uu____14578) in
