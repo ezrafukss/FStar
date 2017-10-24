@@ -242,11 +242,15 @@ let string_of_mlconstant (sctt : mlconstant) =
   | MLC_Bool false -> "false"
   | MLC_Char c -> (* Unicode characters, in OCaml we use BatUChar (wraper for int) *)
     let nc = Char.int_of_char c in (string_of_int nc)
-    ^(if nc >= 32 && nc <= 127 && nc <> 34 then " (*" ^ (string_of_char c) ^"*)" else "")
+    ^(if nc >= 32 && nc <= 127 && nc <> 34 then " (*" ^ (string_of_char c) ^"*)" else "")  
+  | MLC_Int (s, Some (Signed, Int8)) -> s ^"y"
+  | MLC_Int (s, Some (Signed, Int16)) -> s ^"s"
   | MLC_Int (s, Some (Signed, Int32)) -> s ^"l"
   | MLC_Int (s, Some (Signed, Int64)) -> s ^"L"
-  | MLC_Int (s, Some (_, Int8))
-  | MLC_Int (s, Some (_, Int16)) -> s
+  | MLC_Int (s, Some (Unsigned, Int8)) -> s ^"uy"
+  | MLC_Int (s, Some (Unsigned, Int16)) -> s ^"us"
+  | MLC_Int (s, Some (Unsigned, Int32)) -> s ^"ul"
+  | MLC_Int (s, Some (Unsigned, Int64)) -> s ^"UL"
   | MLC_Int (s, None) -> "(Prims.parse_int \"" ^s^ "\")"
   | MLC_Float d -> string_of_float d
 
