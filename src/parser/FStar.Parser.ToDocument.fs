@@ -868,7 +868,7 @@ and p_atomicPattern p = match p.pat with
   | PatList pats ->
     surround 2 0 lbracket (separate_break_map semi p_tuplePattern pats) rbracket
   | PatVector pats ->
-    surround 2 0 (lbracket ^^ bar) (separate_break_map semi p_tuplePattern pats) (bar ^^ rbracket)
+    surround 2 0 ( str "V" ^^ lbracket) (separate_break_map semi p_tuplePattern pats) (rbracket)
   | PatRecord pats ->
     let p_recordFieldPat (lid, pat) = infix2 equals (p_qlident lid) (p_tuplePattern pat) in
     soft_braces_with_nesting (separate_break_map semi p_recordFieldPat pats)

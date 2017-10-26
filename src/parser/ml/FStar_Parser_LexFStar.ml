@@ -155,7 +155,7 @@ let () =
    ".[", DOT_LBRACK;
    ".(|", DOT_LENS_PAREN_LEFT;
    ".(", DOT_LPAREN;
-   ".[|", DOT_LBRACK_BAR;   
+   ".[|", DOT_LBRACK_BAR;
    "{:pattern", LBRACE_COLON_PATTERN;
    ":", COLON;
    "::", COLON_COLON;
@@ -518,7 +518,7 @@ let rec token = lexer
  | op_infix0d symbolchar* -> OPINFIX0d (L.lexeme lexbuf)
  | op_infix1  symbolchar* -> OPINFIX1 (L.lexeme lexbuf)
  | op_infix2  symbolchar* -> OPINFIX2 (L.lexeme lexbuf)
- | op_infix3  symbolchar* -> 
+ | op_infix3  symbolchar* ->
      let l = L.lexeme lexbuf in
      if String.length l >= 2 && String.sub l 0 2 = "//" then
        one_line_comment l lexbuf
@@ -607,4 +607,3 @@ and fsdoc_kw_arg (n, doc, kw, kwn, kwa) = lexer
 
 and ignore_endline = lexer
  | ' '* newline -> token lexbuf
-

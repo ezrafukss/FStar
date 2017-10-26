@@ -419,7 +419,7 @@ atomicPattern:
       }
   | LBRACK pats=separated_list(SEMICOLON, tuplePattern) RBRACK
       { mk_pattern (PatList pats) (rhs2 parseState 1 3) }
-  | LBRACK_BAR pats=separated_list(SEMICOLON, tuplePattern) BAR_RBRACK
+  | V_LBRACK pats=separated_list(SEMICOLON, tuplePattern) RBRACK
       { mk_pattern (PatVector pats) (rhs2 parseState 1 3) }
   | LBRACE record_pat=separated_nonempty_list(SEMICOLON, fieldPattern) RBRACE
       { mk_pattern (PatRecord record_pat) (rhs2 parseState 1 3) }
@@ -976,7 +976,7 @@ projectionLHS:
           | Some (level, t) -> mk_term (Ascribed(e,{t with level=level},None)) (rhs2 parseState 1 4) level
         in mk_term (Paren e1) (rhs2 parseState 1 4) (e.level)
       }
-  | LBRACK_BAR es=semiColonTermList BAR_RBRACK
+  | V_LBRACK es=semiColonTermList RBRACK
       { mkVConsList (rhs2 parseState 1 3) es }
   | LBRACK es=semiColonTermList RBRACK
       { mkConsList (rhs2 parseState 1 3) es }
