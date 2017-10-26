@@ -4,6 +4,7 @@ open FStar.Parser.AST
 type token = 
   | WITH
   | WHEN
+  | V_LBRACK
   | VAL
   | UNOPTEQUALITY
   | UNIV_HASH
@@ -140,6 +141,7 @@ type token =
 type tokenId = 
     | TOKEN_WITH
     | TOKEN_WHEN
+    | TOKEN_V_LBRACK
     | TOKEN_VAL
     | TOKEN_UNOPTEQUALITY
     | TOKEN_UNIV_HASH

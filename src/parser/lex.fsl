@@ -387,6 +387,7 @@ rule token args = parse
  | "|" { BAR }
  | "}" { RBRACE }
  | "$" { DOLLAR }
+ | "V[" { V_LBRACK }
 
  // Operators.
  | op_prefix  symbolchar* { OPPREFIX (ulexeme lexbuf) }

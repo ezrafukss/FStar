@@ -739,7 +739,7 @@ and p_atomicPattern p = match p.pat with
   | PatList pats ->
     surround 2 0 lbracket (separate_break_map semi p_tuplePattern pats) rbracket
   | PatVector pats ->
-    surround 2 0 (lbracket ^^ bar) (separate_break_map semi p_tuplePattern pats) (bar ^^ rbracket)
+    surround 2 0 ( str "V" ^^ lbracket) (separate_break_map semi p_tuplePattern pats) (rbracket)
   | PatRecord pats ->
     let p_recordFieldPat (lid, pat) = infix2 equals (p_qlident lid) (p_tuplePattern pat) in
     soft_braces_with_nesting (separate_break_map semi p_recordFieldPat pats)
@@ -844,12 +844,12 @@ and p_lidentOrUnderscore id =
 and maybe_paren (p: term -> document) (e:term) : document =
     match (unparen e).tm with
     | Match _
-    | TryWith _ -> 
+    | TryWith _ ->
         soft_begin_end_with_nesting (p e)
     | Abs([{pat=PatVar(x, _)}], {tm=Match(maybe_x, _)}) when matches_var maybe_x x ->
         soft_begin_end_with_nesting (p e)
     | _ -> p e
-    
+
 and p_term e =
   match (unparen e).tm with
   | Seq (e1, e2) ->
@@ -1161,7 +1161,7 @@ and p_projectionLHS e = match (unparen e).tm with
     surround 2 1 (percent ^^ lbracket) (separate_map_or_flow (semi ^^ break1) p_noSeqTerm (extract_from_list e)) rbracket
   | _ when is_zvector e ->
     let es = extract_from_list e in
-    surround 2 0 (lbracket ^^ bar) (separate_map_or_flow (semi ^^ break1) p_noSeqTerm es) (bar ^^ rbracket)
+    surround 2 0 (str "V" ^^ lbracket) (separate_map_or_flow (semi ^^ break1) p_noSeqTerm es) (rbracket)
   | _ when is_ref_set e ->
     let es = extract_from_ref_set e in
     surround 2 0 (bang ^^ lbrace) (separate_map_or_flow (comma ^^ break1) p_appTerm es) rbrace

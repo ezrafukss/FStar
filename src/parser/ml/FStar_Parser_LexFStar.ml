@@ -131,7 +131,7 @@ let () =
      ":=", COLON_EQUALS; ";;", SEMICOLON_SEMICOLON; ";", SEMICOLON; "=", EQUALS;
      "%[", PERCENT_LBRACK; "!{", BANG_LBRACE; "[@", LBRACK_AT; "[", LBRACK;
      "[|", LBRACK_BAR; "|>", PIPE_RIGHT; "]", RBRACK; "|]", BAR_RBRACK;
-     "{", LBRACE; "|", BAR; "}", RBRACE; "$", DOLLAR;
+     "{", LBRACE; "|", BAR; "}", RBRACE; "$", DOLLAR; "V[", V_LBRACK; 
      (* New Unicode equivalents *)
      "∀", FORALL; "∃", EXISTS; "⊤", NAME "True"; "⊥", NAME "False";
      "⟹", IMPLIES; "⟺", IFF; "→", RARROW; "←", LARROW;
