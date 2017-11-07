@@ -29,6 +29,7 @@ type token =
   | SUBKIND
   | STRING of (string)
   | SQUIGGLY_RARROW
+  | SET_RANGE_OF
   | SEMICOLON_SEMICOLON
   | SEMICOLON
   | RPAREN
@@ -40,6 +41,7 @@ type token =
   | RBRACK
   | RBRACE
   | RARROW
+  | RANGE_OF
   | QMARK_DOT
   | QMARK
   | PRIVATE
@@ -166,6 +168,7 @@ type tokenId =
     | TOKEN_SUBKIND
     | TOKEN_STRING
     | TOKEN_SQUIGGLY_RARROW
+    | TOKEN_SET_RANGE_OF
     | TOKEN_SEMICOLON_SEMICOLON
     | TOKEN_SEMICOLON
     | TOKEN_RPAREN
@@ -177,6 +180,7 @@ type tokenId =
     | TOKEN_RBRACK
     | TOKEN_RBRACE
     | TOKEN_RARROW
+    | TOKEN_RANGE_OF
     | TOKEN_QMARK_DOT
     | TOKEN_QMARK
     | TOKEN_PRIVATE
