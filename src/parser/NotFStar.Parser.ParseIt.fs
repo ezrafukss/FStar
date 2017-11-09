@@ -73,7 +73,9 @@ let read_file (filename:string) =
     try
       if debug then Util.print1 "Opening file %s\n" filename;
       let fs = new System.IO.StreamReader(filename) in
-      filename, fs.ReadToEnd ()
+      let contents = fs.ReadToEnd() in
+      fs.Close();
+      (filename, contents)
     with _ ->
       raise (Err (Util.format1 "Unable to read file %s" filename))
 
