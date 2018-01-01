@@ -52,7 +52,7 @@ let () =
   Hashtbl.add keywords "calc"          CALC        ;
   Hashtbl.add keywords "class"         CLASS       ;
   Hashtbl.add keywords "default"       DEFAULT     ;
-  Hashtbl.add keywords "do"            DO          ;
+  Hashtbl.add keywords "let!"          LET_BANG    ;
   Hashtbl.add keywords "effect"        EFFECT      ;
   Hashtbl.add keywords "else"          ELSE        ;
   Hashtbl.add keywords "end"           END         ;
