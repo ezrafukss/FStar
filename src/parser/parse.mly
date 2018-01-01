@@ -53,7 +53,7 @@ open FStar_String
 %token TYP_APP_LESS TYP_APP_GREATER SUBTYPE SUBKIND BY
 %token AND ASSERT BEGIN ELSE END
 %token EXCEPTION FALSE FUN FUNCTION IF IN MODULE DEFAULT
-%token MATCH OF DO
+%token MATCH OF LET_BANG
 %token OPEN REC MUTABLE THEN TRUE TRY TYPE EFFECT VAL
 %token INCLUDE
 %token WHEN WITH HASH AMP LPAREN RPAREN LPAREN_RPAREN COMMA LONG_LEFT_ARROW LARROW RARROW
@@ -503,7 +503,7 @@ term:
 (*     exists for the previous production *)
   | e1=noSeqTerm SEMICOLON_SEMICOLON e2=term
       { mk_term (Bind(mk_pattern PatWild (rhs parseState 2), e1, e2)) (rhs2 parseState 1 3) Expr }
-  | DO x=tuplePattern LONG_LEFT_ARROW e1=noSeqTerm SEMICOLON e2=term
+  | LET_BANG x=tuplePattern EQUALS e1=noSeqTerm IN e2=term
       { mk_term (Bind(x, e1, e2)) (rhs2 parseState 1 6) Expr }
 noSeqTerm:
   | t=typ  { t }

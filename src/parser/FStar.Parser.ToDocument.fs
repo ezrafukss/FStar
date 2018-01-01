@@ -855,7 +855,7 @@ and p_term e =
   | Seq (e1, e2) ->
       group (p_noSeqTerm e1 ^^ semi) ^/^ p_term e2
   | Bind(x, e1, e2) ->
-      group ((str "do" ^^ space ^^ p_tuplePattern x ^^ space ^^ long_left_arrow) ^/+^ (maybe_paren p_noSeqTerm e1 ^^ space ^^ semi)) ^/^ p_term e2
+      group ((str "let!" ^^ space ^^ p_tuplePattern x ^^ space ^^ str "=") ^/+^ (maybe_paren p_noSeqTerm e1 ^^ space ^^ str "in")) ^/^ p_term e2
   | _ ->
       group (p_noSeqTerm e)
 

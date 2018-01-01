@@ -49,7 +49,7 @@ let () =
   Hashtbl.add keywords "begin"         BEGIN       ;
   Hashtbl.add keywords "by"            BY          ;
   Hashtbl.add keywords "default"       DEFAULT     ;
-  Hashtbl.add keywords "do"            DO          ;
+  Hashtbl.add keywords "let!"          LET_BANG    ;
   Hashtbl.add keywords "effect"        EFFECT      ;
   Hashtbl.add keywords "else"          ELSE        ;
   Hashtbl.add keywords "end"           END         ;
@@ -133,7 +133,7 @@ let () =
      ":=", COLON_EQUALS; ";;", SEMICOLON_SEMICOLON; ";", SEMICOLON; "=", EQUALS;
      "%[", PERCENT_LBRACK; "!{", BANG_LBRACE; "[@", LBRACK_AT; "[", LBRACK;
      "[|", LBRACK_BAR; "|>", PIPE_RIGHT; "]", RBRACK; "|]", BAR_RBRACK;
-     "{", LBRACE; "|", BAR; "}", RBRACE; "$", DOLLAR; "V[", V_LBRACK; 
+     "{", LBRACE; "|", BAR; "}", RBRACE; "$", DOLLAR; "V[", V_LBRACK;
      (* New Unicode equivalents *)
      "∀", FORALL; "∃", EXISTS; "⊤", NAME "True"; "⊥", NAME "False";
      "⟹", IMPLIES; "⟺", IFF; "→", RARROW; "←", LARROW;

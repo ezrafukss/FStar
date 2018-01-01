@@ -75,6 +75,7 @@ type token =
   | LPAREN
   | LONG_LEFT_ARROW
   | LOGIC
+  | LET_BANG
   | LET of (bool)
   | LENS_PAREN_RIGHT
   | LENS_PAREN_LEFT
@@ -118,7 +119,6 @@ type token =
   | DOT_LBRACK
   | DOT
   | DOLLAR
-  | DO
   | DISJUNCTION
   | DEFAULT
   | CONJUNCTION
@@ -214,6 +214,7 @@ type tokenId =
     | TOKEN_LPAREN
     | TOKEN_LONG_LEFT_ARROW
     | TOKEN_LOGIC
+    | TOKEN_LET_BANG
     | TOKEN_LET
     | TOKEN_LENS_PAREN_RIGHT
     | TOKEN_LENS_PAREN_LEFT
@@ -257,7 +258,6 @@ type tokenId =
     | TOKEN_DOT_LBRACK
     | TOKEN_DOT
     | TOKEN_DOLLAR
-    | TOKEN_DO
     | TOKEN_DISJUNCTION
     | TOKEN_DEFAULT
     | TOKEN_CONJUNCTION

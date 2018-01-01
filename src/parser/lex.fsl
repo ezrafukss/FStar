@@ -352,6 +352,7 @@ rule token args = parse
  | "=" { EQUALS }
  | '#' { HASH }
  | "u#"{ UNIV_HASH }
+ | "let!"{ LET_BANG }
  | '&' { AMP }
  | "()" { LPAREN_RPAREN }
  | '(' { LPAREN }
