@@ -108,7 +108,7 @@ let check_z3hash () =
     end
 
 let ini_params () =
-  check_z3hash ();
+(*  check_z3hash ();        Silence hash check until we need it *)
   List.append ["-smt2"; "-in"; "auto_config=false";
                "model=true"; "smt.relevancy=2"; "smt.case_split=3";
                (Util.format1 "smt.random_seed=%s" (string_of_int (Options.z3_seed ())))]
