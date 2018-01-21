@@ -108,7 +108,7 @@ let check_z3hash () =
     end
 
 let ini_params () =
-  check_z3hash ();
+(*  check_z3hash ();        Silence hash check until we need it *)
   (String.concat " "
                 (List.append
                  [ "-smt2 -in auto_config=false model=true smt.relevancy=2";
