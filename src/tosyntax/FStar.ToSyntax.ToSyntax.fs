@@ -739,13 +739,13 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term =
       let e = mk_term (Op(Ident.mk_ident ("==", r), args)) top.range top.level in
       desugar_term env (mk_term(Op(Ident.mk_ident ("~",r), [e])) top.range top.level)
 
-    (* if op_Star has not been rebound, then it's reserved for tuples *)
-    | Op(op_star, [_;_]) when
-      Ident.text_of_id op_star = "*" &&
-      (op_as_term env 2 top.range op_star |> Option.isNone) ->
+    (* if op_Star_Star has not been rebound, then it's reserved for tuples *)
+    | Op(op_star_star, [_;_]) when
+      Ident.text_of_id op_star_star = "**" &&
+      (op_as_term env 2 top.range op_star_star |> Option.isNone) ->
       let rec flatten t = match t.tm with
         // * is left-associative
-        | Op({idText = "*"}, [t1;t2]) -> flatten t1 @ [ t2 ]
+        | Op({idText = "**"}, [t1;t2]) -> flatten t1 @ [ t2 ]
         | _ -> [t]
       in
       let targs = flatten (unparen top) |> List.map (fun t -> as_arg (desugar_typ env t)) in

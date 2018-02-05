@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>ZFStar</id>
-		<version>0.0.4</version>
-		<authors>Zen Protocol,Microsoft Research, INRIA</authors>
+		<version>0.0.6</version>
+		<authors>Zen Protocol, Microsoft Research, INRIA</authors>
 		<title>ZFStar</title>		
-		<description>ZenProtocol FStar</description>
+		<description>Zen Protocol dialect of FStar</description>
 	</metadata>
 	<files>
 		<file src="bin/*"  target="tools" />
