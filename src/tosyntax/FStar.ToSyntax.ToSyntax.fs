@@ -926,13 +926,13 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
 
     (* if op_Star has not been rebound, then it's reserved for tuples *)
     | Op(op_star, [lhs;rhs]) when
-      (Ident.text_of_id op_star = "*" &&
+      (Ident.text_of_id op_star = "**" &&
        op_as_term env 2 top.range op_star |> Option.isNone) ->
       (* See the comment in parse.mly to understand why this implicitly relies
        * on the presence of a Paren node in the AST. *)
       let rec flatten t = match t.tm with
         // * is left-associative
-        | Op({idText = "*"}, [t1;t2]) when
+        | Op({idText = "**"}, [t1;t2]) when
            op_as_term env 2 top.range op_star |> Option.isNone ->
           flatten t1 @ [ t2 ]
         | _ -> [t]
