@@ -416,7 +416,7 @@ rule token args = parse
  | op_infix0d symbolchar* { OPINFIX0d (ulexeme lexbuf) }
  | op_infix1  symbolchar* { OPINFIX1 (ulexeme lexbuf) }
  | op_infix2  symbolchar* { OPINFIX2 (ulexeme lexbuf) }
- | "**"       symbolchar* { OPINFIX4 (ulexeme lexbuf) }
+ | "**"       symbolchar* { OPINFIX3 (ulexeme lexbuf) }
  | op_infix3  symbolchar* { OPINFIX3 (ulexeme lexbuf) }
  | ".[]<-"                { OP_MIXFIX_ASSIGNMENT (ulexeme lexbuf) }
  | ".()<-"                { OP_MIXFIX_ASSIGNMENT (ulexeme lexbuf) }

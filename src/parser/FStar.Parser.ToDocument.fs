@@ -301,26 +301,26 @@ let matches_level s (assoc_levels, tokens) =
 // GM 05/10/18, TODO: This still needs to be heavily annotated with the new unifier:
 
 (* Precedence and associativity levels, taken from ../src/parse.mly *)
-let opinfix4 : associativity_level = Right, [Inr "**"]
+//let opinfix4 = Right, [Inr "**"]
 // level backtick won't be used here
-let opinfix3 : associativity_level = Left,  [Inl '*' ; Inl '/' ; Inl '%']
-let opinfix2 : associativity_level = Left,  [Inl '+' ; Inl '-' ]
-let minus_lvl : associativity_level = Left, [Inr "-"] // Sublevel of opinfix2, not a level on its own !!!
-let opinfix1 : associativity_level = Right, [Inl '@' ; Inl '^']
-let pipe_right : associativity_level = Left,  [Inr "|>"]
-let opinfix0d : associativity_level = Left,  [Inl '$']
-let opinfix0c : associativity_level = Left,  [Inl '=' ; Inl '<' ; Inl '>']
-let equal : associativity_level = Left, [Inr "="] // Sublevel of opinfix0c, not a level on its own !!!
-let opinfix0b : associativity_level = Left,  [Inl '&']
-let opinfix0a : associativity_level = Left,  [Inl '|']
-let colon_equals : associativity_level = NonAssoc, [Inr ":="]
-let amp : associativity_level = Right, [Inr "&"]
-let colon_colon : associativity_level = Right, [Inr "::"]
+let opinfix3 = Left,  [Inl '*' ; Inl '/' ; Inl '%'; Inr "**"]
+let opinfix2 = Left,  [Inl '+' ; Inl '-' ]
+let minus_lvl = Left, [Inr "-"] // Sublevel of opinfix2, not a level on its own !!!
+let opinfix1 = Right, [Inl '@' ; Inl '^']
+let pipe_right = Left,  [Inr "|>"]
+let opinfix0d = Left,  [Inl '$']
+let opinfix0c = Left,  [Inl '=' ; Inl '<' ; Inl '>']
+let equal = Left, [Inr "="] // Sublevel of opinfix0c, not a level on its own !!!
+let opinfix0b = Left,  [Inl '&']
+let opinfix0a = Left,  [Inl '|']
+let colon_equals = NonAssoc, [Inr ":="]
+let amp = Right, [Inr "&"]
+let colon_colon = Right, [Inr "::"]
 
 (* The latter the element, the tighter it binds *)
 let level_associativity_spec : list<associativity_level> =
   [
-    opinfix4 ;
+    //opinfix4 ;
     opinfix3 ;
     opinfix2 ;
     opinfix1 ;
@@ -380,7 +380,7 @@ let is_operatorInfix0ad12 =
     fun op -> List.tryFind (matches_level <| Ident.text_of_id op) operatorInfix0ad12 <> None
 
 let is_operatorInfix34 =
-    let opinfix34 = [ opinfix3 ; opinfix4 ] in
+    let opinfix34 = [ opinfix3 (*; opinfix4 *) ] in
     fun op -> List.tryFind (matches_level <| Ident.text_of_id op) opinfix34 <> None
 
 let handleable_args_length (op:ident) =
@@ -1302,7 +1302,7 @@ and p_tmEqWith' p_X curr e = match e.tm with
 
 and p_tmNoEqWith p_X e =
   (* TODO : this should be precomputed but F* complains about a potential ML effect *)
-  let n = max_level [colon_colon ; amp ; opinfix3 ; opinfix4] in
+  let n = max_level [colon_colon ; amp ; opinfix3 (*; opinfix4 *)] in
   p_tmNoEqWith' false p_X n e
 
 and p_tmNoEqWith' inside_tuple p_X curr e = match e.tm with
