@@ -268,9 +268,9 @@ let matches_level s (assoc_levels, tokens) =
     List.tryFind (matches_token s) tokens <> None
 
 (* Precedence and associativity levels, taken from ../src/parse.mly *)
-let opinfix4 = Right, [Inr "**"]
+//let opinfix4 = Right, [Inr "**"]
 // level backtick won't be used here
-let opinfix3 = Left,  [Inl '*' ; Inl '/' ; Inl '%']
+let opinfix3 = Left,  [Inl '*' ; Inl '/' ; Inl '%'; Inr "**"]
 let opinfix2 = Left,  [Inl '+' ; Inl '-' ]
 let minus_lvl = Left, [Inr "-"] // Sublevel of opinfix2, not a level on its own !!!
 let opinfix1 = Right, [Inl '@' ; Inl '^']
@@ -287,7 +287,7 @@ let colon_colon = Right, [Inr "::"]
 (* The latter the element, the tighter it binds *)
 let level_associativity_spec =
   [
-    opinfix4 ;
+    //opinfix4 ;
     opinfix3 ;
     opinfix2 ;
     opinfix1 ;
@@ -332,7 +332,7 @@ let is_operatorInfix0ad12 =
     fun op -> List.tryFind (matches_level <| Ident.text_of_id op) operatorInfix0ad12 <> None
 
 let is_operatorInfix34 =
-    let opinfix34 = [ opinfix3 ; opinfix4 ] in
+    let opinfix34 = [ opinfix3 (*; opinfix4 *) ] in
     fun op -> List.tryFind (matches_level <| Ident.text_of_id op) opinfix34 <> None
 
 let handleable_args_length (op:ident) =
@@ -1013,7 +1013,7 @@ and p_tmEq' curr e = match (unparen e).tm with
 
 and p_tmNoEq e =
   (* TODO : this should be precomputed but F* complains about a potential ML effect *)
-  let n = max_level [colon_colon ; amp ; opinfix3 ; opinfix4] in
+  let n = max_level [colon_colon ; amp ; opinfix3 (*; opinfix4 *)] in
   p_tmNoEq' n e
 
 and p_tmNoEq' curr e = match (unparen e).tm with
