@@ -1,0 +1,35 @@
+[
+  "ıÏcπ≤œ\u0014À;+€ç„–Ü‹",
+  [
+    [
+      "Bug399.fail1",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_unit" ],
+      0,
+      "1f4fdca10d1568480976b37bad174e5d"
+    ],
+    [
+      "Bug399.fail2",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_unit" ],
+      0,
+      "afe0790a3320fe32a2295db667dbb420"
+    ],
+    [
+      "Bug399.works",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "assumption_Prims.HasEq_unit",
+        "unit_inversion"
+      ],
+      0,
+      "428b6ceebcce3e10b16fcb2a0842cf81"
+    ]
+  ]
+]

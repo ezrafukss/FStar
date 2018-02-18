@@ -1,0 +1,44 @@
+[
+  "≠∑\u0013À≤á\u0015‘\u0015q-(\u0000‡O\"",
+  [
+    [
+      "Bug284.foo",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_bool" ],
+      0,
+      "f4fa48a7c466bd02761696b2e4b35c48"
+    ],
+    [
+      "Bug284.foo",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_bool" ],
+      0,
+      "317a961028d9f6587d8101889b73efc8"
+    ],
+    [
+      "Bug284.foo",
+      3,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_bool" ],
+      0,
+      "33ff8212e7af58958cad44206d71a016"
+    ],
+    [
+      "Bug284.foo",
+      4,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "assumption_Prims.HasEq_bool",
+        "refinement_interpretation_Bug284_Tm_refine_6bf7e0d19c9816135a96d2d4a380fa10"
+      ],
+      0,
+      "93cd2dab3a5e17158eff7d44d9642502"
+    ]
+  ]
+]

@@ -1,0 +1,14 @@
+[
+  "¦BÇ\u0007–x\u001eë ´‘iÍ€é",
+  [
+    [
+      "Bug397.t",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "8d4a5691aaf8f220902c219e04493fe0"
+    ]
+  ]
+]

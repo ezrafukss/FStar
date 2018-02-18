@@ -44,13 +44,26 @@ assume new type unit : Type0
 assume HasEq_unit: hasEq unit
 
 (* A coercion down to universe 0 *)
+[@ "tac_opaque"]
 type squash (p:Type) : Type0 = x:unit{p}
+
+(* F* will automatically insert `auto_squash` when simplifying terms,
+   converting terms of the form `p /\ True` to `auto_squash p`.
+   
+   We distinguish these automatically inserted squashes from explicit, 
+   user-written squashes.
+
+   It's marked `private` so that users cannot write it themselves.
+*)   
+private let auto_squash (p:Type) = squash p
 
 (*
  * Squashed versions of truth and falsehood
  *)
-type l_True = squash c_True
-type l_False = squash c_False
+[@ "tac_opaque"]
+let l_True = squash c_True
+[@ "tac_opaque"]
+let l_False = squash c_False
 
 (* The usual equality defined as an inductive type *)
 type equals (#a:Type) (x:a) : a -> Type =
@@ -61,6 +74,7 @@ type equals (#a:Type) (x:a) : a -> Type =
 *)
 //TODO: instead of hard-wiring the == syntax,
 //       we should just rename eq2 to op_Equals_Equals
+[@ "tac_opaque"]
 type eq2 (#a:Type) (x:a) (y:a) = squash (equals x y)
 
 (* Heterogeneous equality *)
@@ -68,6 +82,7 @@ type h_equals (#a:Type) (x:a) : #b:Type -> b -> Type =
   | HRefl : h_equals x x
 
 (* A proof-irrelevant version of h_equals *)
+[@ "tac_opaque"]
 type eq3 (#a:Type) (#b:Type) (x:a) (y:b) = squash (h_equals x y)
 
 unfold let op_Equals_Equals_Equals (#a:Type) (#b:Type) (x:a) (y:b) = eq3 x y
@@ -80,6 +95,7 @@ type c_and  (p:Type) (q:Type) =
   | And   : p -> q -> c_and p q
 
 (* '/\'  : specialized to Type#0 *)
+[@ "tac_opaque"]
 type l_and (p:Type0) (q:Type0) = squash (c_and p q)
 
 (* constructive disjunction *)
@@ -88,9 +104,11 @@ type c_or   (p:Type) (q:Type) =
   | Right : q -> c_or p q
 
 (* '\/'  : specialized to Type#0 *)
+[@ "tac_opaque"]
 type l_or (p:Type0) (q:Type0) = squash (c_or p q)
 
 (* '==>' : specialized to Type#0 *)
+[@ "tac_opaque"]
 type l_imp (p:Type0) (q:Type0) = squash (p -> GTot q)
                                          (* ^^^ NB: The GTot effect is primitive;            *)
 				         (*         elaborated using GHOST a few lines below *)
@@ -109,6 +127,7 @@ assume type precedes : #a:Type -> #b:Type -> a -> b -> Type0
 assume type has_type : #a:Type -> a -> Type -> Type0
   
 (* forall (x:a). p x : specialized to Type#0 *)
+[@ "tac_opaque"]
 type l_Forall (#a:Type) (p:a -> GTot Type0) = squash (x:a -> GTot (p x))
 
 (* The type of squashed types *)
@@ -122,6 +141,7 @@ unopteq type dtuple2 (a:Type)
             -> dtuple2 a b
 
 (* exists (x:a). p x : specialized to Type#0 *)
+[@ "tac_opaque"]
 type l_Exists (#a:Type) (p:a -> GTot Type0) = squash (x:a & p x)
 
 (* range is a type for the internal representations of source ranges
@@ -147,12 +167,12 @@ let pure_wp    (a:Type) = pure_post a -> GTot pure_pre
 assume type guard_free: Type0 -> Type0
 
 unfold let pure_return (a:Type) (x:a) (p:pure_post a) =
-     forall (y:a). y==x ==> p y
+     forall (return_val:a). return_val==x ==> p return_val
 
 unfold let pure_bind_wp (r1:range) (a:Type) (b:Type)
                    (wp1:pure_wp a) (wp2: (a -> GTot (pure_wp b)))
                    (p : pure_post b) =
-	wp1 (fun (x:a) -> wp2 x p)
+	wp1 (fun (bind_result_1:a) -> wp2 bind_result_1 p)
 unfold let pure_if_then_else (a:Type) (p:Type) (wp_then:pure_wp a) (wp_else:pure_wp a) (post:pure_post a) =
      l_ITE p (wp_then post) (wp_else post)
 
@@ -167,8 +187,8 @@ unfold let pure_stronger (a:Type) (wp1:pure_wp a) (wp2:pure_wp a) =
 unfold let pure_close_wp (a:Type) (b:Type) (wp:(b -> GTot (pure_wp a))) (p:pure_post a) = forall (b:b). wp b p
 unfold let pure_assert_p (a:Type) (q:Type) (wp:pure_wp a) (p:pure_post a) = q /\ wp p
 unfold let pure_assume_p (a:Type) (q:Type) (wp:pure_wp a) (p:pure_post a) = q ==> wp p
-unfold let pure_null_wp  (a:Type) (p:pure_post a) = forall (x:a). p x
-unfold let pure_trivial  (a:Type) (wp:pure_wp a) = wp (fun (x:a) -> True)
+unfold let pure_null_wp  (a:Type) (p:pure_post a) = forall (any_result:a). p any_result
+unfold let pure_trivial  (a:Type) (wp:pure_wp a) = wp (fun (trivial_result:a) -> True)
 
 total new_effect { (* The definition of the PURE effect is fixed; no user should ever change this *)
   PURE : a:Type -> wp:pure_wp a -> Effect
@@ -187,7 +207,7 @@ total new_effect { (* The definition of the PURE effect is fixed; no user should
 // Note the type of post, which allows to assume the precondition
 // for the well-formedness of the postcondition. c.f. #57
 effect Pure (a:Type) (pre:pure_pre) (post:pure_post' a pre) =
-        PURE a (fun (p:pure_post a) -> pre /\ (forall (x:a). post x ==> p x))
+        PURE a (fun (p:pure_post a) -> pre /\ (forall (pure_result:a). post pure_result ==> p pure_result))
 
 effect Admit (a:Type) = PURE a (fun (p:pure_post a) -> True)
 
@@ -205,7 +225,7 @@ sub_effect
 effect GTot (a:Type) = GHOST a (pure_null_wp a)
 (* #set-options "--print_universes --print_implicits --print_bound_var_types --debug Prims --debug_level Extreme" *)
 effect Ghost (a:Type) (pre:Type) (post:pure_post' a pre) =
-       GHOST a (fun (p:pure_post a) -> pre /\ (forall (x:a). post x ==> p x))
+       GHOST a (fun (p:pure_post a) -> pre /\ (forall (ghost_result:a). post ghost_result ==> p ghost_result))
 
 assume new type int : Type0
 
@@ -341,28 +361,46 @@ abstract let normalize_term (#a:Type) (x:a) : a = x
 abstract let normalize (a:Type0) = a
 
 abstract
-type norm_step =
-    | Simpl
-    | Weak
-    | HNF
-    | Primops
-    | Delta
-    | Zeta
-    | Iota
-    | UnfoldOnly : list string -> norm_step // each string is a fully qualified name like `A.M.f`
+noeq type norm_step =
+  | Simpl
+  | Weak
+  | HNF
+  | Primops
+  | Delta
+  | Zeta
+  | Iota
+  | UnfoldAttr:#t:Type0 -> a:t -> norm_step
+  | UnfoldOnly:list string -> norm_step // each string is a fully qualified name like `A.M.f`
 
 // Helpers, so we don't expose the actual inductive
-let simplify : norm_step = Simpl
-let weak    : norm_step = Weak
-let hnf     : norm_step = HNF
-let primops : norm_step = Primops
-let delta   : norm_step = Delta
-let zeta    : norm_step = Zeta
-let iota    : norm_step = Iota
-let delta_only (s:list string) : norm_step = UnfoldOnly s
+abstract let simplify : norm_step = Simpl
+abstract let weak     : norm_step = Weak
+abstract let hnf      : norm_step = HNF
+abstract let primops  : norm_step = Primops
+abstract let delta    : norm_step = Delta
+abstract let zeta     : norm_step = Zeta
+abstract let iota     : norm_step = Iota
+abstract let delta_only (s:list string) : norm_step = UnfoldOnly s
+abstract let delta_attr (#t:Type)(a:t) : norm_step = UnfoldAttr a
 
 // Normalization marker
 abstract let norm (s:list norm_step) (#a:Type) (x:a) : a = x
 
 val assert_norm : p:Type -> Pure unit (requires (normalize p)) (ensures (fun _ -> p))
 let assert_norm p = ()
+
+(*
+ * Pure and ghost inner let bindings are now always inlined during the wp computation, if:
+ * the return type is not unit and the head symbol is not marked irreducible.
+ * To circumvent this behavior, singleton can be used.
+ * See the example usage in ulib/FStar.Algebra.Monoid.fst.
+ *)
+irreducible let singleton (#a:Type) (x:a) :(y:a{y == x}) = x
+
+(*
+ * `with_type t e` is just an identity function, but it receives special treatment
+ *  in the SMT encoding, where in addition to being an identity function, we have
+ *  an SMT axiom:
+ *  `forall t e.{:pattern (with_type t e)} has_type (with_type t e) t`
+ *)
+let with_type (#t:Type) (e:t) = e

@@ -42,6 +42,7 @@ type token =
   | RBRACE
   | RARROW
   | RANGE_OF
+  | RANGE of (string)
   | QMARK_DOT
   | QMARK
   | PRIVATE
@@ -50,6 +51,8 @@ type token =
   | PRAGMALIGHT
   | PIPE_RIGHT
   | PERCENT_LBRACK
+  | OP_MIXFIX_ASSIGNMENT of (string)
+  | OP_MIXFIX_ACCESS of (string)
   | OPPREFIX of (string)
   | OPINFIX4 of (string)
   | OPINFIX3 of (string)
@@ -116,6 +119,8 @@ type token =
   | ELSE
   | EFFECT
   | DOT_LPAREN
+  | DOT_LENS_PAREN_LEFT
+  | DOT_LBRACK_BAR
   | DOT_LBRACK
   | DOT
   | DOLLAR
@@ -181,6 +186,7 @@ type tokenId =
     | TOKEN_RBRACE
     | TOKEN_RARROW
     | TOKEN_RANGE_OF
+    | TOKEN_RANGE
     | TOKEN_QMARK_DOT
     | TOKEN_QMARK
     | TOKEN_PRIVATE
@@ -189,6 +195,8 @@ type tokenId =
     | TOKEN_PRAGMALIGHT
     | TOKEN_PIPE_RIGHT
     | TOKEN_PERCENT_LBRACK
+    | TOKEN_OP_MIXFIX_ASSIGNMENT
+    | TOKEN_OP_MIXFIX_ACCESS
     | TOKEN_OPPREFIX
     | TOKEN_OPINFIX4
     | TOKEN_OPINFIX3
@@ -255,6 +263,8 @@ type tokenId =
     | TOKEN_ELSE
     | TOKEN_EFFECT
     | TOKEN_DOT_LPAREN
+    | TOKEN_DOT_LENS_PAREN_LEFT
+    | TOKEN_DOT_LBRACK_BAR
     | TOKEN_DOT_LBRACK
     | TOKEN_DOT
     | TOKEN_DOLLAR
@@ -282,6 +292,7 @@ type tokenId =
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
+    | NONTERM__startwarn_error_list
     | NONTERM__startterm
     | NONTERM__startinputFragment
     | NONTERM_option_FSDOC_
@@ -303,6 +314,7 @@ type nonTerminalId =
     | NONTERM_list___anonymous_8_
     | NONTERM_list_argTerm_
     | NONTERM_list_atomicTerm_
+    | NONTERM_list_attr_letbinding_
     | NONTERM_list_constructorDecl_
     | NONTERM_list_decl_
     | NONTERM_list_decoration_
@@ -330,6 +342,7 @@ type nonTerminalId =
     | NONTERM_inputFragment
     | NONTERM_mainDecl
     | NONTERM_pragma
+    | NONTERM_attribute
     | NONTERM_decoration
     | NONTERM_decl
     | NONTERM_rawDecl
@@ -339,6 +352,7 @@ type nonTerminalId =
     | NONTERM_typeDefinition
     | NONTERM_recordFieldDecl
     | NONTERM_constructorDecl
+    | NONTERM_attr_letbinding
     | NONTERM_letbinding
     | NONTERM_newEffect
     | NONTERM_effectRedefinition
@@ -412,6 +426,10 @@ type nonTerminalId =
     | NONTERM_universe
     | NONTERM_universeFrom
     | NONTERM_atomicUniverse
+    | NONTERM_warn_error_list
+    | NONTERM_warn_error
+    | NONTERM_flag
+    | NONTERM_range
     | NONTERM_some_fsTypeArgs_
     | NONTERM_right_flexible_list_SEMICOLON_noSeqTerm_
     | NONTERM_right_flexible_list_SEMICOLON_recordFieldDecl_
@@ -431,5 +449,6 @@ val prodIdxToNonTerminal: int -> nonTerminalId
 
 /// This function gets the name of a token as a string
 val token_to_string: token -> string
+val warn_error_list : (Microsoft.FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> Microsoft.FSharp.Text.Lexing.LexBuffer<'cty> -> ((flag * string) list) 
 val term : (Microsoft.FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> Microsoft.FSharp.Text.Lexing.LexBuffer<'cty> -> (term) 
 val inputFragment : (Microsoft.FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> Microsoft.FSharp.Text.Lexing.LexBuffer<'cty> -> (inputFragment) 
