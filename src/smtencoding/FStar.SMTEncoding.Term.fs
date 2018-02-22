@@ -85,6 +85,7 @@ type op =
   | NatToBv of Prims.int // need to explicitly define the size of the bitvector
   | BvToNat
   | StrLen
+  | StrCat
   | ITE
   | Var of string //Op corresponding to a user/encoding-defined uninterpreted function
 
@@ -101,7 +102,7 @@ type qop =
 //de Bruijn representation of terms in locally nameless style
 type term' =
   | Integer    of string //unbounded mathematical integers
-  | StringConstant of string
+  | String     of string
   | BoundV     of int
   | FreeV      of fv
   | App        of op  * list<term> //ops are always fully applied; we're in a first-order theory
@@ -173,7 +174,7 @@ let fv_of_term = function
     | _ -> failwith "impossible"
 let rec freevars t = match t.tm with
   | Integer _
-  | StringConstant _
+  | String _
   | BoundV _ -> []
   | FreeV fv -> [fv]
   | App(_, tms) -> List.collect freevars tms
@@ -232,6 +233,7 @@ let op_to_string = function
   | BvUext n -> format1 "(_ zero_extend %s)" (string_of_int n)
   | NatToBv n -> format1 "(_ int2bv %s)" (string_of_int n)
   | StrLen -> "str.len"
+  | StrCat -> "str.++"
   | Var s -> s
 
 let weightToSmt = function
@@ -240,7 +242,7 @@ let weightToSmt = function
 
 let rec hash_of_term' t = match t with
   | Integer i ->  i
-  | StringConstant s -> s
+  | String s -> s
   | BoundV i  -> "@"^string_of_int i
   | FreeV x   -> fst x ^ ":" ^ strSort (snd x) //Question: Why is the sort part of the hash?
   | App(op, tms) -> "("^(op_to_string op)^(List.map hash_of_term tms |> String.concat " ")^")"
@@ -278,7 +280,7 @@ let isInjective s =
 let mk t r = {tm=t; freevars=BU.mk_ref None; rng=r}
 let mkTrue  r       = mk (App(TrueOp, [])) r
 let mkFalse r       = mk (App(FalseOp, [])) r
-let mkStringConstant s r = mk (StringConstant s) r
+let mkStringConstant s r = mk (String s) r
 let mkInteger i  r  = mk (Integer (ensure_decimal i)) r
 let mkInteger' i r  = mkInteger (string_of_int i) r
 let mkBoundV i r    = mk (BoundV i) r
@@ -316,6 +318,7 @@ let mkImp (t1, t2) r = match t1.tm, t2.tm with
 
 let mk_bin_op op (t1,t2) r = mkApp'(op, [t1;t2]) r
 let mkStrLen t r = mkApp'(StrLen, [t]) r
+let mkStrCat = mk_bin_op StrCat
 let mkMinus t r = mkApp'(Minus, [t]) r
 let mkNatToBv sz t r = mkApp'(NatToBv sz, [t]) r
 let mkBvUext sz t r = mkApp'(BvUext sz, [t]) r
@@ -477,7 +480,7 @@ let abstr fvs t = //fvs is a subset of the free vars of t; the result closes ove
     | _ ->
       begin match t.tm with
         | Integer _
-        | StringConstant _
+        | String _
         | BoundV _ -> t
         | FreeV x ->
           begin match index_of x with
@@ -502,7 +505,7 @@ let inst tms t =
   let n = List.length tms in //instantiate the first n BoundV's with tms, in order
   let rec aux shift t = match t.tm with
     | Integer _
-    | StringConstant _
+    | String _
     | FreeV _ -> t
     | BoundV i ->
       if 0 <= i - shift && i - shift < n
@@ -671,7 +674,7 @@ let termToSmt
         let aux = aux (depth + 1) in
         match t.tm with
         | Integer i     -> i
-        | StringConstant s -> BU.format1 "\"%s\"" s
+        | String s -> BU.format1 "\"%s\"" s
         | BoundV i ->
           List.nth names i |> fst
         | FreeV x -> fst x
@@ -937,7 +940,7 @@ let unboxTerm sort t = match sort with
 
 let rec print_smt_term (t:term) :string = match t.tm with
   | Integer n               -> BU.format1 "(Integer %s)" n
-  | StringConstant s        -> BU.format1 "(StringConstant %s)" s
+  | String s                -> BU.format1 "(String %s)" s
   | BoundV  n               -> BU.format1 "(BoundV %s)" (BU.string_of_int n)
   | FreeV  fv               -> BU.format1 "(FreeV %s)" (fst fv)
   | App (op, l)             -> BU.format2 "(%s %s)" (op_to_string op) (print_smt_term_list l)
