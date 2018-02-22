@@ -86,6 +86,7 @@ type op =
   | BvToNat
   | StrLen
   | StrCat
+  | StrAt
   | ITE
   | Var of string //Op corresponding to a user/encoding-defined uninterpreted function
 
@@ -234,6 +235,7 @@ let op_to_string = function
   | NatToBv n -> format1 "(_ int2bv %s)" (string_of_int n)
   | StrLen -> "str.len"
   | StrCat -> "str.++"
+  | StrAt -> "str.at"
   | Var s -> s
 
 let weightToSmt = function
@@ -319,6 +321,7 @@ let mkImp (t1, t2) r = match t1.tm, t2.tm with
 let mk_bin_op op (t1,t2) r = mkApp'(op, [t1;t2]) r
 let mkStrLen t r = mkApp'(StrLen, [t]) r
 let mkStrCat = mk_bin_op StrCat
+let mkStrAt  = mk_bin_op StrAt
 let mkMinus t r = mkApp'(Minus, [t]) r
 let mkNatToBv sz t r = mkApp'(NatToBv sz, [t]) r
 let mkBvUext sz t r = mkApp'(BvUext sz, [t]) r

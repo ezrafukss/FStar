@@ -70,6 +70,7 @@ type op =
   | BvToNat
   | StrLen
   | StrCat
+  | StrAt 
   | ITE
   | Var of string
 
@@ -156,6 +157,7 @@ val mkNot  : term -> Range.range -> term
 val mkMinus: term -> Range.range -> term
 val mkStrLen: term -> Range.range -> term
 val mkStrCat: ((term * term) -> Range.range -> term)
+val mkStrAt: ((term * term) -> Range.range -> term)
 val mkAnd  : ((term * term) -> Range.range -> term)
 val mkOr  :  ((term * term) -> Range.range -> term)
 val mkImp :  ((term * term) -> Range.range -> term)
