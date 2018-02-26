@@ -190,9 +190,8 @@ let logic_qualifier_deprecation_warning =
 %nonassoc COLON_EQUALS
 %left OPINFIX0a
 %left OPINFIX0b
-%left EQUALS OPINFIX0c
+%left EQUALS OPINFIX0c PIPE_RIGHT
 %left OPINFIX0d
-%left PIPE_RIGHT
 %right OPINFIX1
 %left MINUS OPINFIX2 QUOTE
 %left OPINFIX3
