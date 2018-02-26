@@ -274,9 +274,9 @@ let opinfix3 = Left,  [Inl '*' ; Inl '/' ; Inl '%'; Inr "**"]
 let opinfix2 = Left,  [Inl '+' ; Inl '-' ]
 let minus_lvl = Left, [Inr "-"] // Sublevel of opinfix2, not a level on its own !!!
 let opinfix1 = Right, [Inl '@' ; Inl '^']
-let pipe_right = Left,  [Inr "|>"]
+//let pipe_right = Left,  [Inr "|>"]
 let opinfix0d = Left,  [Inl '$']
-let opinfix0c = Left,  [Inl '=' ; Inl '<' ; Inl '>']
+let opinfix0c = Left,  [Inl '=' ; Inl '<' ; Inl '>'; Inr "|>"]
 let equal = Left, [Inr "="] // Sublevel of opinfix0c, not a level on its own !!!
 let opinfix0b = Left,  [Inl '&']
 let opinfix0a = Left,  [Inl '|']
@@ -291,7 +291,7 @@ let level_associativity_spec =
     opinfix3 ;
     opinfix2 ;
     opinfix1 ;
-    pipe_right ;
+//    pipe_right ;
     opinfix0d ;
     opinfix0c ;
     opinfix0b ;
@@ -1020,7 +1020,7 @@ and paren_if curr mine doc =
 
 and p_tmEq e =
   (* TODO : this should be precomputed but F* complains about a potential ML effect *)
-  let n = max_level ([colon_equals ; pipe_right] @ operatorInfix0ad12) in
+  let n = max_level ([colon_equals (* ; pipe_right *)] @ operatorInfix0ad12) in
   p_tmEq' n e
 
 and p_tmEq' curr e = match (unparen e).tm with
