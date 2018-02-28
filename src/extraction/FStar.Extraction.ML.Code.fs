@@ -240,9 +240,10 @@ let string_of_mlconstant (sctt : mlconstant) =
   | MLC_Unit -> "()"
   | MLC_Bool true  -> "true"
   | MLC_Bool false -> "false"
-  | MLC_Char c -> (* Unicode characters, in OCaml we use BatUChar (wraper for int) *)
-    let nc = Char.int_of_char c in (string_of_int nc)
-    ^(if nc >= 32 && nc <= 127 && nc <> 34 then " (*" ^ (string_of_char c) ^"*)" else "")  
+  | MLC_Char c -> 
+    let nc = Char.int_of_char c in 
+    hex_string_of_byte (byte_of_char c) ^ "uy" 
+    ^(if nc >= 32 && nc <= 127 && nc <> 34 then " (*" ^ (string_of_char c) ^ "*)" else "")
   | MLC_Int (s, Some (Signed, Int8)) -> s ^"y"
   | MLC_Int (s, Some (Signed, Int16)) -> s ^"s"
   | MLC_Int (s, Some (Signed, Int32)) -> s ^"l"
@@ -266,7 +267,7 @@ let string_of_mlconstant (sctt : mlconstant) =
          6), then you get the same well-formed UTF-8 sequence on exit. It is up
          to userland to provide some UTF-8 compatible functions (e.g.
          utf8_length). *)
-      "\"" ^ String.collect (escape_or string_of_char) chars ^ "\""
+      "\"" ^ String.collect (escape_or string_of_char) chars ^ "\"B"
 
   | _ -> failwith "TODO: extract integer constants properly into OCaml"
 
