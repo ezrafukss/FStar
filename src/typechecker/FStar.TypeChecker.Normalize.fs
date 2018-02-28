@@ -1070,19 +1070,29 @@ let tr_norm_steps s =
     List.concatMap tr_norm_step s
 
 let get_norm_request (full_norm:term -> term) args =
-    let parse_steps s = EMB.unembed_list EMB.unembed_norm_step s |> BU.must |> tr_norm_steps in
+    let parse_steps s =
+      try
+        Some (EMB.unembed_list_safe EMB.unembed_norm_step s |> BU.must |> tr_norm_steps)
+      with | _ -> None
+    in
     match args with
     | [_; (tm, _)]
     | [(tm, _)] ->
       let s = [Beta; Zeta; Iota; Primops; UnfoldUntil Delta_constant; Reify] in
-      s, tm
+      Some (s, tm)
     | [(steps, _); _; (tm, _)] ->
       let add_exclude s z = if not (List.contains z s) then Exclude z::s else s in
-      let s = Beta::parse_steps (full_norm steps) in
-      let s = add_exclude s Zeta in
-      let s = add_exclude s Iota in
-      s, tm
-    | _ -> failwith "Impossible"
+      begin
+      match parse_steps (full_norm steps) with
+      | None -> None
+      | Some s ->
+        let s = Beta::s in
+        let s = add_exclude s Zeta in
+        let s = add_exclude s Iota in
+        Some (s, tm)
+      end
+    | _ ->
+      None
 
 let is_reify_head = function
     | App(_, {n=Tm_constant FC.Const_reify}, _, _)::_ ->
@@ -1145,20 +1155,33 @@ let rec norm : cfg -> env -> stack -> term -> term =
                                                          ; no_delta_steps = false };
                                   delta_level=[Unfold Delta_constant];
                                   normalize_pure_lets=true} in
-            let s, tm = get_norm_request (norm cfg' env []) args in
-            let delta_level =
+            begin
+            match get_norm_request (norm cfg' env []) args with
+            | None -> //just normalize it as a normal application
+              let stack =
+                stack |>
+                List.fold_right
+                  (fun (a, aq) stack -> Arg (Clos(env, a, BU.mk_ref None, false),aq,t.pos)::stack)
+                  args
+              in
+              log cfg  (fun () -> BU.print1 "\tPushed %s arguments\n" (string_of_int <| List.length args));
+              norm cfg env stack hd
+
+            | Some (s, tm) ->
+              let delta_level =
                 if s |> BU.for_some (function UnfoldUntil _ | UnfoldOnly _ -> true | _ -> false)
                 then [Unfold Delta_constant]
                 else [NoDelta] in
-            let cfg' = {cfg with steps = to_fsteps s
+              let cfg' = {cfg with steps = to_fsteps s
                                ; delta_level = delta_level
                                ; normalize_pure_lets = true } in
-            let stack' =
-              let tail = (Cfg cfg)::stack in
-              if cfg.debug.print_normalized
-              then Debug(t, BU.now())::tail
-              else tail in
-            norm cfg' env stack' tm
+              let stack' =
+                let tail = (Cfg cfg)::stack in
+                if cfg.debug.print_normalized
+                then Debug(t, BU.now())::tail
+                else tail in
+              norm cfg' env stack' tm
+            end
 
           | Tm_type u ->
             let u = norm_universe cfg env u in
@@ -1375,11 +1398,13 @@ let rec norm : cfg -> env -> stack -> term -> term =
 
           | Tm_let((false, [lb]), body) ->
             let n = TypeChecker.Env.norm_eff_name cfg.tcenv lb.lbeff in
-            if not (cfg.steps.no_delta_steps)
-            && ((U.is_pure_effect n &&
-                (cfg.normalize_pure_lets || BU.for_some (U.is_fvar PC.inline_let_attr) lb.lbattrs))
-                || (U.is_ghost_effect n
-                    && not (cfg.steps.pure_subterms_within_computations)))
+            if not (cfg.steps.no_delta_steps) //we're allowed to do some delta steps, and ..
+            && ((cfg.steps.pure_subterms_within_computations &&
+                 BU.for_some (U.is_fvar PC.inline_let_attr) lb.lbattrs) //1. we're extracting, and it's marked @inline_let
+             || (U.is_pure_effect n && (cfg.normalize_pure_lets        //Or, 2. it's pure and we either not extracting, or
+                                        || BU.for_some (U.is_fvar PC.inline_let_attr) lb.lbattrs)) //it's marked @inline_let
+             || (U.is_ghost_effect n &&                              //Or, 3. it's ghost and we're not extracting
+                    not (cfg.steps.pure_subterms_within_computations)))
             then let binder = S.mk_binder (BU.left lb.lbname) in
                  let env = (Some binder, Clos(env, lb.lbdef, BU.mk_ref None, false))::env in
                  log cfg (fun () -> BU.print_string "+++ Reducing Tm_let\n");
@@ -1388,7 +1413,7 @@ let rec norm : cfg -> env -> stack -> term -> term =
             then (log cfg (fun () -> BU.print_string "+++ Not touching Tm_let\n");
                   rebuild cfg env stack (closure_as_term cfg env t))
             else let bs, body = Subst.open_term [lb.lbname |> BU.left |> S.mk_binder] body in
-                 log cfg (fun () -> BU.print_string "+++ Normalizing Tm_let -- type\n");
+                 log cfg (fun () -> BU.print_string "+++ Normalizing Tm_let -- type");
                  let ty = norm cfg env [] lb.lbtyp in
                  let lbname =
                     let x = fst (List.hd bs) in
@@ -1581,7 +1606,7 @@ and reduce_impure_comp cfg env stack (head : term) // monadic term
                              AllowUnboundUniverses;
                              EraseUniverses;
                              Exclude Zeta;
-                             NoDeltaSteps];
+                             Inlining];
           delta_level=[Env.Inlining; Env.Eager_unfolding_only]
         }
       else

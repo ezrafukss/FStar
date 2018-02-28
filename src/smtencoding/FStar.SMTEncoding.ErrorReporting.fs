@@ -107,9 +107,9 @@ let label_goals use_env_msg  //when present, provides an alternate error message
                 (q:term) //the term being instrumented
      =  match q.tm with
         | BoundV _
-        | Integer _ ->
+        | Integer _ 
+        | String _ ->
           labels, q
-
         | LblPos _ -> failwith "Impossible" //these get added after errorReporting instrumentation only
 
         | Labeled(arg, "could not prove post-condition", _) ->
@@ -235,8 +235,8 @@ let label_goals use_env_msg  //when present, provides an alternate error message
         | App(BvAnd, _)
         | App(BvXor, _)
         | App(BvOr, _)
-	| App(BvAdd, _)
-	| App(BvSub, _)
+        | App(BvAdd, _)
+        | App(BvSub, _)
         | App(BvShl, _)
         | App(BvShr, _)
         | App(BvUdiv, _)
@@ -244,7 +244,10 @@ let label_goals use_env_msg  //when present, provides an alternate error message
         | App(BvMul, _)
         | App(BvUext _, _)
         | App(BvToNat, _)
-        | App(NatToBv _, _) ->
+        | App(NatToBv _, _)
+        | App(StrLen, _) 
+        | App(StrCat, _) 
+        | App(StrAt, _) ->
           failwith "Impossible: non-propositional term"
 
         | App(ITE, _)

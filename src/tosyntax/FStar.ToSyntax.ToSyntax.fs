@@ -739,7 +739,21 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term =
 
     | Const (Const_int (i, Some size)) ->
         desugar_machine_integer env i size top.range
-
+    
+    | Const (Const_char c) ->
+        if z3_acceptable c then mk (Tm_constant (Const_char c))
+        else raise_error
+               (Errors.Error_OutOfRange,
+                BU.format1 "%s is not a printable ASCII character" (BU.string_of_char c))
+               top.range
+    
+    | Const (Const_string (s,r)) ->
+        if z3_acceptable_string s then mk (Tm_constant (Const_string (s,r)))
+        else raise_error
+               (Errors.Error_OutOfRange,
+                BU.format1 "%s is not a printable ASCII string" s)
+                r
+    
     | Const c ->
         mk (Tm_constant c)
 
@@ -2522,7 +2536,7 @@ let desugar_modul_common (curmod: option<S.modul>) env (m:AST.modul) : env_t * S
         // desugaring the corresponding fsti, don't finish the fsti
         env
     | Some prev_mod, _ ->
-        Env.finish_module_or_interface env prev_mod in
+        fst (Env.finish_module_or_interface env prev_mod) in
   let (env, pop_when_done), mname, decls, intf = match m with
     | Interface(mname, decls, admitted) ->
       Env.prepare_module_or_interface true admitted env mname Env.default_mii, mname, decls, true
@@ -2532,7 +2546,7 @@ let desugar_modul_common (curmod: option<S.modul>) env (m:AST.modul) : env_t * S
   let modul = {
     name = mname;
     declarations = sigelts;
-    exports = [];
+    exports=[];
     is_interface=intf
   } in
   env, modul, pop_when_done
@@ -2556,9 +2570,9 @@ let desugar_partial_modul curmod (env:env_t) (m:AST.modul) : env_t * Syntax.modu
 
 let desugar_modul env (m:AST.modul) : env_t * Syntax.modul =
   let env, modul, pop_when_done = desugar_modul_common None env m in
-  let env = Env.finish_module_or_interface env modul in
+  let env, modul = Env.finish_module_or_interface env modul in
   if Options.dump_module modul.name.str
-  then BU.print1 "%s\n" (Print.modul_to_string modul);
+  then BU.print1 "Module after desugaring:\n%s\n" (Print.modul_to_string modul);
   (if pop_when_done then export_interface modul.name env else env), modul
 
 
