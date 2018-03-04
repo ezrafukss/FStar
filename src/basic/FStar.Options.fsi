@@ -192,6 +192,7 @@ val smtencoding_nl_arith_wrapped: unit    -> bool
 val smtencoding_nl_arith_native : unit    -> bool
 val smtencoding_l_arith_default : unit    -> bool
 val smtencoding_l_arith_native  : unit    -> bool
+val strict_hints                : unit    -> bool
 val tactic_raw_binders          : unit    -> bool
 val tactics_failhard            : unit    -> bool
 val tactics_info                : unit    -> bool

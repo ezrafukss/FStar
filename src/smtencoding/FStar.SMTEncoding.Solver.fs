@@ -65,6 +65,10 @@ let initialize_hints_db src_filename format_filename : unit =
                 let expected_digest = BU.digest_of_file norm_src_filename in
                 if Options.hint_info()
                 then begin
+                    if Options.strict_hints()
+                       && (hints.module_digest <> expected_digest)
+                    then failwithf "(%s) digest is invalid." norm_src_filename
+                    else
                     BU.print3 "(%s) digest is %s%s.\n" norm_src_filename
                         (if hints.module_digest = expected_digest
                          then "valid; using hints"
@@ -112,7 +116,7 @@ let filter_using_facts_from (e:env) (theory:decls_t) =
         || Option.isSome (BU.smap_try_find include_assumption_names a.assumption_name)
     in
     //theory can have ~10k elements; fold_right on it is dangerous, since it's not tail recursive
-    //AR: reversing the list is also crucial for correctness because of RetainAssumption 
+    //AR: reversing the list is also crucial for correctness because of RetainAssumption
     //    specifically (RetainAssumption a) comes after (a) in the theory list
     //    as a result, it is crucial that we consider the (RetainAssumption a) before we encounter (a)
     let theory_rev = List.rev theory in  //List.rev is already the tail recursive version of rev
@@ -339,7 +343,10 @@ let query_info settings z3result =
                 stats ];
         errs |> List.iter (fun (_, msg, range) ->
             let tag = if used_hint settings then "(Hint-replay failed): " else "" in
-            FStar.Errors.log_issue range (FStar.Errors.Warning_HitReplayFailed, (tag ^ msg)))
+            let msg = (tag ^ msg) in
+            if Options.strict_hints()
+            then failwith msg
+            else FStar.Errors.log_issue range (FStar.Errors.Warning_HitReplayFailed, msg))
     end
 
 let record_hint settings z3result =
@@ -440,7 +447,9 @@ let ask_and_report_errors env all_labels prefix query suffix =
                                   query_fuel=i;
                                   query_ifuel=j}]
         | _ ->
-          []
+          if Options.strict_hints ()
+          then failwithf "(%s): All hints used" default_settings.query_name
+          else []
     in
 
     let initial_fuel_max_ifuel =
