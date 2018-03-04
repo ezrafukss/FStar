@@ -68,6 +68,10 @@ let initialize_hints_db src_filename checking_or_using_extracted_interface forma
                 let expected_digest = BU.digest_of_file norm_src_filename in
                 if Options.hint_info()
                 then begin
+                    if Options.strict_hints() 
+                       && (hints.module_digest <> expected_digest)
+                    then failwithf "(%s) digest is invalid." src_filename_for_printing
+                    else 
                     BU.print3 "(%s) digest is %s%s.\n" src_filename_for_printing
                         (if hints.module_digest = expected_digest
                          then "valid; using hints"
@@ -333,7 +337,10 @@ let query_info settings z3result =
                 stats ];
         errs |> List.iter (fun (_, msg, range) ->
             let tag = if used_hint settings then "(Hint-replay failed): " else "" in
-            FStar.Errors.log_issue range (FStar.Errors.Warning_HitReplayFailed, (tag ^ msg)))
+            let msg = (tag ^ msg) in
+            if Options.strict_hints() 
+            then failwith msg
+            else FStar.Errors.log_issue range (FStar.Errors.Warning_HitReplayFailed, msg))
     end
 
 let record_hint settings z3result =
@@ -434,7 +441,9 @@ let ask_and_report_errors env all_labels prefix query suffix =
                                   query_fuel=i;
                                   query_ifuel=j}]
         | _ ->
-          []
+          if Options.strict_hints () 
+          then failwithf "(%s): All hints used" default_settings.query_name 
+          else []
     in
 
     let initial_fuel_max_ifuel =
