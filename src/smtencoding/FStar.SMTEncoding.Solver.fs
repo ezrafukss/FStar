@@ -66,7 +66,7 @@ let initialize_hints_db src_filename checking_or_using_extracted_interface forma
          begin match BU.read_hints val_filename with
             | Some hints ->
                 let expected_digest = BU.digest_of_file norm_src_filename in
-                if Options.hint_info()
+                if Options.hint_info() || Options.strict_hints()
                 then begin
                     if Options.strict_hints() 
                        && (hints.module_digest <> expected_digest)
@@ -311,6 +311,7 @@ let report_errors settings : unit =
 let query_info settings z3result =
     if Options.hint_info()
     || Options.print_z3_statistics()
+    || Options.strict_hints()
     then begin
         let status_string, errs = Z3.status_string_and_errors z3result.z3result_status in
         let tag = match z3result.z3result_status with
@@ -324,6 +325,8 @@ let query_info settings z3result =
                 let str = smap_fold z3result.z3result_statistics f "statistics={" in
                     (substring str 0 ((String.length str) - 1)) ^ "}"
             else "" in
+        if Options.hint_info() || Options.print_z3_statistics()
+        then begin
         BU.print "%s\tQuery-stats (%s, %s)\t%s%s in %s milliseconds with fuel %s and ifuel %s and rlimit %s %s\n"
              [  range;
                 settings.query_name;
@@ -334,7 +337,9 @@ let query_info settings z3result =
                 BU.string_of_int settings.query_fuel;
                 BU.string_of_int settings.query_ifuel;
                 BU.string_of_int settings.query_rlimit;
-                stats ];
+                stats ] 
+        end
+        else ();
         errs |> List.iter (fun (_, msg, range) ->
             let tag = if used_hint settings then "(Hint-replay failed): " else "" in
             let msg = (tag ^ msg) in
