@@ -252,7 +252,7 @@ let string_of_mlconstant (sctt : mlconstant) =
   | MLC_Int (s, Some (Unsigned, Int16)) -> s ^"us"
   | MLC_Int (s, Some (Unsigned, Int32)) -> s ^"ul"
   | MLC_Int (s, Some (Unsigned, Int64)) -> s ^"UL"
-  | MLC_Int (s, None) -> "(Prims.parse_int \"" ^s^ "\")"
+  | MLC_Int (s, None) -> s^"L"
   | MLC_Float d -> string_of_float d
 
   | MLC_Bytes bytes ->
@@ -268,8 +268,6 @@ let string_of_mlconstant (sctt : mlconstant) =
          to userland to provide some UTF-8 compatible functions (e.g.
          utf8_length). *)
       "\"" ^ String.collect (escape_or string_of_char) chars ^ "\"B"
-
-  | _ -> failwith "TODO: extract integer constants properly into OCaml"
 
 
 (* -------------------------------------------------------------------- *)
