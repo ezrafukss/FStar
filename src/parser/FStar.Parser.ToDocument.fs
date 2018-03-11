@@ -882,6 +882,21 @@ and p_noSeqTerm' e = match (unparen e).tm with
       group (str "ensures" ^/^ p_typ e)
   | Attributes es ->
       group (str "attributes" ^/^ separate_map break1 p_atomicTerm es)
+  
+  | IfBind (e1, e2, e3) ->
+        if is_unit e3
+        then group ((str "if!" ^/+^ p_noSeqTerm e1) ^/^ (str "then" ^/+^ p_noSeqTerm e2))
+        else
+            let e2_doc =
+                match (unparen e2).tm with
+                    | If (_,_,e3) when is_unit e3 ->
+                        soft_parens_with_nesting (p_noSeqTerm e2)
+                    | _ -> p_noSeqTerm e2
+            in group (
+                (str "if!" ^/+^ p_noSeqTerm e1) ^/^
+                (str "then" ^/+^ e2_doc) ^/^
+                (str "else" ^/+^ p_noSeqTerm e3))
+  
   | If (e1, e2, e3) ->
       if is_unit e3
       then group ((str "if" ^/+^ p_noSeqTerm e1) ^/^ (str "then" ^/+^ p_noSeqTerm e2))
@@ -1218,6 +1233,7 @@ and p_projectionLHS e = match (unparen e).tm with
   | LetOpen _   (* p_noSeqTerm *)
   | Seq _       (* p_term *)
   | Bind _      (* p_term *)
+  | IfBind _    (* p_noSeqTerm *)
   | If _        (* p_noSeqTerm *)
   | Match _     (* p_noSeqTerm *)
   | TryWith _   (* p_noSeqTerm *)

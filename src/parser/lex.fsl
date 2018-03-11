@@ -265,7 +265,7 @@ rule token args = parse
      {
        let s = ulexeme lexbuf in INT(s, false)
      }
- 
+
  | range { let s = ulexeme lexbuf in RANGE(s) }
 
  | ieee64
@@ -355,6 +355,7 @@ rule token args = parse
  | '#' { HASH }
  | "u#"{ UNIV_HASH }
  | "let!"{ LET_BANG }
+ | "if!"{ IF_BANG }
  | '&' { AMP }
  | "()" { LPAREN_RPAREN }
  | '(' { LPAREN }
@@ -370,9 +371,9 @@ rule token args = parse
  | "?." { QMARK_DOT }
  | "?" { QMARK }
  | ".[" { DOT_LBRACK }
- | ".(|" { DOT_LENS_PAREN_LEFT } 
+ | ".(|" { DOT_LENS_PAREN_LEFT }
  | ".(" { DOT_LPAREN }
- | ".[|" { DOT_LBRACK_BAR } 
+ | ".[|" { DOT_LBRACK_BAR }
  | "{:pattern" { LBRACE_COLON_PATTERN }
  | ":" { COLON }
  | "::" { COLON_COLON }
@@ -408,7 +409,7 @@ rule token args = parse
  | ".()<-"                { OP_MIXFIX_ASSIGNMENT (ulexeme lexbuf) }
  | ".(||)<-"              { OP_MIXFIX_ASSIGNMENT (ulexeme lexbuf) }
  | ".[||]<-"                { OP_MIXFIX_ASSIGNMENT (ulexeme lexbuf) }
- 
+
  | ".[]"                  { OP_MIXFIX_ACCESS (ulexeme lexbuf) }
  | ".()"                  { OP_MIXFIX_ACCESS (ulexeme lexbuf) }
  | ".(||)"                { OP_MIXFIX_ACCESS (ulexeme lexbuf) }

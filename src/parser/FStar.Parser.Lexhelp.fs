@@ -149,6 +149,7 @@ let keywords =
     ALWAYS, "by"         ,BY;
     FSHARP, "default"    ,DEFAULT;
     ALWAYS, "let!"       ,LET_BANG;
+    ALWAYS, "if!"        ,IF_BANG;
     ALWAYS, "effect"     ,EFFECT;
     ALWAYS, "else"       ,ELSE;
     ALWAYS, "end"        ,END;

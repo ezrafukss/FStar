@@ -244,6 +244,7 @@ and free_type_vars env t = match (unparen t).tm with
   | Abs _  (* not closing implicitly over free vars in all these forms: TODO: Fixme! *)
   | Let _
   | LetOpen _
+  | IfBind _
   | If _
   | QForall _
   | QExists _
@@ -1018,7 +1019,19 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term =
       let k = AST.mk_term (Abs([x], t2)) t2.range t2.level in
       let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["bind"] x.prange)) x.prange AST.Expr in
       desugar_term env (AST.mkExplicitApp bind [t1; k] top.range)
-
+    
+    | IfBind(i, t, e) ->
+      let lambda_pat_id = Ident.gen Range.dummyRange in
+      let lambda_pat_lid = Ident.lid_of_ids [lambda_pat_id] in
+      let lambda_pat' = PatVar(lambda_pat_id, None) in
+      let lambda_pat = mk_pattern lambda_pat' i.range in
+      let lambda_var' = Var lambda_pat_lid in
+      let lambda_var = AST.mk_term lambda_var' i.range e.level in
+      let ite = AST.mk_term (If(lambda_var, t, e)) i.range e.level in
+      let lambda = AST.mk_term (Abs([lambda_pat], ite)) t.range e.level in
+      let ifBind = AST.mk_term (AST.Var(Ident.lid_of_path ["ifBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
+      desugar_term env (AST.mkExplicitApp ifBind [i; lambda] top.range)
+      
     | Seq(t1, t2) ->
       mk (Tm_meta(desugar_term env (mk_term (Let(NoLetQualifier, [None, (mk_pattern PatWild t1.range,t1)], t2)) top.range Expr),
                   Meta_desugared Sequence))

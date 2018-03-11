@@ -66,6 +66,7 @@ type term' =
   | LetOpen   of lid * term
   | Seq       of term * term
   | Bind      of pattern * term * term
+  | IfBind   of term * term * term
   | If        of term * term * term
   | Match     of term * list<branch>
   | TryWith   of term * list<branch>
@@ -261,6 +262,7 @@ let mk_function branches r1 r2 =
   mk_term (Abs([mk_pattern (PatVar(x,None)) r1],
                mk_term (Match(mk_term (Var(lid_of_ids [x])) r1 Expr, branches)) r2 Expr))
     r2 Expr
+
 let un_function p tm = match p.pat, tm.tm with
     | PatVar _, Abs(pats, body) -> Some (mk_pattern (PatApp(p, pats)) p.prange, body)
     | _ -> None

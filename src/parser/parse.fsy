@@ -71,6 +71,7 @@ open FStar.String
 %token <float> IEEE64
 %token IF
 %token IFF
+%token IF_BANG
 %token IMPLIES
 %token IN
 %token INCLUDE
@@ -1622,6 +1623,9 @@ in
 | IF noSeqTerm THEN noSeqTerm ELSE noSeqTerm
     {let (_1, e1, _3, e2, _5, e3) = ((), $2, (), $4, (), $6) in
       ( mk_term (If(e1, e2, e3)) (rhs2 parseState 1 6) Expr )}
+| IF_BANG noSeqTerm THEN noSeqTerm ELSE noSeqTerm
+    {let (_1, e1, _3, e2, _5, e3) = ((), $2, (), $4, (), $6) in
+      ( mk_term (IfBind(e1, e2, e3)) (rhs2 parseState 1 6) Expr )}
 | IF noSeqTerm THEN noSeqTerm
     {let (_1, e1, _3, e2) = ((), $2, (), $4) in
       (
