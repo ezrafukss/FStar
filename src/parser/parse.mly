@@ -57,7 +57,7 @@ let logic_qualifier_deprecation_warning =
 %token NOEQUALITY UNOPTEQUALITY PRAGMALIGHT PRAGMA_SET_OPTIONS PRAGMA_RESET_OPTIONS PRAGMA_PUSH_OPTIONS PRAGMA_POP_OPTIONS
 %token TYP_APP_LESS TYP_APP_GREATER SUBTYPE SUBKIND BY
 %token AND ASSERT SYNTH BEGIN ELSE END
-%token EXCEPTION FALSE FUN FUNCTION IF IN MODULE DEFAULT
+%token EXCEPTION FALSE FUN FUNCTION IF IF_BANG IN MODULE DEFAULT
 %token MATCH OF LET_BANG
 %token FRIEND OPEN REC THEN TRUE TRY TYPE CALC CLASS INSTANCE EFFECT VAL
 %token INCLUDE
@@ -598,6 +598,10 @@ noSeqTerm:
       { mk_term (Attributes es) (rhs2 parseState 1 2) Type_level }
   | IF e1=noSeqTerm THEN e2=noSeqTerm ELSE e3=noSeqTerm
       { mk_term (If(e1, e2, e3)) (rhs2 parseState 1 6) Expr }
+
+  | IF_BANG e1=noSeqTerm THEN e2=noSeqTerm ELSE e3=noSeqTerm
+      { mk_term (IfBind(e1, e2, e3)) (rhs2 parseState 1 6) Expr }
+
   | IF e1=noSeqTerm THEN e2=noSeqTerm
       {
         let e3 = mk_term (Const Const_unit) (rhs2 parseState 4 4) Expr in

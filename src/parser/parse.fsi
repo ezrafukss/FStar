@@ -104,6 +104,7 @@ type token =
   | INCLUDE
   | IN
   | IMPLIES
+  | IF_BANG
   | IFF
   | IF
   | IEEE64 of (float)
@@ -259,6 +260,7 @@ type tokenId =
     | TOKEN_INCLUDE
     | TOKEN_IN
     | TOKEN_IMPLIES
+    | TOKEN_IF_BANG
     | TOKEN_IFF
     | TOKEN_IF
     | TOKEN_IEEE64

@@ -665,6 +665,7 @@ let collect_one
     | Seq (t1, t2) ->
         collect_term t1;
         collect_term t2
+    | IfBind (t1, t2, t3)
     | If (t1, t2, t3) ->
         collect_term t1;
         collect_term t2;
