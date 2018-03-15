@@ -1057,19 +1057,16 @@ and p_noSeqTerm' ps pb e = match e.tm with
       group (str "attributes" ^/^ separate_map break1 p_atomicTerm es)
   
   | IfBind (e1, e2, e3) ->
-        if is_unit e3
-        then group ((str "if!" ^/+^ p_noSeqTerm e1) ^/^ (str "then" ^/+^ p_noSeqTerm e2))
-        else
-            let e2_doc =
-                match (unparen e2).tm with
-                    | If (_,_,e3) when is_unit e3 ->
-                        soft_parens_with_nesting (p_noSeqTerm e2)
-                    | _ -> p_noSeqTerm e2
-            in group (
-                (str "if!" ^/+^ p_noSeqTerm e1) ^/^
-                (str "then" ^/+^ e2_doc) ^/^
-                (str "else" ^/+^ p_noSeqTerm e3))
-  
+      let e2_doc =
+          match (unparen e2).tm with
+              | If (_,_,e3) when is_unit e3 ->
+                  soft_parens_with_nesting (p_noSeqTerm e2)
+              | _ -> p_noSeqTerm e2
+      in group (
+          (str "if!" ^/+^ p_noSeqTerm e1) ^/^
+          (str "then" ^/+^ e2_doc) ^/^
+          (str "else" ^/+^ p_noSeqTerm e3))
+
   | If (e1, e2, e3) ->
       (* No need to wrap with parentheses here, since if e1 then e2; e3 really
        * does parse as (if e1 then e2); e3 -- the IF does not swallow
