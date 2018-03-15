@@ -1017,7 +1017,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term =
 
     | Bind(x, t1, t2) ->
       let k = AST.mk_term (Abs([x], t2)) t2.range t2.level in
-      let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["bind"] x.prange)) x.prange AST.Expr in
+      let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen.Cost.letBang"] x.prange)) x.prange AST.Expr in
       desugar_term env (AST.mkExplicitApp bind [t1; k] top.range)
     
     | IfBind(i, t, e) ->
@@ -1029,7 +1029,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term =
       let lambda_var = AST.mk_term lambda_var' i.range e.level in
       let ite = AST.mk_term (If(lambda_var, t, e)) i.range e.level in
       let lambda = AST.mk_term (Abs([lambda_pat], ite)) t.range e.level in
-      let ifBind = AST.mk_term (AST.Var(Ident.lid_of_path ["ifBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
+      let ifBind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen.Cost.ifBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
       desugar_term env (AST.mkExplicitApp ifBind [i; lambda] top.range)
       
     | Seq(t1, t2) ->
