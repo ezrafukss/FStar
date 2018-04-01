@@ -422,7 +422,7 @@ let ask_and_report_errors env all_labels prefix query suffix =
         let rlimit =
             Prims.op_Multiply
                 (Options.z3_rlimit_factor ())
-                (Prims.op_Multiply (Options.z3_rlimit ()) 544656)
+                (Options.z3_rlimit ())
         in
         let next_hint = get_hint_for qname index in
         let default_settings = {
