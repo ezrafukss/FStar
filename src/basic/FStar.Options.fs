@@ -196,7 +196,7 @@ let defaults =
       ("verify_module"                , List []);
       ("warn_default_effects"         , Bool false);
       ("z3refresh"                    , Bool false);
-      ("z3rlimit"                     , Int 5);
+      ("z3rlimit"                     , Int 2723280);
       ("z3rlimit_factor"              , Int 1);
       ("z3seed"                       , Int 0);
       ("z3cliopt"                     , List []);
