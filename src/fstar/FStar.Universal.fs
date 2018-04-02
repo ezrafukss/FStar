@@ -261,11 +261,12 @@ let tc_one_file env pre_fn fn : (Syntax.modul * int) //checked module and its el
       let mii = FStar.ToSyntax.Env.inclusion_info env.dsenv (fst tcmod).name in
       tcmod, mii, env
   in
-  if Options.cache_checked_modules ()
+  if (Options.cache_checked_modules ()) || (Options.use_cached_modules ())
   then match load_module_from_cache env fn with
        | None ->
          let tcmod, mii, env = tc_source_file () in
          if FStar.Errors.get_err_count() = 0
+         && (Options.cache_checked_modules())
          && (Options.lax()  //we'll write out a .checked.lax file
              || Options.should_verify (fst tcmod).name.str) //we'll write out a .checked file
          //but we will not write out a .checked file for an unverified dependence
