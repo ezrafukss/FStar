@@ -291,7 +291,8 @@ let apply_obj_repr :  mlexpr -> mlty -> mlexpr = fun x t ->
  *)
 let avoid_keyword s =
   if is_reserved s then
-    s ^ "_"
+    failwithf "Extraction: %s is a reserved identifier" s
+    //s ^ "_"
   else
     s
 
