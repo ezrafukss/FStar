@@ -186,7 +186,7 @@ and is a tiny bit faster than extracting F\* using the F# version.
 
   - Prerequisite: .NET framework 4.5
 
-  - Prerequisite: [Visual Studio 2015 and Visual F# Tools](http://fsharp.org/use/windows/)
+  - Prerequisite: Visual Studio 2017 and its integrated [Visual F# Tools for F# 4.1](http://fsharp.org/use/windows/)
     - for instance install the **free**
       [Visual Studio Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
     - The Visual F# Tools are installed automatically when you first
@@ -225,7 +225,9 @@ Read on for the more complete solution involving Visual Studio itself.
 
 #### On Linux or Mac OS X using Mono ####
 
-  - Install mono (any version from 4.0.3.0 to 5.10.x), fsharp (version 4.0.1.x-4.1.x), and msbuild (version 14.1.x-15.2.x!!!)
+  - Install mono (any version from 4.0.3.0 to 5.10.x),
+            fsharp (version 4.1.x), and
+            msbuild (version 14.1.x-15.6.x)
 
     - On Debian/Ubuntu
 
@@ -234,7 +236,7 @@ Read on for the more complete solution involving Visual Studio itself.
     - On Arch
 
             $ pacman -S mono
-            $ aura -A fsharp msbuild-bin
+            $ aura -A fsharp msbuild-stable
 
     - For other Linux distributions check out these links:
       - http://www.mono-project.com/download/#download-lin
@@ -269,7 +271,7 @@ into your `~/.bashrc`.
 
 ### Prerequisite for steps 2 and 3: Working OCaml setup  ###
 
-Steps 2 and 3 below require a working OCaml setup. Any version of OCaml from 4.02.2 to 4.06.0 should do.
+Steps 2 and 3 below require a working OCaml setup. OCaml version 4.04.X, 4.05.X, 4.06.X, or 4.07.0 should work.
 
 #### Instructions for Windows ####
 

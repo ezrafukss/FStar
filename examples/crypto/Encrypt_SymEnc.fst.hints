@@ -13,7 +13,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_aeba281ff3db5ef268124d6ac4de91c8"
       ],
       0,
-      "0ab261a9da1d9416f0d31bcd613fa7e1"
+      "dc0c13194bff4e3c6575789e6b78e7e8"
     ],
     [
       "Encrypt_SymEnc.__proj__Ideal__item__repr",
@@ -27,7 +27,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_aeba281ff3db5ef268124d6ac4de91c8"
       ],
       0,
-      "e6552e20397809a512fbc5a263c74fd2"
+      "ab257658454d1288389390a26df02106"
     ],
     [
       "Encrypt_SymEnc.__proj__Ideal__item___2",
@@ -41,7 +41,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_aeba281ff3db5ef268124d6ac4de91c8"
       ],
       0,
-      "ed1ea9037a26e3a31b6062e0c3bb736b"
+      "56cca68218dc389524833b6c10a285ce"
     ],
     [
       "Encrypt_SymEnc.__proj__Ideal__item__i",
@@ -55,7 +55,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_aeba281ff3db5ef268124d6ac4de91c8"
       ],
       0,
-      "0d30965ee5aa4d9997018e61091722f6"
+      "7ca55bde2bd963ead00ba69991f09275"
     ],
     [
       "Encrypt_SymEnc.__proj__Concrete__item__plain",
@@ -69,7 +69,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_c498f4d14808e5b989acda0ba70ad0bf"
       ],
       0,
-      "4c47837db4f5f8a1c7be7402c0d223c4"
+      "673d2a4e3258da6f3e3f1490f4c5e4f9"
     ],
     [
       "Encrypt_SymEnc.__proj__Concrete__item__repr",
@@ -83,7 +83,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_c498f4d14808e5b989acda0ba70ad0bf"
       ],
       0,
-      "1b6c2936460f4a1f94979475946ead37"
+      "004608c7d9afdfb410912da9c8c9c068"
     ],
     [
       "Encrypt_SymEnc.__proj__Concrete__item___2",
@@ -97,7 +97,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_c498f4d14808e5b989acda0ba70ad0bf"
       ],
       0,
-      "b57df92a427a06a20163f8c960768369"
+      "d4ab8f17c810ceeb09f7f3949e74b4dc"
     ],
     [
       "Encrypt_SymEnc.__proj__Concrete__item__i",
@@ -111,7 +111,7 @@
         "refinement_interpretation_Encrypt_SymEnc_Tm_refine_c498f4d14808e5b989acda0ba70ad0bf"
       ],
       0,
-      "4a8549dff9dc5321b31ffdc5a8c4b457"
+      "b0e425307cca6c10aa750af76bb980a1"
     ],
     [
       "Encrypt_SymEnc.keygen",
@@ -136,7 +136,7 @@
         "typing_FStar.Monotonic.Heap.sel"
       ],
       0,
-      "8c75f3378ec3e03b239647cd560abf2c"
+      "635165e2eae910096f724be0367245d9"
     ],
     [
       "Encrypt_SymEnc.__proj__Entry__item__c",
@@ -148,7 +148,16 @@
         "projection_inverse_Encrypt_SymEnc.Entry_k"
       ],
       0,
-      "cb220679fa739a8cb1518510e18d876c"
+      "2477e56bf8790147619958eff8f1c75b"
+    ],
+    [
+      "Encrypt_SymEnc.log",
+      1,
+      2,
+      1,
+      [ "@query", "equation_FStar.ST.ref" ],
+      0,
+      "b5bddf56488ca571f2c0c85be3559889"
     ],
     [
       "Encrypt_SymEnc.encrypt",
@@ -166,7 +175,7 @@
         "haseqPlatform.Bytes_Tm_refine_3458b9f6f40fe62446cdc2c6d3755a94"
       ],
       0,
-      "fdd8f35fbf56440bbee2b38be24487be"
+      "7c4edc9f1708e1e3ac0a82a30bbe6784"
     ],
     [
       "Encrypt_SymEnc.decrypt",
@@ -189,7 +198,7 @@
         "refinement_interpretation_Platform.Bytes_Tm_refine_3458b9f6f40fe62446cdc2c6d3755a94"
       ],
       0,
-      "58da960ff0fadee26106cb6ec3313148"
+      "07f5112ef2e15448c2164c2bb421ac0e"
     ]
   ]
 ]

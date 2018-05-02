@@ -1,11 +1,11 @@
 open Prims
-type name = FStar_Syntax_Syntax.bv[@@deriving show]
+type name = FStar_Syntax_Syntax.bv
 let (fstar_tactics_lid' : Prims.string Prims.list -> FStar_Ident.lid) =
   fun s  -> FStar_Parser_Const.fstar_tactics_lid' s 
 let (lid_as_tm : FStar_Ident.lident -> FStar_Syntax_Syntax.term) =
   fun l  ->
     let uu____15 =
-      FStar_Syntax_Syntax.lid_as_fv l FStar_Syntax_Syntax.Delta_constant
+      FStar_Syntax_Syntax.lid_as_fv l FStar_Syntax_Syntax.delta_constant
         FStar_Pervasives_Native.None
        in
     FStar_All.pipe_right uu____15 FStar_Syntax_Syntax.fv_to_tm
@@ -17,7 +17,7 @@ let (mk_tactic_lid_as_term : Prims.string -> FStar_Syntax_Syntax.term) =
 let (lid_as_data_tm : FStar_Ident.lident -> FStar_Syntax_Syntax.term) =
   fun l  ->
     let uu____27 =
-      FStar_Syntax_Syntax.lid_as_fv l FStar_Syntax_Syntax.Delta_constant
+      FStar_Syntax_Syntax.lid_as_fv l FStar_Syntax_Syntax.delta_constant
         (FStar_Pervasives_Native.Some FStar_Syntax_Syntax.Data_ctor)
        in
     FStar_Syntax_Syntax.fv_to_tm uu____27
@@ -96,7 +96,7 @@ let (e_proofstate :
         i.FStar_Syntax_Syntax.lkind = FStar_Syntax_Syntax.Lazy_proofstate ->
         let uu____90 = FStar_Dyn.undyn i.FStar_Syntax_Syntax.blob  in
         FStar_All.pipe_left
-          (fun _0_17  -> FStar_Pervasives_Native.Some _0_17) uu____90
+          (fun _0_16  -> FStar_Pervasives_Native.Some _0_16) uu____90
     | uu____93 ->
         (if w
          then

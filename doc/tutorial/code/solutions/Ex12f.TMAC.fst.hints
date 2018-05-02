@@ -8,7 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "d0e6b214966da342336dde29d4be4dfe"
+      "2c7deb0bd038d14ec53078098aefa240"
     ],
     [
       "Ex12f.TMAC.mac",
@@ -20,17 +20,17 @@
         "equation_Ex12.Pad.blocksize", "equation_Ex12.Pad.bytes",
         "equation_Ex12.Pad.encode", "equation_Ex12.Pad.text",
         "equation_Ex12f.TMAC.bspec", "equation_Ex12f.TMAC.key",
-        "equation_Ex12f.TMAC.pkey", "equation_FStar.UInt8.byte",
+        "equation_Ex12f.TMAC.pkey",
+        "function_token_typing_Ex12.BMAC.key_prop",
         "function_token_typing_FStar.UInt8.t", "lemma_Ex12.Pad.inj",
         "lemma_FStar.Seq.Base.lemma_eq_elim",
         "refinement_interpretation_Ex12.Pad_Tm_refine_0b4eea63038be23ac97553bb7c8a71cc",
         "refinement_interpretation_Ex12f.TMAC_Tm_refine_3c40c68998e031e6744deee90305e0e2",
         "refinement_interpretation_FStar.List.Tot.Base_Tm_refine_9f8cb5a84b67f50c9d5f87a914037545",
-        "token_correspondence_Ex12.BMAC.key_prop",
         "token_correspondence_Ex12f.TMAC.bspec"
       ],
       0,
-      "32cad9054a104d6fed99580d611c08cf"
+      "66bb684d9710c91944865c77661f1fe3"
     ],
     [
       "Ex12f.TMAC.verify",
@@ -43,15 +43,15 @@
         "equation_Ex12.Pad.bytes", "equation_Ex12.Pad.encode",
         "equation_Ex12.Pad.nbytes", "equation_Ex12f.TMAC.bspec",
         "equation_Ex12f.TMAC.key", "equation_Ex12f.TMAC.pkey",
-        "equation_FStar.UInt8.byte", "function_token_typing_FStar.UInt8.t",
+        "function_token_typing_Ex12.BMAC.key_prop",
+        "function_token_typing_FStar.UInt8.t",
         "lemma_FStar.Seq.Base.lemma_eq_refl",
         "refinement_interpretation_Ex12.Pad_Tm_refine_b769c0bf16cb286238e7b11ff583e99b",
         "refinement_interpretation_Ex12f.TMAC_Tm_refine_3c40c68998e031e6744deee90305e0e2",
-        "token_correspondence_Ex12.BMAC.key_prop",
         "token_correspondence_Ex12f.TMAC.bspec", "typing_Ex12.Pad.encode"
       ],
       0,
-      "187c0289a8fa80ca39b3a6d640a6f439"
+      "a035d9420382a3b886e1875c6a244b7d"
     ],
     [
       "Ex12f.TMAC.keygen",
@@ -60,7 +60,7 @@
       1,
       [ "@query" ],
       0,
-      "fc9fb97eac9532fd802c5dc3bec6e7ef"
+      "36eea82352dd84ce8579b179a4ed751a"
     ],
     [
       "Ex12f.TMAC.mac",
@@ -72,17 +72,17 @@
         "equation_Ex12.Pad.blocksize", "equation_Ex12.Pad.bytes",
         "equation_Ex12.Pad.encode", "equation_Ex12.Pad.text",
         "equation_Ex12f.TMAC.bspec", "equation_Ex12f.TMAC.key",
-        "equation_Ex12f.TMAC.pkey", "equation_FStar.UInt8.byte",
+        "equation_Ex12f.TMAC.pkey",
+        "function_token_typing_Ex12.BMAC.key_prop",
         "function_token_typing_FStar.UInt8.t", "lemma_Ex12.Pad.inj",
         "lemma_FStar.Seq.Base.lemma_eq_elim",
         "refinement_interpretation_Ex12.Pad_Tm_refine_0b4eea63038be23ac97553bb7c8a71cc",
         "refinement_interpretation_Ex12f.TMAC_Tm_refine_3c40c68998e031e6744deee90305e0e2",
         "refinement_interpretation_FStar.List.Tot.Base_Tm_refine_9f8cb5a84b67f50c9d5f87a914037545",
-        "token_correspondence_Ex12.BMAC.key_prop",
         "token_correspondence_Ex12f.TMAC.bspec"
       ],
       0,
-      "1773a16eded250f3545900f5e7359776"
+      "9f94991a70f412fd74f8cf0d14bab1af"
     ],
     [
       "Ex12f.TMAC.verify",
@@ -95,15 +95,15 @@
         "equation_Ex12.Pad.bytes", "equation_Ex12.Pad.encode",
         "equation_Ex12.Pad.nbytes", "equation_Ex12f.TMAC.bspec",
         "equation_Ex12f.TMAC.key", "equation_Ex12f.TMAC.pkey",
-        "equation_FStar.UInt8.byte", "function_token_typing_FStar.UInt8.t",
+        "function_token_typing_Ex12.BMAC.key_prop",
+        "function_token_typing_FStar.UInt8.t",
         "lemma_FStar.Seq.Base.lemma_eq_refl",
         "refinement_interpretation_Ex12.Pad_Tm_refine_b769c0bf16cb286238e7b11ff583e99b",
         "refinement_interpretation_Ex12f.TMAC_Tm_refine_3c40c68998e031e6744deee90305e0e2",
-        "token_correspondence_Ex12.BMAC.key_prop",
         "token_correspondence_Ex12f.TMAC.bspec", "typing_Ex12.Pad.encode"
       ],
       0,
-      "69e2910540cbf8b6bd404588ef79f56f"
+      "5c89bd04c76cf5e685c0b2992d14c1e3"
     ]
   ]
 ]
