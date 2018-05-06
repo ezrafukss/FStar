@@ -8,7 +8,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "8cf81e8d1bff52302f4aa8721f496df3"
+      "577e01929475efc940f1caf06f0fc8f9"
     ],
     [
       "Bug124.test",
@@ -21,7 +21,7 @@
         "projection_inverse_BoxInt_proj_0"
       ],
       0,
-      "3707d62034287c9642fd3143d57b89df"
+      "82305d5fc201388b67a7ae17e2d13ee5"
     ],
     [
       "Bug124.test'",
@@ -30,16 +30,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "3218816e77a1eaa7c930c87839949aad"
-    ],
-    [
-      "Bug124.test'",
-      2,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "cfb0c7044aeb8580523ed4cf7f330e83"
+      "029a97a5095ad45fed19c22019aa9c67"
     ]
   ]
 ]

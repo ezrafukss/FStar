@@ -33,7 +33,7 @@
     <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\prettyprint.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\reflection.XML</DocumentationFile>
     <OtherFlags>--mlcompatibility</OtherFlags>
   </PropertyGroup>
   <ItemGroup>
@@ -52,7 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FStar.Reflection.Data.fs" />
+    <Compile Include="FStar.Reflection.Basic.fsi" />
     <Compile Include="FStar.Reflection.Basic.fs" />
+    <Compile Include="FStar.Reflection.Embeddings.fsi" />
+    <Compile Include="FStar.Reflection.Embeddings.fs" />
     <Compile Include="FStar.Reflection.Interpreter.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -93,7 +96,7 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

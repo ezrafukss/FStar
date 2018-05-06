@@ -2,33 +2,6 @@
   "‡\u0011þŒðº‚\u0018´ê¦¾\u001aõ„L",
   [
     [
-      "FStar.Ref.contains",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "8fe0e9fab5e7b229beec23355255494a"
-    ],
-    [
-      "FStar.Ref.unused_in",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "ec6de3afd740dab31b21d07c806b9835"
-    ],
-    [
-      "FStar.Ref.fresh",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "ceaf4eb1932966538814b721f6d87e00"
-    ],
-    [
       "FStar.Ref.only",
       1,
       2,
@@ -38,7 +11,7 @@
         "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
       ],
       0,
-      "d72f677f58350917cf29dc4f9ac9f0f0"
+      "830dd23b03f1e7e12a3a59edfdbe9902"
     ],
     [
       "FStar.Ref.recall",
@@ -47,7 +20,7 @@
       1,
       [ "@query", "equation_FStar.Ref.contains" ],
       0,
-      "4a9f63173754e11909566bc79825edd2"
+      "e2a62ae764b5aa1a300dc7bea076e07d"
     ],
     [
       "FStar.Ref.alloc",
@@ -61,7 +34,7 @@
         "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
       ],
       0,
-      "4f9b1b048fa1d1048247b3b60eb0db02"
+      "db27a526f15a63c614131953e2e16363"
     ],
     [
       "FStar.Ref.read",
@@ -70,7 +43,7 @@
       1,
       [ "@query", "equation_FStar.Ref.sel" ],
       0,
-      "fcf2f412da6131a2880cbb76d69226af"
+      "0790636cf605d2b7ba3e3bcaca7810dd"
     ],
     [
       "FStar.Ref.write",
@@ -90,7 +63,31 @@
         "token_correspondence_FStar.Heap.trivial_preorder", "true_interp"
       ],
       0,
-      "436e312e5a9fd5acaa91e61e32882f11"
+      "2025cf7184391e513b32c3c5004f61b6"
+    ],
+    [
+      "FStar.Ref.only",
+      2,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "31537e01b9df1d0ad57f51bff26e6950"
+    ],
+    [
+      "FStar.Ref.alloc",
+      2,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "ea535b8e69668dc9782123a387ac7cb0"
     ]
   ]
 ]

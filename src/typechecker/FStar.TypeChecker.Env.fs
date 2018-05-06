@@ -106,19 +106,24 @@ type env = {
   universe_of    :env -> term -> universe;           (* a callback to the type-checker; g |- e : Tot (Type u) *)
   check_type_of  :bool -> env -> term -> typ -> guard_t;
   use_bv_sorts   :bool;                              (* use bv.sort for a bound-variable's type rather than consulting gamma *)
-  qname_and_index:option<(lident*int)>;              (* the top-level term we're currently processing and the nth query for it *)
+  qtbl_name_and_index:BU.smap<int> * option<(lident*int)>;  (* the top-level term we're currently processing and the nth query for it *)
+  normalized_eff_names:BU.smap<lident>;              (* cache for normalized effect names, used to be captured in the function norm_eff_name, which made it harder to roll back etc. *)
   proof_ns       :proof_namespace;                   (* the current names that will be encoded to SMT *)
-  synth          :env -> typ -> term -> term;        (* hook for synthesizing terms via tactics, third arg is tactic term *)
+  synth_hook          :env -> typ -> term -> term;        (* hook for synthesizing terms via tactics, third arg is tactic term *)
+  splice         :env -> term -> list<sigelt>;       (* splicing hook, points to FStar.Tactics.Interpreter.splice *)
   is_native_tactic: lid -> bool;                     (* callback into the native tactics engine *)
   identifier_info: ref<FStar.TypeChecker.Common.id_info_table>; (* information on identifiers *)
   tc_hooks       : tcenv_hooks;                      (* hooks that the interactive more relies onto for symbol tracking *)
-  dsenv          : FStar.ToSyntax.Env.env;           (* The desugaring environment from the front-end *)
+  dsenv          : FStar.Syntax.DsEnv.env;           (* The desugaring environment from the front-end *)
   dep_graph      : FStar.Parser.Dep.deps             (* The result of the dependency analysis *)
 }
+and solver_depth_t = int * int * int
 and solver_t = {
     init         :env -> unit;
     push         :string -> unit;
     pop          :string -> unit;
+    snapshot     :string -> (solver_depth_t * unit);
+    rollback     :string -> option<solver_depth_t> -> unit;
     encode_modul :env -> modul -> unit;
     encode_sig   :env -> sigelt -> unit;
     preprocess   :env -> goal -> list<(env * goal * FStar.Options.optionstate)>;
@@ -205,32 +210,39 @@ let initial_env deps tc_term type_of universe_of check_type_of solver module_lid
     check_type_of=check_type_of;
     universe_of=universe_of;
     use_bv_sorts=false;
-    qname_and_index=None;
+    qtbl_name_and_index=BU.smap_create 10, None;  //10?
+    normalized_eff_names=BU.smap_create 20;  //20?
     proof_ns = Options.using_facts_from ();
-    synth = (fun e g tau -> failwith "no synthesizer available");
+    synth_hook = (fun e g tau -> failwith "no synthesizer available");
+    splice = (fun e tau -> failwith "no splicer available");
     is_native_tactic = (fun _ -> false);
     identifier_info=BU.mk_ref FStar.TypeChecker.Common.id_info_table_empty;
     tc_hooks = default_tc_hooks;
-    dsenv = FStar.ToSyntax.Env.empty_env();
+    dsenv = FStar.Syntax.DsEnv.empty_env();
     dep_graph = deps
   }
 
-(* Marking and resetting the environment, for the interactive mode *)
+let dsenv env = env.dsenv
 let sigtab env = env.sigtab
 let gamma_cache env = env.gamma_cache
 
-let query_indices: ref<(list<(list<(lident * int)>)>)> = BU.mk_ref [[]]
-let push_query_indices () = match !query_indices with
-    | [] -> failwith "Empty query indices!"
-    | _ -> query_indices := (List.hd !query_indices)::!query_indices
+(* Marking and resetting the environment, for the interactive mode *)
 
-let pop_query_indices () = match !query_indices with
-    | [] -> failwith "Empty query indices!"
-    | hd::tl -> query_indices := tl
+let query_indices: ref<(list<(list<(lident * int)>)>)> = BU.mk_ref [[]]
+let push_query_indices () = match !query_indices with // already signal-atmoic
+  | [] -> failwith "Empty query indices!"
+  | _ -> query_indices := (List.hd !query_indices)::!query_indices
+
+let pop_query_indices () = match !query_indices with // already signal-atmoic
+  | [] -> failwith "Empty query indices!"
+  | hd::tl -> query_indices := tl
+
+let snapshot_query_indices () = Common.snapshot push_query_indices query_indices ()
+let rollback_query_indices depth = Common.rollback pop_query_indices query_indices depth
 
 let add_query_index (l, n) = match !query_indices with
-    | hd::tl -> query_indices := ((l,n)::hd)::tl
-    | _ -> failwith "Empty query indices"
+  | hd::tl -> query_indices := ((l,n)::hd)::tl
+  | _ -> failwith "Empty query indices"
 
 let peek_query_indices () = List.hd !query_indices
 
@@ -239,7 +251,9 @@ let push_stack env =
     stack := env::!stack;
     {env with sigtab=BU.smap_copy (sigtab env);
               gamma_cache=BU.smap_copy (gamma_cache env);
-              identifier_info=BU.mk_ref !env.identifier_info}
+              identifier_info=BU.mk_ref !env.identifier_info;
+              qtbl_name_and_index=BU.smap_copy (env.qtbl_name_and_index |> fst), env.qtbl_name_and_index |> snd;
+              normalized_eff_names=BU.smap_copy env.normalized_eff_names}
 
 let pop_stack () =
     match !stack with
@@ -248,30 +262,52 @@ let pop_stack () =
       env
     | _ -> failwith "Impossible: Too many pops"
 
-let push env msg =
-    push_query_indices();
-    env.solver.push msg;
-    push_stack env
+let snapshot_stack env = Common.snapshot push_stack stack env
+let rollback_stack depth = Common.rollback pop_stack stack depth
 
-let pop env msg =
-    env.solver.pop msg;
-    pop_query_indices();
-    pop_stack ()
+type tcenv_depth_t = int * int * solver_depth_t * int
+
+let snapshot env msg = BU.atomically (fun () ->
+    let stack_depth, env = snapshot_stack env in
+    let query_indices_depth, () = snapshot_query_indices () in
+    let solver_depth, () = env.solver.snapshot msg in
+    let dsenv_depth, dsenv = DsEnv.snapshot env.dsenv in
+    (stack_depth, query_indices_depth, solver_depth, dsenv_depth), { env with dsenv=dsenv })
+
+let rollback solver msg depth = BU.atomically (fun () ->
+    let stack_depth, query_indices_depth, solver_depth, dsenv_depth = match depth with
+        | Some (s1, s2, s3, s4) -> Some s1, Some s2, Some s3, Some s4
+        | None -> None, None, None, None in
+    let () = solver.rollback msg solver_depth in
+    let () = rollback_query_indices query_indices_depth in
+    let tcenv = rollback_stack stack_depth in
+    let dsenv = DsEnv.rollback dsenv_depth in
+    // Because of the way ``snapshot`` is implemented, the `tcenv` and `dsenv`
+    // that we rollback to should be consistent:
+    FStar.Common.runtime_assert
+      (BU.physical_equality tcenv.dsenv dsenv)
+      "Inconsistent stack state";
+    tcenv)
+
+let push env msg = snd (snapshot env msg)
+let pop env msg = rollback env.solver msg None
 
 let incr_query_index env =
-    let qix = peek_query_indices () in
-    match env.qname_and_index with
-    | None -> env
-    | Some (l, n) ->
+  let qix = peek_query_indices () in
+  match env.qtbl_name_and_index with
+  | _, None -> env
+  | tbl, Some (l, n) ->
     match qix |> List.tryFind (fun (m, _) -> Ident.lid_equals l m) with
     | None ->
-        let next = n + 1 in
-        add_query_index (l, next);
-        {env with qname_and_index=Some (l, next)}
+      let next = n + 1 in
+      add_query_index (l, next);
+      BU.smap_add tbl l.str next;
+      {env with qtbl_name_and_index=tbl, Some (l, next)}
     | Some (_, m) ->
-        let next = m + 1 in
-        add_query_index (l, next);
-        {env with qname_and_index=Some (l, next)}
+      let next = m + 1 in
+      add_query_index (l, next);
+      BU.smap_add tbl l.str next;
+      {env with qtbl_name_and_index=tbl, Some (l, next)}
 
 ////////////////////////////////////////////////////////////
 // Checking the per-module debug level and position info  //
@@ -412,7 +448,7 @@ let rec add_sigelt env se = match se.sigel with
     match se.sigel with
     | Sig_new_effect(ne) ->
       ne.actions |> List.iter (fun a ->
-          let se_let = U.action_as_lb ne.mname a in
+          let se_let = U.action_as_lb ne.mname a a.action_defn.pos in
           BU.smap_add (sigtab env) a.action_name.str se_let)
     | _ -> ()
 
@@ -680,7 +716,6 @@ let lookup_effect_abbrev env (univ_insts:universes) lid0 =
     | _ -> None
 
 let norm_eff_name =
-   let cache = BU.smap_create 20 in
    fun env (l:lident) ->
        let rec find l =
            match lookup_effect_abbrev env [U_unknown] l with //universe doesn't matter here; we're just normalizing the name
@@ -690,12 +725,12 @@ let norm_eff_name =
                 match find l with
                     | None -> Some l
                     | Some l' -> Some l' in
-       let res = match BU.smap_try_find cache l.str with
+       let res = match BU.smap_try_find env.normalized_eff_names l.str with
             | Some l -> l
             | None ->
               begin match find l with
                         | None -> l
-                        | Some m -> BU.smap_add cache l.str m;
+                        | Some m -> BU.smap_add env.normalized_eff_names l.str m;
                                     m
               end in
        Ident.set_lid_range res (range_of_lid l)
@@ -764,7 +799,9 @@ let is_interpreted =
     fun (env:env) head ->
         match (U.un_uinst head).n with
         | Tm_fvar fv ->
-            fv.fv_delta=Delta_equational
+            (match fv.fv_delta with
+             | Delta_equational_at_level _ -> true
+             | _ -> false)
             //U.for_some (Ident.lid_equals fv.fv_name.v) interpreted_symbols
         | _ -> false
 
@@ -908,7 +945,7 @@ let build_lattice env se = match se.sigel with
     (* For debug purpose... *)
     let print_mlift l =
       (* A couple of bogus constants, just for printing *)
-      let bogus_term s = fv_to_tm (lid_as_fv (lid_of_path [s] dummyRange) Delta_constant None) in
+      let bogus_term s = fv_to_tm (lid_as_fv (lid_of_path [s] dummyRange) delta_constant None) in
       let arg = bogus_term "ARG" in
       let wp = bogus_term "WP" in
       let e = bogus_term "COMP" in
@@ -1112,6 +1149,9 @@ let push_local_binding env b = {env with gamma=b::env.gamma}
 
 let push_bv env x = push_local_binding env (Binding_var x)
 
+let push_bvs env bvs =
+    List.fold_left (fun env bv -> push_bv env bv) env bvs
+
 let pop_bv env =
     match env.gamma with
     | Binding_var x::rest -> Some (x, {env with gamma=rest})
@@ -1199,11 +1239,11 @@ let univ_vars env =
 
 let univnames env =
     let no_univ_names = Syntax.no_universe_names in
-    let ext out uvs = BU.fifo_set_union out uvs in
+    let ext out uvs = BU.set_union out uvs in
     let rec aux out g = match g with
         | [] -> out
         | Binding_sig_inst _::tl -> aux out tl
-        | Binding_univ uname :: tl -> aux (BU.fifo_set_add uname out) tl
+        | Binding_univ uname :: tl -> aux (BU.set_add uname out) tl
         | Binding_lid(_, (_, t))::tl
         | Binding_var({sort=t})::tl -> aux (ext out (Free.univnames t)) tl
         | Binding_sig _::_ -> out in (* this marks a top-level scope ...  no more universe names beyond this *)
@@ -1281,6 +1321,7 @@ let get_proof_ns e = e.proof_ns
 let set_proof_ns ns e = {e with proof_ns = ns}
 
 let unbound_vars (e : env) (t : term) : BU.set<bv> =
+    // FV(t) \ Vars(Γ)
     List.fold_left (fun s bv -> BU.set_remove bv s) (Free.names t) (bound_vars e)
 
 let closed (e : env) (t : term) =
@@ -1303,6 +1344,8 @@ let dummy_solver = {
     init=(fun _ -> ());
     push=(fun _ -> ());
     pop=(fun _ -> ());
+    snapshot=(fun _ -> (0, 0, 0), ());
+    rollback=(fun _ _ -> ());
     encode_sig=(fun _ _ -> ());
     encode_modul=(fun _ _ -> ());
     preprocess=(fun e g -> [e,g, FStar.Options.peek ()]);

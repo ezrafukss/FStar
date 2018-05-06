@@ -11,7 +11,7 @@
         "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
       ],
       0,
-      "8b7317f619de949251228bd44ff27731"
+      "54a71e7af274a5d54a98bcb17e7886dd"
     ],
     [
       "FStar.Util.op_Plus_Plus_At",
@@ -23,7 +23,55 @@
         "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
       ],
       0,
-      "3959bc71f6c14b688d02b572c1a4a819"
+      "6dccbbe36506d3fbd9be6261add83d92"
+    ],
+    [
+      "FStar.Util.op_At_Plus_At",
+      2,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "4c148c0fcb83d5a3a748f09d6b62d318"
+    ],
+    [
+      "FStar.Util.op_At_Plus_At",
+      3,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "d3c4eff84deb160c4fcc1ce54545ac4a"
+    ],
+    [
+      "FStar.Util.op_Plus_Plus_At",
+      2,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "038ab43e0bc96bb7597ecf4e116999d9"
+    ],
+    [
+      "FStar.Util.op_Plus_Plus_At",
+      3,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "50d426a0d442778786b59c18b821af3a"
     ]
   ]
 ]

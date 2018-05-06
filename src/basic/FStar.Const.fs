@@ -5,9 +5,9 @@ open FStar.All
 
 open FStar.BaseTypes
 
-///[@ PpxDerivingShow ]
+// IN F*: [@ PpxDerivingYoJson PpxDerivingShow ]
 type signedness = | Unsigned | Signed
-///[@ PpxDerivingShow ]
+// IN F*: [@ PpxDerivingYoJson PpxDerivingShow ]
 type width = | Int8 | Int16 | Int32 | Int64
 
 (* NB:
@@ -23,7 +23,7 @@ type width = | Int8 | Int16 | Int32 | Int64
     eq_const below does that for you
 *)
 
-///[@ PpxDerivingShow ]
+// IN F*: [@ PpxDerivingYoJson PpxDerivingShow ]
 type sconst =
   | Const_effect
   | Const_unit
@@ -91,9 +91,9 @@ let z3_acceptable_string s : bool =
 let z3_sanitize_char c : string =
     let n = Util.int_of_char c in
     if n = 34 then "\"\"" else // z3 requires that a quote `"` be escaped as `""`
-    if n >= 32 && n <= 127 then Util.string_of_char c else 
+    if n >= 32 && n <= 127 then Util.string_of_char c else
     "\\x" ^ Util.hex_string_of_byte (Util.byte_of_char c)
-    
+
 let z3_sanitize_string s : string =
     let chars = String.list_of_string s in
     let fragments = List.map z3_sanitize_char chars in

@@ -102,19 +102,24 @@ type env = {
   universe_of    :env -> term -> universe;        (* a callback to the type-checker; g |- e : Tot (Type u) *)
   check_type_of  :bool -> env -> term -> typ -> guard_t;
   use_bv_sorts   :bool;                           (* use bv.sort for a bound-variable's type rather than consulting gamma *)
-  qname_and_index:option<(lident*int)>;           (* the top-level term we're currently processing and the nth query for it *)
+  qtbl_name_and_index:BU.smap<int> * option<(lident*int)>;    (* the top-level term we're currently processing and the nth query for it, in addition we maintain a counter for query index per lid *)
+  normalized_eff_names:BU.smap<lident>;           (* cache for normalized effect name, used to be captured in the function norm_eff_name, which made it harder to roll back etc. *)
   proof_ns       :proof_namespace;                (* the current names that will be encoded to SMT (a.k.a. hint db) *)
-  synth          :env -> typ -> term -> term;     (* hook for synthesizing terms via tactics, third arg is tactic term *)
+  synth_hook          :env -> typ -> term -> term;     (* hook for synthesizing terms via tactics, third arg is tactic term *)
+  splice         :env -> term -> list<sigelt>;    (* hook for synthesizing terms via tactics, third arg is tactic term *)
   is_native_tactic: lid -> bool;                  (* callback into the native tactics engine *)
   identifier_info: ref<FStar.TypeChecker.Common.id_info_table>; (* information on identifiers *)
   tc_hooks       : tcenv_hooks;                   (* hooks that the interactive more relies onto for symbol tracking *)
-  dsenv          : FStar.ToSyntax.Env.env;        (* The desugaring environment from the front-end *)
+  dsenv          : FStar.Syntax.DsEnv.env;        (* The desugaring environment from the front-end *)
   dep_graph      : FStar.Parser.Dep.deps          (* The result of the dependency analysis *)
 }
+and solver_depth_t = int * int * int
 and solver_t = {
     init         :env -> unit;
     push         :string -> unit;
     pop          :string -> unit;
+    snapshot     :string -> (solver_depth_t * unit);
+    rollback     :string -> option<solver_depth_t> -> unit;
     encode_modul :env -> modul -> unit;
     encode_sig   :env -> sigelt -> unit;
     preprocess   :env -> goal -> list<(env * goal * FStar.Options.optionstate)>;
@@ -151,9 +156,15 @@ val rename_env : subst_t -> env -> env
 val set_dep_graph: env -> FStar.Parser.Dep.deps -> env
 val dep_graph: env -> FStar.Parser.Dep.deps
 
-(* Marking and resetting the environment, for the interactive mode *)
-val push               : env -> string -> env
-val pop                : env -> string -> env
+val dsenv : env -> FStar.Syntax.DsEnv.env
+
+(* Marking and resetting the environment *)
+val push : env -> string -> env
+val pop : env -> string -> env
+
+type tcenv_depth_t = int * int * solver_depth_t * int
+val snapshot : env -> string -> (tcenv_depth_t * env)
+val rollback : solver_t -> string -> option<tcenv_depth_t> -> env
 
 (* Checking the per-module debug level and position info *)
 val debug          : env -> Options.debug_level_t -> bool
@@ -214,6 +225,7 @@ val inst_effect_fun_with   : universes -> env -> eff_decl -> tscheme -> term
 val push_sigelt        : env -> sigelt -> env
 val push_sigelt_inst   : env -> sigelt -> universes -> env
 val push_bv            : env -> bv -> env
+val push_bvs           : env -> list<bv> -> env
 val pop_bv             : env -> option<(bv * env)>
 val push_let_binding   : env -> lbname -> tscheme -> env
 val push_binders       : env -> binders -> env
@@ -233,7 +245,7 @@ val all_binders  : env -> binders
 val modules      : env -> list<modul>
 val uvars_in_env : env -> uvars
 val univ_vars    : env -> FStar.Util.set<universe_uvar>
-val univnames   : env -> FStar.Util.fifo_set<univ_name>
+val univnames    : env -> FStar.Util.set<univ_name>
 val lidents      : env -> list<lident>
 val fold_env     : env -> ('a -> binding -> 'a) -> 'a -> 'a
 

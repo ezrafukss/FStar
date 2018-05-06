@@ -1,5 +1,5 @@
 [
-  "i«K!o\u0004¬ šºO\\[XÁœ",
+  "J(\t„­\u0011\rðd)J—-Låø",
   [
     [
       "Canon.lem1",
@@ -7,12 +7,37 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query", "int_inversion", "int_typing",
-        "primitive_Prims.op_Addition", "primitive_Prims.op_Multiply",
-        "projection_inverse_BoxInt_proj_0"
+        "@query", "primitive_Prims.op_Addition",
+        "primitive_Prims.op_Multiply", "projection_inverse_BoxInt_proj_0"
       ],
       0,
-      "02954c70e8dbb4a9ea04f64c72e068b7"
+      "3c682c9b3b1f82616089391cbd0e781f"
+    ],
+    [
+      "Canon.lem9",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "efb71d63f3b5994cbda30119ab48aaa5"
+    ],
+    [
+      "Canon.check_canon",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "bool_inversion",
+        "disc_equation_FStar.Tactics.Result.Failed",
+        "disc_equation_FStar.Tactics.Result.Success",
+        "function_token_typing_Prims.unit",
+        "lemma_FStar.Tactics.Result.result_split",
+        "projection_inverse_BoxBool_proj_0",
+        "typing_FStar.Tactics.Result.uu___is_Failed"
+      ],
+      0,
+      "bb44192be2c5a4e9220df2b4a2be3c44"
     ]
   ]
 ]

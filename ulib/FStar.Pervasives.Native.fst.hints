@@ -1,5 +1,5 @@
 [
-  ".µ,I¶©¼HŽ€Ê\u0002*#Cù",
+  "¢i\r&ÏW\nðÁ\\ÿhïHãÛ",
   [
     [
       "FStar.Pervasives.Native.option",
@@ -8,25 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "a68bd96dccd9b7f45576ef56c6b74bb4"
-    ],
-    [
-      "FStar.Pervasives.Native.uu___is_None",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "5f00cd54de94bff94ddd2874c8a70b6b"
-    ],
-    [
-      "FStar.Pervasives.Native.uu___is_Some",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "2c2f7379056711cd2441ef05d17d35a0"
+      "9c7f210f18443a7ecd41b0d812a289cb"
     ],
     [
       "FStar.Pervasives.Native.__proj__Some__item__v",
@@ -40,7 +22,7 @@
         "refinement_interpretation_FStar.Pervasives.Native_Tm_refine_4d5241eb6fe198666a8101195bbd4a2a"
       ],
       0,
-      "4c3f86204be3428cc70feb0ec844892d"
+      "cc5b2d9a23faf055e3f84733c163b19a"
     ],
     [
       "FStar.Pervasives.Native.tuple2",
@@ -49,7 +31,7 @@
       1,
       [ "@query" ],
       0,
-      "4dfeb367ef84a65800dfe1d9369ca57c"
+      "17a8aeaf0c1d7fd8b54cec7b9e5118ac"
     ],
     [
       "FStar.Pervasives.Native.tuple3",
@@ -58,7 +40,7 @@
       1,
       [ "@query" ],
       0,
-      "4514221a9a4e5f20dd2468570a052d26"
+      "2d37495f00e4f02a13d7430dc72e0bcd"
     ],
     [
       "FStar.Pervasives.Native.tuple4",
@@ -67,7 +49,7 @@
       1,
       [ "@query" ],
       0,
-      "18096e233073dc8fb3efc4464c72a63d"
+      "85b000f7eb91bc07983efa0d33676838"
     ],
     [
       "FStar.Pervasives.Native.tuple5",
@@ -76,7 +58,7 @@
       1,
       [ "@query" ],
       0,
-      "937276a35f802bc40598726c572aeba9"
+      "dc039a9731bcb67e8ffa6d2026b3f80d"
     ],
     [
       "FStar.Pervasives.Native.tuple6",
@@ -85,7 +67,7 @@
       1,
       [ "@query" ],
       0,
-      "e9b3342888a186402a0d001afea0bac1"
+      "f94b8583a18bb5390183d000ddb134ab"
     ],
     [
       "FStar.Pervasives.Native.tuple7",
@@ -94,7 +76,7 @@
       1,
       [ "@query" ],
       0,
-      "4e91490159170ac48e090591795f3402"
+      "950841a482c18f018b81ee70000fc144"
     ],
     [
       "FStar.Pervasives.Native.tuple8",
@@ -103,7 +85,169 @@
       1,
       [ "@query" ],
       0,
-      "6e70ec5bcc1eb1982176c03cadba5a3a"
+      "29f33c2b24368ef3ba20c6de0c5049a4"
+    ],
+    [
+      "FStar.Pervasives.Native.__proj__UnfoldOnly__item___0",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "disc_equation_FStar.Pervasives.Native.UnfoldOnly",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_FStar.Pervasives.Native_Tm_refine_49a80e3a696f36051da873e693dd8572"
+      ],
+      0,
+      "d0cb2b96a9ca68a23ee6cc9fdd809911"
+    ],
+    [
+      "FStar.Pervasives.Native.__proj__UnfoldFully__item___0",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "disc_equation_FStar.Pervasives.Native.UnfoldFully",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_FStar.Pervasives.Native_Tm_refine_5daa8a0dbfb1f26488a22b8271f0f7fb"
+      ],
+      0,
+      "875c2972db6c3a9cfc78e69d6f12ec31"
+    ],
+    [
+      "FStar.Pervasives.Native.__proj__UnfoldAttr__item__t",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "disc_equation_FStar.Pervasives.Native.UnfoldAttr",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_FStar.Pervasives.Native_Tm_refine_0cce2fd214ad797cef3792b409c3a38b"
+      ],
+      0,
+      "52755cc13e2007bd0729406aa42cf661"
+    ],
+    [
+      "FStar.Pervasives.Native.__proj__UnfoldAttr__item__a",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "disc_equation_FStar.Pervasives.Native.UnfoldAttr",
+        "proj_equation_FStar.Pervasives.Native.UnfoldAttr_t",
+        "projection_inverse_BoxBool_proj_0",
+        "projection_inverse_FStar.Pervasives.Native.UnfoldAttr_t",
+        "refinement_interpretation_FStar.Pervasives.Native_Tm_refine_0cce2fd214ad797cef3792b409c3a38b"
+      ],
+      0,
+      "9be213f3f6856768c119e1bde73a7953"
+    ],
+    [
+      "FStar.Pervasives.Native.assert_norm",
+      1,
+      2,
+      1,
+      [ "@query", "equation_FStar.Pervasives.Native.normalize" ],
+      0,
+      "6027b9c4cd173b0969e4de03162fa72d"
+    ],
+    [
+      "FStar.Pervasives.Native.norm_spec",
+      1,
+      2,
+      1,
+      [ "@query", "equation_FStar.Pervasives.Native.norm" ],
+      0,
+      "2ff8aef0fc6e57122ded4bd74dff4602"
+    ],
+    [
+      "FStar.Pervasives.Native.option",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "bc4706b88083697dfdfcecf48288ec13"
+    ],
+    [
+      "FStar.Pervasives.Native.__proj__Some__item__v",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "disc_equation_FStar.Pervasives.Native.Some",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_FStar.Pervasives.Native_Tm_refine_4d5241eb6fe198666a8101195bbd4a2a"
+      ],
+      0,
+      "51c95906018e156b1b2bcd7ffce1f611"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple2",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "96f6531f4a7d36d4cca08460d1e48d87"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple3",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "b43e8e9f3b1eed4f9be86f8e3b1cda6a"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple4",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "3ade27a250a25d442f53b85ebec75bd8"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple5",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "8f2dc68389d0fbe5258bea2d9b215e46"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple6",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "150d96e617337032c028e3b25b570473"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple7",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "4706e37f95a09b632c2d4c593c97eed8"
+    ],
+    [
+      "FStar.Pervasives.Native.tuple8",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "9eb3cbbb40a177dd0612503893f6ea82"
     ]
   ]
 ]

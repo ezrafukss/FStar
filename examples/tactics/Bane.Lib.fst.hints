@@ -1,0 +1,76 @@
+[
+  "\u0017eéù\u000e§4∑|FƒQ\rÚ¡&",
+  [
+    [
+      "Bane.Lib.big_phi",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "0109be017fc387e2d10f916337873d4c"
+    ],
+    [
+      "Bane.Lib.repeat_or_fail",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_f8666440faa91836cc5a13998af863fc", "bool_inversion",
+        "bool_typing", "data_elim_FStar.Tactics.Result.Success",
+        "disc_equation_FStar.Pervasives.Native.None",
+        "disc_equation_FStar.Pervasives.Native.Some",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result",
+        "function_token_typing_Prims.unit",
+        "lemma_FStar.Pervasives.invertOption", "unit_typing"
+      ],
+      0,
+      "c61797119a8d00948dcf008165705898"
+    ],
+    [
+      "Bane.Lib.big_phi",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "cb9c0d3a2aef6e0eb2c82b81b622c382"
+    ],
+    [
+      "Bane.Lib.repeat_or_fail",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_f8666440faa91836cc5a13998af863fc", "bool_inversion",
+        "bool_typing", "data_elim_FStar.Tactics.Result.Success",
+        "disc_equation_FStar.Pervasives.Native.None",
+        "disc_equation_FStar.Pervasives.Native.Some",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result",
+        "function_token_typing_Prims.unit",
+        "lemma_FStar.Pervasives.invertOption", "unit_typing"
+      ],
+      0,
+      "2d521cba946456e296c4c6d1de42de01"
+    ],
+    [
+      "Bane.Lib.mytac",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "bool_inversion",
+        "disc_equation_FStar.Tactics.Result.Failed",
+        "disc_equation_FStar.Tactics.Result.Success",
+        "function_token_typing_Prims.unit",
+        "lemma_FStar.Tactics.Result.result_split",
+        "projection_inverse_BoxBool_proj_0",
+        "typing_FStar.Tactics.Result.uu___is_Failed"
+      ],
+      0,
+      "1f35f34c9076a5be3b2fc3cb62c9a0b7"
+    ]
+  ]
+]

@@ -47,6 +47,10 @@ type let_qualifier =
   | Rec
   | Mutable
 
+type quote_kind =
+  | Static
+  | Dynamic
+
 type term' =
   | Wild
   | Const     of sconst
@@ -83,9 +87,11 @@ type term' =
   | Requires  of term * option<string>
   | Ensures   of term * option<string>
   | Labeled   of term * string * bool
-  | Assign    of ident * term
   | Discrim   of lid   (* Some?  (formerly is_Some) *)
   | Attributes of list<term>   (* attributes decorating a term *)
+  | Antiquote of bool * term   (* Antiquotation within a quoted term. Boolean is true when value. *)
+  | Quote     of term * quote_kind
+  | VQuote    of term        (* Quoting an lid, this gets removed by the desugarer *)
 
 and term = {tm:term'; range:range; level:level}
 
@@ -111,7 +117,7 @@ and pattern' =
   | PatVector   of list<pattern>
   | PatTuple    of list<pattern> * bool (* dependent if flag is set *)
   | PatRecord   of list<(lid * pattern)>
-  | PatAscribed of pattern * term
+  | PatAscribed of pattern * (term * option<term>)
   | PatOr       of list<pattern>
   | PatOp       of ident
 and pattern = {pat:pattern'; prange:range}
@@ -197,6 +203,7 @@ type decl' =
   | Pragma of pragma
   | Fsdoc of fsdoc
   | Assume of ident * term
+  | Splice of list<ident> * term
 
 and decl = {
   d:decl';
@@ -412,7 +419,7 @@ let mkRefinedPattern pat t should_bind_pat phi_opt t_range range =
                 let x = gen t.range in
                 mk_term (Refine(mk_binder (Annotated (x, t)) t_range Type_level None, phi)) range Type_level
      in
-     mk_pattern (PatAscribed(pat, t)) range
+     mk_pattern (PatAscribed(pat, (t, None))) range
 
 let rec extract_named_refinement t1  =
     match t1.tm with
@@ -637,7 +644,8 @@ and pat_to_string x = match x.pat with
   | PatRecord l -> Util.format1 "{%s}" (to_string_l "; " (fun (f,e) -> Util.format2 "%s=%s" (f.str) (e |> pat_to_string)) l)
   | PatOr l ->  to_string_l "|\n " pat_to_string l
   | PatOp op ->  Util.format1 "(%s)" (Ident.text_of_id op)
-  | PatAscribed(p,t) -> Util.format2 "(%s:%s)" (p |> pat_to_string) (t |> term_to_string)
+  | PatAscribed(p,(t, None)) -> Util.format2 "(%s:%s)" (p |> pat_to_string) (t |> term_to_string)
+  | PatAscribed(p,(t, Some tac)) -> Util.format3 "(%s:%s by %s)" (p |> pat_to_string) (t |> term_to_string) (tac |> term_to_string)
 
 and attrs_opt_to_string = function
   | None -> ""
@@ -671,6 +679,7 @@ let decl_to_string (d:decl) = match d.d with
   | Exception(i, _) -> "exception " ^ i.idText
   | NewEffect(DefineEffect(i, _, _, _))
   | NewEffect(RedefineEffect(i, _, _)) -> "new_effect " ^ i.idText
+  | Splice (ids, t) -> "splice[" ^ (String.concat ";" <| List.map (fun i -> i.idText) ids) ^ "] (" ^ term_to_string t ^ ")"
   | SubEffect _ -> "sub_effect"
   | Pragma _ -> "pragma"
   | Fsdoc _ -> "fsdoc"

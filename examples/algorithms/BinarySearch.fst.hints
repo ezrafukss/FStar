@@ -23,7 +23,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "3c3f923b82c106695d34e893792c9786"
+      "76e13cd78f9df20552dc2c38c78490e2"
     ],
     [
       "BinarySearch.bsearch",
@@ -39,7 +39,7 @@
         "typing_FStar.Seq.Base.length"
       ],
       0,
-      "a562d5822cccd01a93b004d2d09b4721"
+      "73a86387be2db4e17160053d300422bf"
     ],
     [
       "BinarySearch.bsearch_rec_correct",
@@ -48,7 +48,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "8daebcd4d485dfbf56ebf6b1dd0d0d8d"
+      "34cacbfd424e33fa52a46f05e0f81391"
     ],
     [
       "BinarySearch.bsearch_rec_correct",
@@ -57,7 +57,7 @@
       1,
       [ "@query" ],
       0,
-      "26a27d6a6ac1025e8f4320cf72b0ccc6"
+      "981a267ac8c95582bdedfb5ebf6c2f65"
     ],
     [
       "BinarySearch.bsearch_rec_correct",
@@ -90,7 +90,7 @@
         "unit_inversion", "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "4ca61b231f7d770f5704c6a46d2f46e7"
+      "566fe1288ede85094551d4ea86952fd7"
     ],
     [
       "BinarySearch.bsearch_correct",
@@ -99,7 +99,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "f6f75dca185157b09d3824c2ef77b694"
+      "234e43065965e78690e8bdcec5747644"
     ],
     [
       "BinarySearch.bsearch_correct",
@@ -108,7 +108,7 @@
       1,
       [ "@query" ],
       0,
-      "cdd1c409edfc7a7eb1235bb9f293e821"
+      "e107836eda1325fa38084066cc00d4e1"
     ],
     [
       "BinarySearch.bsearch_correct",
@@ -125,7 +125,7 @@
         "typing_FStar.Seq.Base.length"
       ],
       0,
-      "631a5b4c1821a696930e4fb91cc625f3"
+      "55cd41c466f1610b1a1c215da6bc24c8"
     ],
     [
       "BinarySearch.hint1",
@@ -134,7 +134,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "c29fd9e1f51599d927581971ed1d1f27"
+      "84578e3a7b5038c92273253429d9e963"
     ],
     [
       "BinarySearch.hint1",
@@ -143,7 +143,7 @@
       1,
       [ "@query" ],
       0,
-      "88d4009d298bffd63625587d9d10a308"
+      "5683bd6e9b36a5e460ba961b2688fde0"
     ],
     [
       "BinarySearch.hint2",
@@ -152,7 +152,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "1d1a2e354e7f5163e733b94d81c6d77f"
+      "9d5b813fa5627f32940990a18461f7e2"
     ],
     [
       "BinarySearch.hint2",
@@ -161,7 +161,7 @@
       1,
       [ "@query" ],
       0,
-      "67398073b3adf35790fea9d99d5b1ae6"
+      "26a3331ffd69ac3f7f5b893f78e4cb20"
     ],
     [
       "BinarySearch.hint2",
@@ -170,7 +170,7 @@
       1,
       [ "@query" ],
       0,
-      "cfb2878766885e14eae512e5e87f44c2"
+      "4da41df21f55501ff57bdd80a94f61cf"
     ],
     [
       "BinarySearch.hint3",
@@ -179,7 +179,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "336e20ed665ea1cf03f41e7f2cffb1d7"
+      "71f7c0773634c1d41f7a637b4f61a1df"
     ],
     [
       "BinarySearch.hint3",
@@ -188,7 +188,7 @@
       1,
       [ "@query" ],
       0,
-      "66c2bccd603b860a3baca83c622b2c81"
+      "ba4684493e0a5ace20199540def9cc1f"
     ],
     [
       "BinarySearch.hint4",
@@ -197,7 +197,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "ba88cae1a7a51c330c11b97a1c7234bd"
+      "8d0fbe75c82b67a6aecd6d5d0a068520"
     ],
     [
       "BinarySearch.hint4",
@@ -206,7 +206,7 @@
       1,
       [ "@query" ],
       0,
-      "6e51f449502a0cb35692d0beb7d1962b"
+      "69f6177d0bd272a3244c48f48336bd85"
     ],
     [
       "BinarySearch.hint4",
@@ -215,7 +215,7 @@
       1,
       [ "@query" ],
       0,
-      "67a7fa8a0ed0e51aa85cbac982f3ecdf"
+      "07abc680edcfcd4f1596ce95af43380f"
     ],
     [
       "BinarySearch.bsearch_rec_complete",
@@ -224,7 +224,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "0ca15de224e856e9236377e77fd526dc"
+      "57fc87baf634c450e2a42a3b216c4d61"
     ],
     [
       "BinarySearch.bsearch_rec_complete",
@@ -233,7 +233,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "8d073b821427b1551321c68399bd0139"
+      "3243f5c5609b7c2feff7aedcec398201"
     ],
     [
       "BinarySearch.bsearch_rec_complete",
@@ -242,7 +242,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "32cf97bb6615dc8eea8fab6af17b37a1"
+      "5f1a0f4cad45ec8ece3e0cbb6bc001f2"
     ],
     [
       "BinarySearch.bsearch_rec_complete",
@@ -258,13 +258,13 @@
         "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
       ],
       0,
-      "2d5439eca978e5bc8dd86f2f2e5f3ebe"
+      "74fafceee88bb654e147153a4927b1c7"
     ],
     [
       "BinarySearch.bsearch_rec_complete",
       5,
       2,
-      2,
+      1,
       [
         "@MaxFuel_assumption", "@MaxIFuel_assumption",
         "@fuel_correspondence_BinarySearch.bsearch_rec.fuel_instrumented",
@@ -290,7 +290,7 @@
         "unit_inversion", "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "18b9c04bb1f2a8f90b28376ef7e5e050"
+      "c76b5a35c18836f298d9394714a2ae66"
     ],
     [
       "BinarySearch.bsearch_complete",
@@ -299,7 +299,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "5cd16eefaebdd5e84f57467f1991a91d"
+      "ff8bb6e74756722d2856c0f14a29e723"
     ],
     [
       "BinarySearch.bsearch_complete",
@@ -308,7 +308,7 @@
       1,
       [ "@query" ],
       0,
-      "e955e73c43f50441f867693e1ac40a69"
+      "23d4661f23609d5166fd603da5a8c3ba"
     ],
     [
       "BinarySearch.bsearch_complete",
@@ -325,7 +325,126 @@
         "typing_FStar.Seq.Base.length"
       ],
       0,
-      "3c793bdb774553dac68eabf51e07bf8e"
+      "28bbfac140c6d9f446f96d984f6ac4a6"
+    ],
+    [
+      "BinarySearch.bsearch_rec",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "assumption_Prims.HasEq_int",
+        "binder_x_0dadc9957b7ee1a2ac2dc6b84bb90882_2",
+        "binder_x_6d0180d4fcd10237cf0d87dd345d77cc_1",
+        "binder_x_a5d09bc7a6a83a40c35ac7a2c288dc24_3",
+        "equality_tok_Prims.LexTop@tok", "equation_Prims.nat",
+        "int_inversion", "int_typing", "primitive_Prims.op_Addition",
+        "primitive_Prims.op_Division", "primitive_Prims.op_GreaterThan",
+        "primitive_Prims.op_Subtraction", "projection_inverse_BoxInt_proj_0",
+        "refinement_interpretation_BinarySearch_Tm_refine_83f587e68677148e460204d370039d71",
+        "refinement_interpretation_BinarySearch_Tm_refine_a93f3eba5c28d8b55b52c4768a290543",
+        "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d",
+        "well-founded-ordering-on-nat"
+      ],
+      0,
+      "ee21c43e5b87507a3da322ebc4a3fb3c"
+    ],
+    [
+      "BinarySearch.bsearch",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "equation_Prims.nat", "function_token_typing_Prims.int",
+        "primitive_Prims.op_Subtraction", "projection_inverse_BoxInt_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d",
+        "typing_FStar.Seq.Base.length"
+      ],
+      0,
+      "07b1c0bca995b344d51ea5260310af09"
+    ],
+    [
+      "BinarySearch.bsearch_rec_correct",
+      4,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "a8c9781d303fa601d8a5ac0a2d8d6b9b"
+    ],
+    [
+      "BinarySearch.bsearch_correct",
+      4,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "f675ea366b70b31cb7fb26b19dd96777"
+    ],
+    [
+      "BinarySearch.hint1",
+      3,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "78ac75bdf947b394c52e60dfc99ff5f0"
+    ],
+    [
+      "BinarySearch.hint2",
+      4,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "8d8caa386b7bda43ac7b7cf6d50fd53c"
+    ],
+    [
+      "BinarySearch.hint3",
+      3,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "06421b0e690692b30f9bd6b31888d0a3"
+    ],
+    [
+      "BinarySearch.hint4",
+      4,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "3abab3c9d1048a7a107e0c31d8a616cd"
+    ],
+    [
+      "BinarySearch.bsearch_rec_complete",
+      6,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "refinement_interpretation_BinarySearch_Tm_refine_3563fa7d995b97274b974a539cb0ae0b",
+        "refinement_interpretation_FStar.Seq.Base_Tm_refine_cd046bc4a887ee7e1b05946e0bf5772b",
+        "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "38a8de3a3a37c7175fb8cd7ff16173d3"
+    ],
+    [
+      "BinarySearch.bsearch_complete",
+      4,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "03226341978677d54e27cb977bd3182b"
     ]
   ]
 ]

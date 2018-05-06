@@ -1,5 +1,5 @@
 [
-  "\u0005§Ó¡|\\\u0007·\u000b%<4…¡¿à",
+  "\u001eŒ±Zò´oQQ\u0004Ô$\u001bì",
   [
     [
       "Prims.Ghost",
@@ -8,7 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "a2c7a42b7468b0e8fcc7e3ed0d7aa15a"
+      "3f5a0d9931c27854b148794597ff8e16"
     ],
     [
       "Prims.list",
@@ -17,7 +17,33 @@
       1,
       [ "@query" ],
       0,
-      "480cb4cdaaed1d17d05d116fbd270de4"
+      "91b76c2b668ecfb89f0d9bced584a531"
+    ],
+    [
+      "Prims.__proj__Cons__item__hd",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_Prims.Cons",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
+      ],
+      0,
+      "b3660bdc5cc61f3a4fc9ec6faf030873"
+    ],
+    [
+      "Prims.__proj__Cons__item__tl",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_Prims.Cons",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
+      ],
+      0,
+      "c6801107d10c01439b3408228176c46a"
     ],
     [
       "Prims.Lemma",
@@ -29,7 +55,7 @@
         "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "74c4347d018642e67c00aa42908e2cc3"
+      "e63b5028478f39fa4a882614d48874a1"
     ],
     [
       "Prims._assert",
@@ -38,19 +64,16 @@
       1,
       [ "@query" ],
       0,
-      "200a09da016e7ff2c7d14eed9f6dcda0"
+      "45e76d3f98929a548fce928118bbce15"
     ],
     [
       "Prims.assert_spinoff",
       1,
       2,
       1,
-      [
-        "@MaxIFuel_assumption", "@query", "equation_Prims.squash",
-        "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
-      ],
+      [ "@query" ],
       0,
-      "1c00a13fa2145c827d865b8258508e78"
+      "cc66f0a6be14547e30cbe2dcf387cdd8"
     ],
     [
       "Prims.cut",
@@ -59,7 +82,7 @@
       1,
       [ "@query" ],
       0,
-      "219ceab6418c376c3fffd4ddae6d179a"
+      "13b53fae335ab9d9d022ab9cd5ada46a"
     ],
     [
       "Prims.nonzero",
@@ -68,7 +91,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "306003244323f27cf63086da05b39138"
+      "66f7c38374f6b9519e7c673378bf894a"
     ],
     [
       "Prims.pow2",
@@ -78,70 +101,98 @@
       [
         "@MaxIFuel_assumption", "@query",
         "Prims_pretyping_ae567c2fb75be05905677af440075565",
-        "binder_x_e22ba7a032a73f6d0678d3d186686631_0", "equation_Prims.nat",
-        "equation_Prims.pos", "int_inversion", "int_typing",
-        "primitive_Prims.op_Multiply", "primitive_Prims.op_Subtraction",
-        "projection_inverse_BoxInt_proj_0",
+        "equation_Prims.nat", "equation_Prims.pos", "int_inversion",
+        "int_typing", "primitive_Prims.op_Multiply",
+        "primitive_Prims.op_Subtraction", "projection_inverse_BoxInt_proj_0",
         "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d",
         "refinement_interpretation_Prims_Tm_refine_f048236b5f8051f83b495ea5eaa6127b",
         "well-founded-ordering-on-nat"
       ],
       0,
-      "743ed798a75712190ef3d927497ff3db"
+      "750ab296e7b22e1a37223a87acdfba8e"
     ],
     [
-      "Prims.min",
+      "Prims.Ghost",
+      2,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "65c185f210a76968de96f2767edc8f33"
+    ],
+    [
+      "Prims.list",
       1,
       2,
       1,
-      [ "@MaxIFuel_assumption", "@query", "int_inversion" ],
+      [ "@query" ],
       0,
-      "58acb9c0b806a9e7ce3925612c961fe4"
+      "dc4c0a3e03b7bf0cb5914e344a089de9"
     ],
     [
-      "Prims.abs",
-      1,
+      "Prims.__proj__Cons__item__hd",
+      2,
       2,
       1,
-      [ "@MaxIFuel_assumption", "@query", "int_inversion" ],
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_Prims.Cons",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
+      ],
       0,
-      "1bfb5afa824dfc5f349b63f782e368ec"
+      "5d5bbbc4be896d62f065d3e3db087e90"
     ],
     [
-      "Prims.assert_norm",
-      1,
+      "Prims.__proj__Cons__item__tl",
+      2,
       2,
       1,
-      [ "@query", "equation_Prims.normalize" ],
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_Prims.Cons",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
+      ],
       0,
-      "eac939e65c51eaa26448ff8fb8622b98"
+      "6152e925de756d9d7c935782679ad2dc"
     ],
     [
-      "Prims.normalize_term_spec",
-      1,
+      "Prims.Lemma",
+      2,
       2,
       1,
-      [ "@query", "equation_Prims.normalize_term" ],
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
+      ],
       0,
-      "9704d7fd5c43d06f84547244d7819a36"
+      "8641e9902515554ff208f26ad75f5c68"
     ],
     [
-      "Prims.normalize_spec",
-      1,
+      "Prims.nonzero",
+      2,
       2,
       1,
-      [ "@query", "equation_Prims.normalize" ],
+      [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "340eb839b2812e53cfc6da3ce93fe2c6"
+      "bf659a0d39ffeefe0c375525f955e915"
     ],
     [
-      "Prims.norm_spec",
-      1,
+      "Prims.pow2",
+      2,
       2,
       1,
-      [ "@query", "equation_Prims.norm" ],
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "equation_Prims.nat", "equation_Prims.pos", "int_inversion",
+        "int_typing", "primitive_Prims.op_Multiply",
+        "primitive_Prims.op_Subtraction", "projection_inverse_BoxInt_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d",
+        "refinement_interpretation_Prims_Tm_refine_f048236b5f8051f83b495ea5eaa6127b",
+        "well-founded-ordering-on-nat"
+      ],
       0,
-      "b407c16bdb588d49ebcd8965d99c4238"
+      "415dfbc1fe49db968f79830c65b22d24"
     ]
   ]
 ]

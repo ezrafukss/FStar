@@ -8,7 +8,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "5c60dbba7fd89f1d4a04171399bcbe5f"
+      "f54c8dc1ddb7a3a3565b5dd6fc43f00b"
     ],
     [
       "Gcd.times_one",
@@ -22,7 +22,7 @@
         "refinement_interpretation_Prims_Tm_refine_f048236b5f8051f83b495ea5eaa6127b"
       ],
       0,
-      "be167ab2c1121123dc8c42a691edfbc9"
+      "5a5fd4c4623dbbb350434d9220ad4244"
     ],
     [
       "Gcd.a_divides_a'",
@@ -31,7 +31,7 @@
       1,
       [ "@query" ],
       0,
-      "87551365a684fe9c1b41c6ad62f432fe"
+      "71bf51ab3f1bdaf848c69604f68e7c13"
     ],
     [
       "Gcd.gcd_triv",
@@ -40,7 +40,25 @@
       1,
       [ "@query", "equation_Gcd.is_gcd" ],
       0,
-      "d85c4f6643fcfd866f95e8664b4a6f49"
+      "4b666519ccb5af545846158004b3b921"
+    ],
+    [
+      "Gcd.times_one",
+      3,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "0b3f32f774680f1d011abfc1880117bc"
+    ],
+    [
+      "Gcd.a_divides_a'",
+      2,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "1e91423c4f3430fb75f94c368ec428e4"
     ]
   ]
 ]

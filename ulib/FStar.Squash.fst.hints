@@ -1,5 +1,5 @@
 [
-  "tMm&nRf<ìóÄª\bãE2",
+  "ÿ¿=}Hð³\"\u001dfç\"\u0006+\u001ay",
   [
     [
       "FStar.Squash.return_squash",
@@ -8,7 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "e0ca384f7b0851cda9c7c01a02bde82a"
+      "923c467cb78126408af68db598e050db"
     ],
     [
       "FStar.Squash.get_proof",
@@ -23,7 +23,7 @@
         "unit_typing"
       ],
       0,
-      "80c4496bafd9ebecdb2e60b4daa71dee"
+      "80fdf367f50e7d08098a0c31ee38f2dd"
     ],
     [
       "FStar.Squash.give_proof",
@@ -36,7 +36,7 @@
         "unit_typing"
       ],
       0,
-      "e4c7b52dd882936c63324c391935fcf6"
+      "a17ebc155578cb915f129e084c3447ac"
     ],
     [
       "FStar.Squash.proof_irrelevance",
@@ -49,7 +49,7 @@
         "unit_inversion"
       ],
       0,
-      "98beed7702460d9f02444bc364c8c191"
+      "44383d582818c98928164ccb2d9035be"
     ]
   ]
 ]

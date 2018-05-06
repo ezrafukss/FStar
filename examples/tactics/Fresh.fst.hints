@@ -1,0 +1,35 @@
+[
+  "5\f&\u000fÃ÷0áO°[Ì©Z‰\u0018",
+  [
+    [
+      "Fresh.uu___61",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "assumption_Prims.HasEq_int", "equation_FStar.UInt32.n",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result",
+        "function_token_typing_FStar.UInt32.n"
+      ],
+      0,
+      "4be9d270a98b9958048050f58e1720de"
+    ],
+    [
+      "Fresh.uu___61",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "assumption_Prims.HasEq_int", "equation_FStar.UInt32.n",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result",
+        "function_token_typing_FStar.UInt32.n"
+      ],
+      0,
+      "e1e3c9f681b885f1ee2a6c8785c9d116"
+    ]
+  ]
+]

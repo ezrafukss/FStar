@@ -14,20 +14,16 @@
         "equation_FStar.UInt.fits", "equation_FStar.UInt.max_int",
         "equation_FStar.UInt.min_int", "equation_FStar.UInt32.n",
         "equation_FStar.UInt64.n", "equation_Prims.nat",
-        "equation_X64.Machine_s.nat64", "equation_X64.Machine_s.nat64_max",
         "function_token_typing_FStar.UInt32.n",
         "function_token_typing_FStar.UInt64.n",
         "lemma_FStar.UInt.pow2_values", "primitive_Prims.op_AmpAmp",
         "primitive_Prims.op_LessThanOrEqual",
         "projection_inverse_BoxBool_proj_0",
         "projection_inverse_BoxInt_proj_0",
-        "refinement_interpretation_FStar.Seq.Base_Tm_refine_5514fbe9e08dfda40f950a7b9f1b2b98",
-        "refinement_interpretation_Prims_Tm_refine_a4038d5aed1633b5ecbb4e499b1c66ad",
-        "refinement_interpretation_X64.Machine_s_Tm_refine_55943d92e722674baa8d26e78448fa33",
-        "typing_X64.Machine_s.int_to_nat64"
+        "refinement_interpretation_Prims_Tm_refine_a4038d5aed1633b5ecbb4e499b1c66ad"
       ],
       0,
-      "c6d72ebf3bb98b79956ccca2ec811728"
+      "520a98fd12abe5d942d69617908edfd4"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_eq",
@@ -51,7 +47,7 @@
         "typing_X64.Vale.StateLemmas_i.state_to_S"
       ],
       0,
-      "340d238522cbf063557bc1eeaa7c94c0"
+      "cc805effa4c026b6952398e78bf884d1"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_ne",
@@ -60,12 +56,12 @@
       0,
       [
         "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
-        "equation_X64.Machine_s.nat64", "equation_X64.Machine_s.nat64_max",
-        "haseqFStar.Seq.Base_Tm_refine_5514fbe9e08dfda40f950a7b9f1b2b98",
-        "haseqPrims_Tm_refine_a4038d5aed1633b5ecbb4e499b1c66ad"
+        "equation_X64.Machine_s.nat64",
+        "haseqPrims_Tm_refine_a4038d5aed1633b5ecbb4e499b1c66ad",
+        "haseqX64.Machine_s_Tm_refine_a958d176a23ad3ddcb306d485b43c341"
       ],
       0,
-      "cb77342d6011f68344ae5913f2e8ae0d"
+      "7389e8f1620eba26d2c61e3094a39b1c"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_ne",
@@ -90,7 +86,7 @@
         "typing_X64.Vale.StateLemmas_i.state_to_S"
       ],
       0,
-      "a08eb3b1a6310b767d508afda23b7338"
+      "7310e3099447e4a1e8dabbecbbd93d2b"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_le",
@@ -110,7 +106,7 @@
         "projection_inverse_X64.Semantics_s.OLe_o2"
       ],
       0,
-      "3f1720ea7477a4521a50c2baea3e0494"
+      "c2f3ebb9d3abf53be7fe4c7f1e034bca"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_ge",
@@ -130,7 +126,7 @@
         "projection_inverse_X64.Semantics_s.OGe_o2"
       ],
       0,
-      "1679b072191e2ff5c3832feb1943955f"
+      "4663070c5f17851ff4272b5757146f66"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_lt",
@@ -149,7 +145,7 @@
         "projection_inverse_X64.Semantics_s.OLt_o2"
       ],
       0,
-      "609f24cb2194ec9b29d6bab85960dd96"
+      "195162815f4cc087f1c50e0d164e2b2f"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_cmp_gt",
@@ -169,7 +165,7 @@
         "projection_inverse_X64.Semantics_s.OGt_o2"
       ],
       0,
-      "c4a599362951c920604f00ae040e958f"
+      "015a2af7f8a25a76db282d6c9562731b"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_block",
@@ -181,20 +177,11 @@
         "equation_X64.Semantics_s.code", "projection_inverse_BoxBool_proj_0"
       ],
       0,
-      "b4b3b44f1eb5c87b286439462be1e150"
+      "f61bdeaae9285c59be0e6b72976e9465"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_ifElse",
       1,
-      2,
-      0,
-      [ "@query" ],
-      0,
-      "22e09e001cfed2cacc26b75ad249564e"
-    ],
-    [
-      "X64.Vale.Lemmas_i.lemma_ifElse",
-      2,
       2,
       0,
       [
@@ -216,19 +203,16 @@
         "refinement_interpretation_Prims_Tm_refine_a4038d5aed1633b5ecbb4e499b1c66ad"
       ],
       0,
-      "c01dba11fe5e94e9abd9950b96cee004"
+      "bf521263a105fb97dff137deca1c4406"
     ],
     [
       "X64.Vale.Lemmas_i.lemma_whileTrue",
       1,
       2,
       0,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "refinement_interpretation_X64.Vale.Lemmas_i_Tm_refine_7fa7a41c1e20c3dff0ea3ced22f336d0"
-      ],
+      [ "@query" ],
       0,
-      "65677b2846aa892e242721e263270de9"
+      "b23879aa7917245abab5df423e64fcea"
     ]
   ]
 ]

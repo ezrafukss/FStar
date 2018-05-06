@@ -122,21 +122,6 @@ clean_extracted:
 # --------------------------------------------------------------------
 OTHERFLAGS+=--hint_info
 
-utest:
-	+$(MAKE) utest-prelude
-	+$(MAKE) uregressions
-
-# The first tests have to be performed sequentially (but each one may use some parallelism)
-utest-prelude:
-	+$(MAKE) boot-ocaml        #build the ocaml-snapshot
-	+$(MAKE) clean_extracted   #ensures that there is no leftover from previous extraction
-	+$(MAKE) fstar-ocaml       #extract the compiler again and build the result
-	+$(MAKE) ocaml-unit-tests  #run the unit tests
-	+$(MAKE) fstarlib
-
-ocaml-unit-tests:
-	$(BIN)/tests.exe
-
 # The regressions to be run with a working F# build of F*
 fsharp-unit-tests:
 ifeq ($(OS),Windows_NT)
@@ -146,20 +131,43 @@ else
 	ulimit -s unlimited; $(RUNTIME) $(BIN)/tests.exe
 endif
 
+fsharp-build-and-test:
+	+$(MAKE) fstar-in-fsharp
+	+$(MAKE) fsharp-unit-tests
+
+utest:
+	+$(MAKE) utest-prelude
+	+$(MAKE) uregressions
+
+# The first tests have to be performed sequentially (but each one may use some parallelism)
+# Adding the F# build and F# tests also here
+#   since in the uregressions target it may not be a good idea to override the fstar.exe binary?
+utest-prelude: fsharp-build-and-test
+	+$(MAKE) boot-ocaml        #build the ocaml-snapshot
+	+$(MAKE) clean_extracted   #ensures that there is no leftover from previous extraction
+	+$(MAKE) fstar-ocaml       #extract the compiler again and build the result
+	+$(MAKE) ocaml-unit-tests  #run the unit tests
+	+$(MAKE) fstarlib
+
+ocaml-unit-tests:
+	$(BIN)/tests.exe
+
 # Getting parallelism from this target
-uregressions: fstarlib ulib tutorial uexamples interactive-test
+uregressions: ulib-extra tutorial uexamples interactive-test prettyprinting-tests
 
 # Getting parallelism from this target as well
-uregressions-ulong: uregressions ulib-extra
-
-ulib-extra:
-	+$(MAKE) -C ../ulib -f Makefile.verify extra
+# This is a hook for nightly builds (on Linux)
+# But, at the moment, it tests the same files as get tested on every push
+# We may add more nightly tests here in the future
+uregressions-ulong: uregressions
 
 fstarlib:
 	+$(MAKE) -C ../ulib/ml
-
-ulib:
+	+$(MAKE) -C ../ulib install-fstar-tactics
 	+$(MAKE) -C ../ulib
+
+ulib-extra:
+	+$(MAKE) -C ../ulib extra
 
 tutorial: fstarlib
 	+$(MAKE) -C ../doc/tutorial regressions
@@ -171,9 +179,10 @@ uexamples: fstarlib
 interactive-test:
 	$(MAKE) -C tests/interactive
 
+prettyprinting-tests:
+	$(MAKE) -C tests/prettyprinting
+
 ulong:
-	+$(MAKE) fstar-in-fsharp
-	+$(MAKE) fsharp-unit-tests
 	+$(MAKE) utest-prelude
 	+$(MAKE) uregressions-ulong
 

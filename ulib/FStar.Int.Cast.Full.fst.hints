@@ -11,7 +11,7 @@
         "projection_inverse_BoxInt_proj_0"
       ],
       0,
-      "eb2ff00b7e8bea5291fadc2d67c72cd7"
+      "567152400705728ca36fb7b60a780737"
     ],
     [
       "FStar.Int.Cast.Full.uint128_to_uint64",
@@ -30,7 +30,40 @@
         "refinement_interpretation_FStar.UInt_Tm_refine_a347709bfeba48709474ad26f4f6be87"
       ],
       0,
-      "9464e4ace810860cc30735832a590134"
+      "95ce4d5a9a7ede8395cc42dc9421fbdd"
+    ],
+    [
+      "FStar.Int.Cast.Full.uint64_to_uint128",
+      2,
+      2,
+      1,
+      [
+        "@query", "equation_FStar.UInt128.n",
+        "projection_inverse_BoxInt_proj_0"
+      ],
+      0,
+      "f87690761bc4394612489c7f0ffa6475"
+    ],
+    [
+      "FStar.Int.Cast.Full.uint64_to_uint128",
+      3,
+      2,
+      1,
+      [
+        "@query", "equation_FStar.UInt128.n",
+        "projection_inverse_BoxInt_proj_0"
+      ],
+      0,
+      "6029b8b5e8f54eb7b74a02a173ad9440"
+    ],
+    [
+      "FStar.Int.Cast.Full.uint128_to_uint64",
+      2,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "a1e54aecb9bde69cdb0076e005c5a1a8"
     ]
   ]
 ]

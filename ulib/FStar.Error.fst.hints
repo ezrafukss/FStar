@@ -8,16 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "70fb4527eee04048fc36fdf61631cc2b"
-    ],
-    [
-      "FStar.Error.uu___is_Error",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "243bbdc1d1bb2a83c717240a2e5e9731"
+      "2694b2f57278527ba4b70d6c9f2ef762"
     ],
     [
       "FStar.Error.__proj__Error__item___0",
@@ -30,16 +21,7 @@
         "refinement_interpretation_FStar.Error_Tm_refine_813a5bb4d39ab83f71d70e865ca6a2c8"
       ],
       0,
-      "39fc52429b5e046d5330f79352139535"
-    ],
-    [
-      "FStar.Error.uu___is_Correct",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "bf3eed2a5c6f1c05636be6c60d78c0fb"
+      "5b5d4b2fc3fcb9d61d51c209e327c4bd"
     ],
     [
       "FStar.Error.__proj__Correct__item___0",
@@ -53,7 +35,7 @@
         "refinement_interpretation_FStar.Error_Tm_refine_9570651724fccc40ed9243df14ac4feb"
       ],
       0,
-      "2cc76b99ee850f277a1784fffe1b3942"
+      "2d6660cc9bda3a7f401a63219912930f"
     ],
     [
       "FStar.Error.invertOptResult",
@@ -68,7 +50,43 @@
         "projection_inverse_BoxBool_proj_0"
       ],
       0,
-      "6bf4ae97cdd128d7bc488edd340f2ac6"
+      "dc0098f1d84c3ad953ef0016f3999c6b"
+    ],
+    [
+      "FStar.Error.optResult",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "66b6213e148f919cda0a13effd4e0a52"
+    ],
+    [
+      "FStar.Error.__proj__Error__item___0",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_FStar.Error.Error",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_FStar.Error_Tm_refine_813a5bb4d39ab83f71d70e865ca6a2c8"
+      ],
+      0,
+      "8e6e1cfebebdae36f0f40aca76902b6a"
+    ],
+    [
+      "FStar.Error.__proj__Correct__item___0",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "disc_equation_FStar.Error.Correct",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_FStar.Error_Tm_refine_9570651724fccc40ed9243df14ac4feb"
+      ],
+      0,
+      "21cf6649511a76b993f33a31177a6521"
     ]
   ]
 ]

@@ -8,16 +8,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_string" ],
       0,
-      "f4febafd5828f820da9ea5569b14efa6"
-    ],
-    [
-      "Ex10a.uu___is_Readable",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "d8b56ce2733c8848c7cb4ea09bc42111"
+      "78b4fee85e40d1cc9f95fa4a55cfaf27"
     ],
     [
       "Ex10a.__proj__Readable__item___0",
@@ -30,16 +21,7 @@
         "refinement_interpretation_Ex10a_Tm_refine_43c663371132c0c847de0562111b3034"
       ],
       0,
-      "f820c5a4cb8f1b5eb9d1e3422bebf468"
-    ],
-    [
-      "Ex10a.uu___is_Writable",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "6908af89105d98ca784a71a29083c97b"
+      "6c1305c105f8886251d3be2b4169d6bd"
     ],
     [
       "Ex10a.__proj__Writable__item___0",
@@ -52,7 +34,7 @@
         "refinement_interpretation_Ex10a_Tm_refine_b7c189cb365c663bbaaab1bb8e2e94da"
       ],
       0,
-      "315a9fe67d1dcb430e40032bb001f22e"
+      "5b89d7a94dcc40b6cad5c99977e42d73"
     ],
     [
       "Ex10a.canWrite",
@@ -61,7 +43,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_string" ],
       0,
-      "8ace08aab60b4fd2a1535ec3c60d9d43"
+      "a47dcc15da0929f0c7d6e5129d789b6e"
     ],
     [
       "Ex10a.canRead",
@@ -74,7 +56,7 @@
         "fuel_guarded_inversion_Ex10a.entry"
       ],
       0,
-      "8fbac3d41d67b5e08062773b8d1f724f"
+      "cd7cb39beb495c8c73a59d76fd4583f1"
     ],
     [
       "Ex10a.safe_delete",
@@ -96,7 +78,7 @@
         "string_inversion", "unit_inversion", "unit_typing"
       ],
       0,
-      "e20be66831b136112083a0ec9c303d08"
+      "082f624214387cff73e9b89fcc070861"
     ],
     [
       "Ex10a.test_acls",
@@ -108,7 +90,7 @@
         "@fuel_correspondence_FStar.List.Tot.Base.tryFind.fuel_instrumented",
         "@query", "Prims_pretyping_f537159ed795b314b4e58c260361ae86",
         "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
-        "assumption_Ex10a.entry_haseq", "bool_typing",
+        "assumption_Ex10a.entry__uu___haseq", "bool_typing",
         "constructor_distinct_Ex10a.Readable",
         "constructor_distinct_FStar.Pervasives.Native.Some",
         "constructor_distinct_Prims.Cons",
@@ -126,7 +108,77 @@
         "projection_inverse_Prims.Cons_tl", "unit_typing"
       ],
       0,
-      "2f3a8f95b04b0e53326dd2f84a6aff3b"
+      "5575a49356108e83d2006826a9531e25"
+    ],
+    [
+      "Ex10a.entry",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_string" ],
+      0,
+      "8aba5547a15e9de6ca9cae0059c435f1"
+    ],
+    [
+      "Ex10a.__proj__Readable__item___0",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_Ex10a.Readable",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Ex10a_Tm_refine_43c663371132c0c847de0562111b3034"
+      ],
+      0,
+      "4b46864235ee6187a836b25a036c04ec"
+    ],
+    [
+      "Ex10a.__proj__Writable__item___0",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "disc_equation_Ex10a.Writable",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Ex10a_Tm_refine_b7c189cb365c663bbaaab1bb8e2e94da"
+      ],
+      0,
+      "bdcc1225a8fa7c7194cd21bcc18e7f89"
+    ],
+    [
+      "Ex10a.canWrite",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_string" ],
+      0,
+      "de186ae17fb5236a2bb982f6bcd8d4fd"
+    ],
+    [
+      "Ex10a.canRead",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "assumption_Prims.HasEq_string",
+        "disc_equation_Ex10a.Readable", "disc_equation_Ex10a.Writable",
+        "fuel_guarded_inversion_Ex10a.entry"
+      ],
+      0,
+      "c2d627ada3e456d566dadbbfe7219fdb"
+    ],
+    [
+      "Ex10a.revoke",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "assumption_Ex10a.entry__uu___haseq",
+        "refinement_interpretation_Ex10a_Tm_refine_f978ff754af8f266cb4edc62e2a055cb"
+      ],
+      0,
+      "5d9d3ee2598fdad876fa1a90f8a9fe51"
     ]
   ]
 ]

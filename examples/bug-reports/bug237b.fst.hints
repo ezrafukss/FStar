@@ -8,25 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "9aba28fa0b6cb5c38db07d2ddf6fdf4d"
-    ],
-    [
-      "Bug237b.uu___is_KType",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "cbd8ad68ab1b77c35b00d7ed7f437702"
-    ],
-    [
-      "Bug237b.uu___is_KKArr",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "8a458d36e567de6a25d9314684aa133d"
+      "bd0dda85370ef3e1be1dd3a5b667fc3e"
     ],
     [
       "Bug237b.__proj__KKArr__item___0",
@@ -39,7 +21,7 @@
         "refinement_interpretation_Bug237b_Tm_refine_5c691036dc4779e118afb73673a21bac"
       ],
       0,
-      "7df79acb22633a95ce068140f2c056a9"
+      "a67c0d8960a01ecf08d0515cc1c17ac9"
     ],
     [
       "Bug237b.kinding",
@@ -47,29 +29,12 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query", "assumption_Bug237b.knd_haseq",
+        "@MaxIFuel_assumption", "@query",
+        "assumption_Bug237b.knd__uu___haseq",
         "data_typing_intro_Bug237b.KKArr@tok"
       ],
       0,
-      "2fa0b3e4fc6e3586127fda2369719dfd"
-    ],
-    [
-      "Bug237b.uu___is_KConst",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "64775a6ffcb6a06847836d831652ba25"
-    ],
-    [
-      "Bug237b.uu___is_KTApp",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "939997ac02cf4abfbfd3d276630a242b"
+      "1f7b6965a1dd2b5a5f9aeae7a3a2bbea"
     ],
     [
       "Bug237b.__proj__KTApp__item__k'",
@@ -82,7 +47,7 @@
         "refinement_interpretation_Bug237b_Tm_refine_ab9267cf714b6e732ad5733047d371de"
       ],
       0,
-      "750b9d0577e5985be12429e6557f3edd"
+      "f45e1251c3c4f5ed9ab8d667f54786c9"
     ],
     [
       "Bug237b.__proj__KTApp__item__hk1",
@@ -97,7 +62,7 @@
         "refinement_interpretation_Bug237b_Tm_refine_ab9267cf714b6e732ad5733047d371de"
       ],
       0,
-      "0622dca74f29760336dcf0c218dac98a"
+      "36db2dbbb3e52e8f387b8bff8c27ccc3"
     ],
     [
       "Bug237b.k_foralle",
@@ -109,7 +74,7 @@
         "equation_Bug237b.ktsubst_beta"
       ],
       0,
-      "5f26e8916215192fdbc3bcc1dc657c84"
+      "4a92e92025ce6ce28d9893defae9024d"
     ]
   ]
 ]

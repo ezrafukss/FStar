@@ -1,5 +1,5 @@
 [
-  "‚\u000fÌðý¿C4ÿ6®$Å1|Þ",
+  " ÍØ)lå+‘\u001a\u0001½ëf‰R\u0014",
   [
     [
       "Sequences.unrefine_eq_lem",
@@ -12,34 +12,7 @@
         "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "ee007cbf380f080ec3808250e1c1578d"
-    ],
-    [
-      "Sequences.prune_for_seq",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "0f95b4b623fc2c34755704ba2187f035"
-    ],
-    [
-      "Sequences.try_unref_eq",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "ff00e0aed475873d41d7f71bfb9e3777"
-    ],
-    [
-      "Sequences.sequence_pruning",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "7b0123a4e49525ffec542ab8678cbf2d"
+      "8245e08d61dbfd653d05d0ab727d887a"
     ],
     [
       "Sequences.test",
@@ -61,7 +34,7 @@
         "typing_FStar.Seq.Base.create"
       ],
       0,
-      "f5e205775575b614f2b02b3bca386e79"
+      "3708b71e44f2212947367674b925bbcc"
     ],
     [
       "Sequences.test",
@@ -81,7 +54,7 @@
         "unit_typing"
       ],
       0,
-      "95f6e554312a10eb228684356435008d"
+      "28e1848b7da5bf7d39ddd6c49fb23079"
     ],
     [
       "Sequences.test",
@@ -101,7 +74,7 @@
         "unit_typing"
       ],
       0,
-      "a7e13e5b86e954f57e31ed81d2e61172"
+      "2adefbd60c4827b4ee1c6b0216b570e2"
     ],
     [
       "Sequences.test",
@@ -134,7 +107,7 @@
         "unit_typing"
       ],
       0,
-      "2ceb2b4179d1992aeecd05d32abfdb4d"
+      "000b78439990805b65b0681bc9d83b99"
     ]
   ]
 ]

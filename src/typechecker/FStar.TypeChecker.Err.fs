@@ -89,10 +89,6 @@ let expected_expression_of_type env t1 e t2 =
   (Errors.Fatal_UnexpectedExpressionType, (format3 "Expected expression of type \"%s\"; got expression \"%s\" of type \"%s\""
     s1 (Print.term_to_string e) s2))
 
-let expected_function_with_parameter_of_type env t1 t2 =
-  let s1, s2 = err_msg_type_strings env t1 t2 in
-  (format3 "Expected a function with a parameter of type \"%s\"; this function has a parameter of type \"%s\"" s1 s2)
-
 let expected_pattern_of_type env t1 e t2 =
   let s1, s2 = err_msg_type_strings env t1 t2 in
   (Errors.Fatal_UnexpectedPattern, (format3 "Expected pattern of type \"%s\"; got pattern \"%s\" of type \"%s\""
@@ -107,9 +103,6 @@ let basic_type_error env eopt t1 t2 =
 
 let occurs_check =
   (Errors.Fatal_PossibleInfiniteTyp, "Possibly infinite typ (occurs check failed)")
-
-let unification_well_formedness =
-  (Errors.Fatal_UnificationNotWellFormed, "Term or type of an unexpected sort")
 
 let incompatible_kinds env k1 k2 =
   (Errors.Fatal_IncompatibleKinds, (format2 "Kinds \"%s\" and \"%s\" are incompatible"

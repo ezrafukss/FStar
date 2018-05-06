@@ -2,34 +2,13 @@
   "7ùC\u000b\"\u0014Û≤è++Ïø\u000e+ı",
   [
     [
-      "Ex01a.canWrite",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "4493f274d4c63cae70216b422cd530d4"
-    ],
-    [
       "Ex01a.canRead",
       1,
       2,
       1,
       [ "@query", "assumption_Prims.HasEq_string" ],
       0,
-      "4fc1cf5f8bdfec4b00a1cb76235b6a4f"
-    ],
-    [
-      "Ex01a.read",
-      1,
-      2,
-      1,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "fuel_guarded_inversion_FStar.Pervasives.result"
-      ],
-      0,
-      "5b6ab2f0095b7a91184df6348e15e20d"
+      "d2aa85089cbfe3ee4ff5b0154a053a3c"
     ],
     [
       "Ex01a.staticChecking",
@@ -48,16 +27,7 @@
         "projection_inverse_FStar.Pervasives.V_v"
       ],
       0,
-      "a962474b8988d2cf887b6f9cf7fbd576"
-    ],
-    [
-      "Ex01a.uu___is_InvalidRead",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "2abd4fb6d14575202d860e4110172f65"
+      "d6686d7913662e8e804dc610b22dc7fe"
     ],
     [
       "Ex01a.checkedRead",
@@ -66,7 +36,16 @@
       1,
       [ "@query", "projection_inverse_BoxBool_proj_0" ],
       0,
-      "81d678024d49671c6cd48348620978d2"
+      "da72b9b3f8c229131d7550a9a6db8604"
+    ],
+    [
+      "Ex01a.canRead",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_string" ],
+      0,
+      "25cd91657ec72837bb5470858e0cf612"
     ]
   ]
 ]

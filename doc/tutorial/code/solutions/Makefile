@@ -44,7 +44,7 @@ FSTAR_HOME=../../../../
 include ../Makefile.include
 
 verify-%: __force__
-	$(FSTAR) --include $(FSTAR_HOME)/ucontrib/Platform/fst --include $(FSTAR_HOME)/ucontrib/CoreCrypto/fst $*
+	$(FSTAR) --use_extracted_interfaces --include $(FSTAR_HOME)/ucontrib/Platform/fst --include $(FSTAR_HOME)/ucontrib/CoreCrypto/fst $*
 
 all: uall sall Ex01a-ocaml
 
@@ -61,7 +61,6 @@ out:
 	mkdir -p out
 
 Ex01a-ocaml: out Ex01a.fst
-	$(MAKE) -C $(ULIB_ML)
 	$(FSTAR) $(FSTAR_DEFAULT_ARGS) --odir out --codegen OCaml Ex01a.fst
 	$(OCAMLOPT) out/Ex01a.ml -o Ex01a.exe 2>&1
 	-./Ex01a.exe 2>&1

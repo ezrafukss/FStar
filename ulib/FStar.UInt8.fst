@@ -15,7 +15,7 @@ open FStar.Mul
  * - some functions (e.g., add_underspec, etc.) are only defined here, not on signed integers
  *)
 
-abstract type t :Type0 =
+abstract type t =
   | Mk: v:uint_t n -> t
 
 abstract
@@ -206,6 +206,7 @@ unfold let op_Less_Equals_Hat = lte
 
 (* To input / output constants *)
 assume val to_string: t -> Tot string
+assume val to_string_hex: t -> Tot string
 assume val of_string: string -> Tot t
 
 #set-options "--lax"

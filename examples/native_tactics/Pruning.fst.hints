@@ -1,0 +1,52 @@
+[
+  "i\u0003ÈW\\µåx|ÀÚ­{ò²X",
+  [
+    [
+      "Pruning.f",
+      1,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "primitive_Prims.op_Addition"
+      ],
+      0,
+      "f8b553454de6586fa2f514988bfae277"
+    ],
+    [
+      "Pruning.uu___136",
+      1,
+      4,
+      2,
+      [
+        "@MaxFuel_assumption",
+        "@fuel_correspondence_FStar.List.Tot.Base.rev_acc.fuel_instrumented",
+        "@query", "constructor_distinct_Prims.Cons",
+        "constructor_distinct_Prims.Nil", "equation_FStar.List.Tot.Base.rev",
+        "equation_with_fuel_FStar.List.Tot.Base.rev_acc.fuel_instrumented",
+        "projection_inverse_Prims.Cons_a",
+        "projection_inverse_Prims.Cons_hd",
+        "projection_inverse_Prims.Cons_tl", "projection_inverse_Prims.Nil_a"
+      ],
+      0,
+      "c294b9071719a268e35a8c6fd1c11065"
+    ],
+    [
+      "Pruning.uu___137",
+      1,
+      4,
+      2,
+      [
+        "@MaxFuel_assumption",
+        "@fuel_correspondence_FStar.List.Tot.Base.rev_acc.fuel_instrumented",
+        "@query", "constructor_distinct_Prims.Cons",
+        "constructor_distinct_Prims.Nil", "equation_FStar.List.Tot.Base.rev",
+        "equation_with_fuel_FStar.List.Tot.Base.rev_acc.fuel_instrumented",
+        "projection_inverse_Prims.Cons_a",
+        "projection_inverse_Prims.Cons_hd",
+        "projection_inverse_Prims.Cons_tl", "projection_inverse_Prims.Nil_a"
+      ],
+      0,
+      "2189b1b0493e51e269f6cbae222f3d3f"
+    ]
+  ]
+]
