@@ -376,8 +376,8 @@ and ty_nested_positive_in_inductive (ty_lid:lident) (ilid:lident) (us:universes)
   let b, idatas = datacons_of_typ env ilid in
   //if ilid is not an inductive, return false
   if not b then begin
-    if Env.fv_has_attr 
-              env 
+    if Env.fv_has_attr
+              env
               (S.lid_as_fv ilid delta_constant None)
               FStar.Parser.Const.assume_strictly_positive_attr_lid
     then (debug_log env (BU.format1 "Checking nested positivity, special case decorated with `assume_strictly_positive` %s; return true"

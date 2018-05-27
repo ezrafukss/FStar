@@ -436,7 +436,7 @@ let tc_one_file
       then SMT.with_hints_db (Pars.find_file fn) check_mod
       else check_mod () //don't add a hints file for modules that are not actually verified
   in
-  if not (Options.cache_off()) then
+  if not (Options.cache_off()) || (Options.use_cached_modules ()) then
       match load_module_from_cache env fn with
       | None ->
         if Options.should_be_already_cached (FStar.Parser.Dep.module_name_of_file fn)
@@ -516,6 +516,7 @@ let tc_one_file_for_ide
     let env = env_of_tcenv env in
     let tc_result, _, env, delta = tc_one_file env None pre_fn fn in
     tc_result, (apply_delta_env env delta).env_tcenv
+
 
 (***********************************************************************)
 (* Batch mode: composing many files in the presence of pre-modules     *)

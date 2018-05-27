@@ -1161,6 +1161,8 @@ let inline_let_attr = fvar_const PC.inline_let_attr
 
 let t_ctx_uvar_and_sust = fvar_const PC.ctx_uvar_and_subst_lid
 
+let t_ctx_uvar_and_sust = fvar_const PC.ctx_uvar_and_subst_lid
+
 let mk_conj_opt phi1 phi2 = match phi1 with
   | None -> Some phi2
   | Some phi1 -> Some (mk (Tm_app(tand, [as_arg phi1; as_arg phi2])) None (Range.union_ranges phi1.pos phi2.pos))

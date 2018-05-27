@@ -1,152 +1,27 @@
 [
-  "aÂºd˚—\u0003\u0010©P2d;ıe°",
+  "(ìÅÇ\u0004s7œø\u000bõ†ÒÚa¸",
   [
     [
-      "IfcDeclassify._dm4f_STATE___proj__STATE__item__get_elab",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "6ba4d04ed936726dbec3c7795ed2e485"
-    ],
-    [
-      "IfcDeclassify._dm4f_STATE___proj__STATE__item__put_elab",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "d575dfa9a4dcb9afc656f2d7428ca5d1"
-    ],
-    [
-      "IfcDeclassify.STATE",
-      1,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "6715c8ef667f16ebe44a30b071ccc53f"
-    ],
-    [
-      "IfcDeclassify.STATE",
-      2,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "364ae923c33bb1cd8fd868a3c0d88c74"
-    ],
-    [
-      "IfcDeclassify.ni_p1",
+      "IfcDeclassify.state",
       1,
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query",
-        "IfcDeclassify.__proj__STATE__item__get_equality",
-        "IfcDeclassify.__proj__STATE__item__put_equality",
-        "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
-        "equation_FStar.Pervasives.Native.snd",
-        "equation_IfcDeclassify.low_equiv", "equation_IfcDeclassify.p1",
-        "interpretation_IfcDeclassify_Tm_abs_1b9a20e463bbe65385540b106ad3e81b",
-        "interpretation_IfcDeclassify_Tm_abs_41a6aeb344744b378388d8bbab6d95a6",
-        "interpretation_IfcDeclassify_Tm_abs_cf5d9a25e2ec20e0acdb40514a0389c2",
-        "interpretation_IfcDeclassify_Tm_abs_fe08ae359b9828aa6fe01ed1e16cb599",
-        "proj_equation_FStar.Pervasives.Native.Mktuple2__2",
-        "proj_equation_Rel.R_l", "proj_equation_Rel.R_r",
-        "projection_inverse_FStar.Pervasives.Native.Mktuple2__1",
-        "projection_inverse_FStar.Pervasives.Native.Mktuple2__2",
-        "projection_inverse_Rel.R_l", "projection_inverse_Rel.R_r",
-        "unit_typing"
+        "@query", "assumption_Prims.HasEq_bool", "assumption_Prims.HasEq_int"
       ],
       0,
-      "3dbb2ad8a04de6ad2f14bdcd6479fbd4"
+      "fc21f789c3e47da42477de848635949c"
     ],
     [
-      "IfcDeclassify.ni_p2",
+      "IfcDeclassify.state",
       1,
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query",
-        "IfcDeclassify.__proj__STATE__item__get_equality",
-        "IfcDeclassify.__proj__STATE__item__put_equality",
-        "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
-        "equation_FStar.Pervasives.Native.snd",
-        "equation_IfcDeclassify.low_equiv", "equation_IfcDeclassify.p2",
-        "interpretation_IfcDeclassify_Tm_abs_1b9a20e463bbe65385540b106ad3e81b",
-        "interpretation_IfcDeclassify_Tm_abs_41a6aeb344744b378388d8bbab6d95a6",
-        "interpretation_IfcDeclassify_Tm_abs_cf5d9a25e2ec20e0acdb40514a0389c2",
-        "interpretation_IfcDeclassify_Tm_abs_fe08ae359b9828aa6fe01ed1e16cb599",
-        "proj_equation_FStar.Pervasives.Native.Mktuple2__2",
-        "proj_equation_IfcDeclassify.Mkstate_public",
-        "proj_equation_Rel.R_l", "proj_equation_Rel.R_r",
-        "projection_inverse_FStar.Pervasives.Native.Mktuple2__1",
-        "projection_inverse_FStar.Pervasives.Native.Mktuple2__2",
-        "projection_inverse_IfcDeclassify.Mkstate_public",
-        "projection_inverse_Rel.R_l", "projection_inverse_Rel.R_r",
-        "unit_typing"
+        "@query", "assumption_Prims.HasEq_bool", "assumption_Prims.HasEq_int"
       ],
       0,
-      "6639ea044aa935dc5a9483e3b0e394a2"
-    ],
-    [
-      "IfcDeclassify.ni_p4",
-      1,
-      2,
-      1,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "IfcDeclassify.__proj__STATE__item__put_equality",
-        "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
-        "equation_FStar.Pervasives.Native.snd", "equation_IfcDeclassify.p4",
-        "interpretation_IfcDeclassify_Tm_abs_1b9a20e463bbe65385540b106ad3e81b",
-        "interpretation_IfcDeclassify_Tm_abs_41a6aeb344744b378388d8bbab6d95a6",
-        "proj_equation_FStar.Pervasives.Native.Mktuple2__2",
-        "proj_equation_IfcDeclassify.Mkstate_release",
-        "projection_inverse_BoxBool_proj_0",
-        "projection_inverse_FStar.Pervasives.Native.Mktuple2__2",
-        "projection_inverse_IfcDeclassify.Mkstate_release", "unit_typing"
-      ],
-      0,
-      "ebcbc24466ac312141bfb7b6d3eccf1b"
-    ],
-    [
-      "IfcDeclassify._dm4f_STATE___proj__STATE__item__get_elab",
-      2,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "1766915b7604ab96b9c9d5427c0232af"
-    ],
-    [
-      "IfcDeclassify._dm4f_STATE___proj__STATE__item__put_elab",
-      2,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "752601e3586509d46c04ca2f4b655741"
-    ],
-    [
-      "IfcDeclassify.STATE",
-      3,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "a17fb990632cc3b29124359bcdf1aa4e"
-    ],
-    [
-      "IfcDeclassify.STATE",
-      4,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "e0bd5bbdedfed7bb6f88538eff8a5b1c"
+      "e82bf099236268d48a6b8348a57a56a2"
     ]
   ]
 ]

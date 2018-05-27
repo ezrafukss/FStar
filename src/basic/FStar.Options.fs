@@ -978,7 +978,7 @@ let rec specs_with_types () : list<(char * string * opt_type * string)> =
         Const (mk_bool true),
         "Allow tactics to run external processes. WARNING: checking an untrusted F* file while \
          using this option can have disastrous effects.");
-        
+
        ( noshort,
          "use_cached_modules",
          Const (mk_bool true),

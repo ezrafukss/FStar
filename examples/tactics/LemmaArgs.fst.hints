@@ -1,5 +1,5 @@
 [
-  "¥\u0007yr⁄√oæç’˜\f\"”XŒ",
+  "^ŒÜ+\u007fÅ§\u0012\u001eÜà∑√\t‰ã",
   [
     [
       "LemmaArgs.lemma_example1",
@@ -11,7 +11,7 @@
         "refinement_interpretation_LemmaArgs_Tm_refine_f0496eb03f3fb51b5e4ca0d53ea58c01"
       ],
       0,
-      "c001fea573247304db3617e3dafa8306"
+      "c9f9a0a57af59660e21a2c968d7968b2"
     ],
     [
       "LemmaArgs.example0",
@@ -20,7 +20,7 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int", "true_interp" ],
       0,
-      "5e5ce55e6a88ca8e1bd9efc0876d2dd4"
+      "d99a8e2279747dd61e3750125d749b0e"
     ],
     [
       "LemmaArgs.example0",
@@ -28,11 +28,14 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query",
-        "refinement_interpretation_LemmaArgs_Tm_refine_842655952076029599c9f4d30d10e96e"
+        "@MaxIFuel_assumption", "@query", "b2t_def", "equation_Prims.l_and",
+        "equation_Prims.squash", "l_and-interp",
+        "primitive_Prims.op_disEquality",
+        "projection_inverse_BoxBool_proj_0",
+        "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "9ab0bec91199306a71f2612823357e9e"
+      "68d856991e5f3fd67e39579860ab08df"
     ],
     [
       "LemmaArgs.example1",
@@ -41,7 +44,25 @@
       1,
       [ "@query", "assumption_Prims.HasEq_int", "true_interp" ],
       0,
-      "8e070f68b3c4c8ebf0066f7270a3796d"
+      "5d6af087bc4bf74e03308445b2ec6be8"
+    ],
+    [
+      "LemmaArgs.lemma_example1",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "68df63360d517157712ed818db4d1e8d"
+    ],
+    [
+      "LemmaArgs.example0",
+      3,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "fd3e06e1422efb7bff1d71b98e72aa98"
     ]
   ]
 ]

@@ -1,5 +1,5 @@
 [
-  "¸Û\u0002L¿Ëè\f(|ùR–s\u00113",
+  "'ñ»]\f \t7w¥s\u0015t«]\u0017",
   [
     [
       "Bug590.transport",
@@ -11,7 +11,7 @@
         "refinement_interpretation_Bug590_Tm_refine_de9aeb070296eed20d879692d0254af0"
       ],
       0,
-      "9bb53266167c9b8af0ce972744ccba64"
+      "031fb376f841d9575a6a4b40f9baf053"
     ],
     [
       "Bug590.coerce",
@@ -30,7 +30,7 @@
         "subterm_ordering_Prims.Cons"
       ],
       0,
-      "2c7bdca4648a77d26fd03261b5a80cbb"
+      "98fa2b5db70e4ca610f9dd190e6e1620"
     ],
     [
       "Bug590.blah2",
@@ -44,7 +44,7 @@
         "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
       ],
       0,
-      "1bc461c04bb96e5e0b59a0400348719e"
+      "70d8ae037977662cc1d98370b3789796"
     ],
     [
       "Bug590.flatten_lemma",
@@ -55,20 +55,17 @@
         "@MaxFuel_assumption", "@MaxIFuel_assumption",
         "@fuel_correspondence_Bug590.coerce.fuel_instrumented",
         "@fuel_correspondence_FStar.List.Tot.Base.flatten.fuel_instrumented",
-        "@fuel_irrelevance_Bug590.coerce.fuel_instrumented",
-        "@fuel_irrelevance_FStar.List.Tot.Base.flatten.fuel_instrumented",
         "@query", "disc_equation_Prims.Cons",
         "fuel_guarded_inversion_Prims.list",
         "projection_inverse_BoxBool_proj_0",
         "refinement_interpretation_Bug590_Tm_refine_a18ab84bb2945892b0a6776b4135d511",
-        "refinement_interpretation_Bug590_Tm_refine_d1ecb3423aa4790b11c05f1ec7a4cc9c",
+        "refinement_interpretation_Bug590_Tm_refine_e12869c17cd8d9b449828a1133d89973",
         "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32",
         "token_correspondence_Bug590.coerce.fuel_instrumented",
-        "token_correspondence_FStar.List.Tot.Base.flatten.fuel_instrumented",
-        "typing_Bug590.coerce"
+        "typing_Bug590.coerce", "typing_FStar.List.Tot.Base.flatten"
       ],
       0,
-      "b85f2d3b577ca014ae7c277296aa58b3"
+      "3e8be8096271ac0f9a1175c0237acdd3"
     ]
   ]
 ]

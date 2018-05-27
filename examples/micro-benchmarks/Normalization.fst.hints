@@ -1,5 +1,5 @@
 [
-  "\u0001cW˝{\u0002 %\u001a}4iM\u0012~Ç",
+  "\u0001¥ºfùÍÓ\u001fX\u001c1\u0015ÏÏ@\u007f",
   [
     [
       "Normalization.test",
@@ -8,7 +8,7 @@
       0,
       [ "@query" ],
       0,
-      "ecfa97029281dbc6997d99fd5410e5fb"
+      "8719dfe5edc615531d46c35216ab7d45"
     ],
     [
       "Normalization.id",
@@ -25,7 +25,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "57ff257d555df594249695d71a2ff705"
+      "eb1cce3a183292d6cc9a8da219abf823"
     ],
     [
       "Normalization.test2",
@@ -34,7 +34,7 @@
       0,
       [ "@query" ],
       0,
-      "b0e788eebd4cca93a2ff3bbcad92a2dc"
+      "dbfd64339ceadb5ac08ce71300c2f8e4"
     ],
     [
       "Normalization.pow2_values",
@@ -43,7 +43,16 @@
       0,
       [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "62c9f90bf2e8afc90f19fad05af4b318"
+      "004c6cb264752de193e4515ec9d77b90"
+    ],
+    [
+      "Normalization.pow2_values",
+      2,
+      0,
+      0,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "62e6a73cb7c10d780736685149c389b7"
     ],
     [
       "Normalization.test_sort",
@@ -51,42 +60,12 @@
       0,
       0,
       [
-        "@MaxIFuel_assumption", "@query",
-        "assumption_Prims.list__uu___haseq", "equation_Prims.eqtype",
-        "function_token_typing_Prims.int",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
+        "@query", "assumption_Prims.HasEq_int",
+        "assumption_Prims.list__uu___haseq",
+        "function_token_typing_Prims.int"
       ],
       0,
-      "2f3e6075bfc02980c680ed9de9ac7e79"
-    ],
-    [
-      "Normalization.test_sort1",
-      1,
-      0,
-      0,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "assumption_Prims.list__uu___haseq", "equation_Prims.eqtype",
-        "function_token_typing_Prims.int",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
-      ],
-      0,
-      "57534f4faa18356c23355f81076e8f08"
-    ],
-    [
-      "Normalization.f_1529_3",
-      1,
-      0,
-      0,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "Prims_pretyping_ae567c2fb75be05905677af440075565",
-        "function_token_typing_Normalization.f_1529",
-        "function_token_typing_Prims.__cache_version_number__",
-        "interpretation_Normalization_Tm_abs_d043881a492feb079f99a347e342e079"
-      ],
-      0,
-      "72118adc3056579b33778862bed9fbe7"
+      "22008e1def8bedfaccdba0743ab661c6"
     ],
     [
       "Normalization.id",
@@ -103,50 +82,16 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "33817267bfef70467bc50f8f3cfb33b9"
+      "4bcfdc2ecd98088fd51c86cda2377938"
     ],
     [
-      "Normalization.test_sort",
-      2,
+      "Normalization.pow2_values",
+      3,
       0,
       0,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "assumption_Prims.list__uu___haseq", "equation_Prims.eqtype",
-        "function_token_typing_Prims.int",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
-      ],
+      [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "d085fbdd75b5705333bebeb78b35cf29"
-    ],
-    [
-      "Normalization.test_sort1",
-      2,
-      0,
-      0,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "assumption_Prims.list__uu___haseq", "equation_Prims.eqtype",
-        "function_token_typing_Prims.int",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
-      ],
-      0,
-      "86483618fec31b708b5f45b186bcc850"
-    ],
-    [
-      "Normalization.f_1529_3",
-      2,
-      0,
-      0,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "Prims_pretyping_ae567c2fb75be05905677af440075565",
-        "function_token_typing_Normalization.f_1529",
-        "function_token_typing_Prims.__cache_version_number__",
-        "interpretation_Normalization_Tm_abs_d043881a492feb079f99a347e342e079"
-      ],
-      0,
-      "f6dc6f02d3c961019b9e821eec06fcd9"
+      "60932ad9e9f8114ac6865357a4369510"
     ]
   ]
 ]

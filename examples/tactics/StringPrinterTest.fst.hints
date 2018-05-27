@@ -1,5 +1,5 @@
 [
-  "'Dö)∏‘«\u007f?gZ\u0000K]†T",
+  "º\u0017=â\u001f÷Ì¥\u00127x[5•º≤",
   [
     [
       "StringPrinterTest.test3",
@@ -7,17 +7,16 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query", "bool_inversion", "bool_typing",
+        "@MaxIFuel_assumption", "@query", "bool_inversion",
         "disc_equation_FStar.Pervasives.Native.None",
         "disc_equation_FStar.Pervasives.Native.Some",
-        "equation_Prims.eqtype", "function_token_typing_FStar.UInt8.t",
+        "function_token_typing_FStar.UInt8.t",
         "lemma_FStar.Pervasives.invertOption",
-        "projection_inverse_BoxBool_proj_0",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f",
-        "typing_FStar.Buffer.buffer"
+        "projection_inverse_BoxBool_proj_0", "typing_FStar.Buffer.buffer",
+        "typing_FStar.Pervasives.Native.uu___is_Some"
       ],
       0,
-      "1ac9986577becc28aad260c6dc6047ed"
+      "5094d446f9869197c5af1bc737471570"
     ],
     [
       "StringPrinterTest.print_list_cipher_suite",
@@ -25,17 +24,16 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query", "bool_inversion", "bool_typing",
+        "@MaxIFuel_assumption", "@query", "bool_inversion",
         "disc_equation_FStar.Pervasives.Native.None",
         "disc_equation_FStar.Pervasives.Native.Some",
-        "equation_Prims.eqtype", "function_token_typing_FStar.UInt8.t",
+        "function_token_typing_FStar.UInt8.t",
         "lemma_FStar.Pervasives.invertOption",
-        "projection_inverse_BoxBool_proj_0",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f",
-        "typing_FStar.Buffer.buffer"
+        "projection_inverse_BoxBool_proj_0", "typing_FStar.Buffer.buffer",
+        "typing_FStar.Pervasives.Native.uu___is_Some"
       ],
       0,
-      "6e161659b373fdd960dd60bca203a3f8"
+      "ed72f90a75840bb12b05e6fbafda7543"
     ],
     [
       "StringPrinterTest.test3",
@@ -52,7 +50,7 @@
         "typing_FStar.Pervasives.Native.uu___is_Some"
       ],
       0,
-      "2d1065ec5611bdbd85aafe30aaa0cb79"
+      "5cab5d54ffae3affd67912ecdeff9773"
     ],
     [
       "StringPrinterTest.print_list_cipher_suite",
@@ -69,7 +67,7 @@
         "typing_FStar.Pervasives.Native.uu___is_Some"
       ],
       0,
-      "12a4e283f7c9e83d651eb00eabeb2ca7"
+      "f55a5e3fe4bfaddd2c8cece6888be258"
     ]
   ]
 ]

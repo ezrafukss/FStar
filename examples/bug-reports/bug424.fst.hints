@@ -1,6 +1,15 @@
 [
-  "èn‚\"Q\u001b@∏yOr^\nùÿÇ",
+  "´ˆü.C/åG†w\u0002û˚öwF",
   [
+    [
+      "Bug424.t",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_unit" ],
+      0,
+      "5df7a04c0abdcb5cd1dfe7c25147e8ad"
+    ],
     [
       "Bug424.get",
       1,
@@ -8,7 +17,7 @@
       1,
       [ "@query" ],
       0,
-      "8209065fb02371850e981eb9a9acdbc6"
+      "6985ced1f755a2f13639ffc9a535049e"
     ]
   ]
 ]

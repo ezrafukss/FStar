@@ -110,7 +110,7 @@ let label_goals use_env_msg  //when present, provides an alternate error message
                 (q:term) //the term being instrumented
      =  match q.tm with
         | BoundV _
-        | Integer _ 
+        | Integer _
         | String _ ->
           labels, q
         | LblPos _ -> failwith "Impossible" //these get added after errorReporting instrumentation only
@@ -273,8 +273,8 @@ let label_goals use_env_msg  //when present, provides an alternate error message
         | App(BvUext _, _)
         | App(BvToNat, _)
         | App(NatToBv _, _)
-        | App(StrLen, _) 
-        | App(StrCat, _) 
+        | App(StrLen, _)
+        | App(StrCat, _)
         | App(StrAt, _) ->
           failwith "Impossible: non-propositional term"
 

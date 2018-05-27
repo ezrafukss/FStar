@@ -1,6 +1,15 @@
 [
-  "·\röÙ)ÃAÉ©\f6®\u0014–ëo",
+  "6Û>zh ,Q[F\u0011orê\u0014þ",
   [
+    [
+      "IfcRecursiveReify.low_equiv",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "05cd0ec30b4249df301c9c84cebe6c30"
+    ],
     [
       "IfcRecursiveReify.p1",
       1,
@@ -25,7 +34,7 @@
         "unit_inversion", "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "9a9fbe711b6d5da82590b2fb899bb9aa"
+      "02513f2e2efea316428fc7ba1368c133"
     ],
     [
       "IfcRecursiveReify.ni_p1",
@@ -37,10 +46,11 @@
         "@fuel_correspondence_IfcRecursiveReify.p1.fuel_instrumented",
         "@fuel_irrelevance_IfcRecursiveReify.p1.fuel_instrumented", "@query",
         "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__get_equality",
+        "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__get_token_correspondence",
         "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__put_equality",
+        "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__put_token_correspondence",
         "Prims_pretyping_ae567c2fb75be05905677af440075565",
         "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
-        "binder_x_44ec7c2158b88c3b927ff92ed0747f1b_0",
         "binder_x_44ec7c2158b88c3b927ff92ed0747f1b_1",
         "binder_x_6d0180d4fcd10237cf0d87dd345d77cc_2",
         "binder_x_9250a25a01be23c89a24518d1dd0ceb1_4",
@@ -60,10 +70,12 @@
         "function_token_typing_FStar.DM4F.Heap.IntStoreFixed.heap",
         "function_token_typing_FStar.DM4F.Heap.IntStoreFixed.store_size",
         "int_inversion", "int_typing",
-        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_16003139f70cbb4ad8f9922bc36cb268",
         "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_493a6a2efdc1ba856d2ec47940085959",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_7c14753a5b99774e3e0081a9f2de5e5d",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_7eec5bd5292b39f63c270c670e278b1a",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_b86d1955c0c72a74391d47e1fb4ee8dc",
         "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_be1f098a73b727536eabaf253dd83852",
-        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_c9960a4ad5ec1f034c374837e8bbd099",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_d118813f5b63d6276a92d2454f10fa10",
         "interpretation_IfcRecursiveReify_Tm_abs_1d3e7cedd561243e58afbd0014116832",
         "interpretation_IfcRecursiveReify_Tm_abs_7118eb129e1e8ce98d9b40c620feff33",
         "lemma_FStar.DM4F.Heap.IntStoreFixed.lemma_index_upd2",
@@ -81,7 +93,7 @@
         "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "da8220921b983e22a090ac02e060ee2b"
+      "644be4dec1378c3e6d00403b6683cf82"
     ],
     [
       "IfcRecursiveReify.p2",
@@ -107,7 +119,7 @@
         "unit_inversion", "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "3d1b51e8f9d830e98830fe410ef5f722"
+      "651ef31e443ac2674c24fc5f9e8d83cf"
     ],
     [
       "IfcRecursiveReify.ni_p2",
@@ -119,10 +131,11 @@
         "@fuel_correspondence_IfcRecursiveReify.p2.fuel_instrumented",
         "@fuel_irrelevance_IfcRecursiveReify.p2.fuel_instrumented", "@query",
         "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__get_equality",
+        "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__get_token_correspondence",
         "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__put_equality",
+        "FStar.DM4F.IntStoreFixed.__proj__INT_STORE__item__put_token_correspondence",
         "Prims_pretyping_ae567c2fb75be05905677af440075565",
         "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
-        "binder_x_44ec7c2158b88c3b927ff92ed0747f1b_0",
         "binder_x_44ec7c2158b88c3b927ff92ed0747f1b_1",
         "binder_x_6d0180d4fcd10237cf0d87dd345d77cc_2",
         "binder_x_9250a25a01be23c89a24518d1dd0ceb1_4",
@@ -142,10 +155,12 @@
         "function_token_typing_FStar.DM4F.Heap.IntStoreFixed.heap",
         "function_token_typing_FStar.DM4F.Heap.IntStoreFixed.store_size",
         "int_inversion", "int_typing",
-        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_16003139f70cbb4ad8f9922bc36cb268",
         "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_493a6a2efdc1ba856d2ec47940085959",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_7c14753a5b99774e3e0081a9f2de5e5d",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_7eec5bd5292b39f63c270c670e278b1a",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_b86d1955c0c72a74391d47e1fb4ee8dc",
         "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_be1f098a73b727536eabaf253dd83852",
-        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_c9960a4ad5ec1f034c374837e8bbd099",
+        "interpretation_FStar.DM4F.IntStoreFixed_Tm_abs_d118813f5b63d6276a92d2454f10fa10",
         "interpretation_IfcRecursiveReify_Tm_abs_50731495eda41099005a085cf5210af0",
         "interpretation_IfcRecursiveReify_Tm_abs_7118eb129e1e8ce98d9b40c620feff33",
         "lemma_FStar.DM4F.Heap.IntStoreFixed.lemma_index_upd2",
@@ -164,7 +179,7 @@
         "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "fad7a7ebd72b76a8ffdaedb36b7aeb23"
+      "639ef17364225d7d71ff60f766200864"
     ],
     [
       "IfcRecursiveReify.ni_p3",
@@ -186,7 +201,16 @@
         "unit_typing"
       ],
       0,
-      "f9d519280aafd6d26e11a9c7c5f28e28"
+      "590755f4a2c3cb4cce9225632e446398"
+    ],
+    [
+      "IfcRecursiveReify.low_equiv",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "c93aba52dd25149bfac6ea05be16e543"
     ],
     [
       "IfcRecursiveReify.p1",
@@ -212,7 +236,7 @@
         "unit_inversion", "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "2ddbb69e51b883cb200ff836d463ca71"
+      "25cc708a3f003221781c173d0eb5a649"
     ],
     [
       "IfcRecursiveReify.p2",
@@ -238,7 +262,7 @@
         "unit_inversion", "unit_typing", "well-founded-ordering-on-nat"
       ],
       0,
-      "efd592e7183f1bd30c5f216c2bee6078"
+      "f93467edb015719fb2bf2aa78216fed0"
     ]
   ]
 ]

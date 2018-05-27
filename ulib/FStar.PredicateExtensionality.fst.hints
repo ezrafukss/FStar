@@ -1,25 +1,24 @@
 [
-  "\u0005\u0019nÂﬂY1XÁ\n@¸Î5Ç\r",
+  "ª\u0002◊HK* §°\"—Ûpù\u0013o",
   [
     [
       "FStar.PredicateExtensionality.predicateExtensionality",
       1,
-      2,
-      1,
+      0,
+      0,
       [
         "@MaxIFuel_assumption", "@query",
         "Prims_interpretation_Tm_arrow_9cb3c953faf527c316d427b2ce8bd81b",
-        "Prims_interpretation_Tm_arrow_a26b6f0ab7c6505137c6de4ce0011041",
+        "assumption_FStar.FunctionalExtensionality.Extensionality",
+        "equation_FStar.FunctionalExtensionality.efun",
         "equation_FStar.FunctionalExtensionality.feq",
         "equation_FStar.PredicateExtensionality.peq",
         "equation_FStar.PredicateExtensionality.predicate",
         "equation_Prims.prop",
-        "interpretation_FStar.FunctionalExtensionality_Tm_abs_66926e89e50e2ac69caf858cc1113f07",
-        "lemma_FStar.FunctionalExtensionality.extensionality",
-        "typing_FStar.FunctionalExtensionality_Tm_abs_66926e89e50e2ac69caf858cc1113f07"
+        "refinement_kinding_Prims_Tm_refine_8c9ebed3095a60bf2b256a37e40b13f4"
       ],
       0,
-      "b14bede9bd41ee5577f7c05e52d8e680"
+      "68aa74fa702e204692c04f620b5a39eb"
     ]
   ]
 ]

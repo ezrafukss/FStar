@@ -21,8 +21,8 @@ module F = FStar.FunctionalExtensionality
 
 private noeq type heap_rec = {
   next_addr: pos;
-  memory   : F.restricted_t pos (fun (x:pos) 
-             -> option (a:Type0 & rel:(option (preorder a)) & b:bool & a)) 
+  memory   : F.restricted_t pos (fun (x:pos)
+             -> option (a:Type0 & rel:(option (preorder a)) & b:bool & a))
                       //type, preorder, mm flag, and value
 }
 

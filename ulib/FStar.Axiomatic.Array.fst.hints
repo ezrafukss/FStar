@@ -1,1 +1,23 @@
-[ "≤\u0017o:Cöc\b≈Œ}3[‡∂Ö", [] ]
+[
+  "≤\u0017o:Cöc\b≈Œ}3[‡∂Ö",
+  [
+    [
+      "FStar.Axiomatic.Array.IndexUpdate",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "2145969654cdccf8d32cfb63710b8ba1"
+    ],
+    [
+      "FStar.Axiomatic.Array.IndexUpdate",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "a509a2eafe788ba67d9c9cf9addedc95"
+    ]
+  ]
+]

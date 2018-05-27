@@ -1,19 +1,5 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 module CanonCommSemiring
+#reset-options
 
 (*
 Commutative semiring (a ring with commutative multiplication and without an additive inverse)
@@ -37,9 +23,6 @@ open FStar.Classical
 open FStar.Algebra.CommMonoid
 module CCM = CanonCommMonoid
 
-(* Only dump when debugging is on *)
-let ddump m = if debugging () then dump m
-
 irreducible let canon_attr = ()
 
 [@canon_attr]
@@ -47,11 +30,13 @@ unfold let cm_op = CM?.mult
 
 (***** Commutative semirings *)
 
+logic
 let distribute_left_lemma (a:Type) (cm_add:cm a) (cm_mult:cm a) =
   let (+) = cm_op cm_add in
   let ( * ) = cm_op cm_mult in
   x:a -> y:a -> z:a -> Lemma (x * (y + z) == x * y + x * z)
 
+logic
 let distribute_right_lemma (a:Type) (cm_add:cm a) (cm_mult:cm a) =
   let (+) = cm_op cm_add in
   let ( * ) = cm_op cm_mult in
@@ -68,10 +53,10 @@ type cr (a:Type) =
 
 let distribute_right (#a:Type) (r:cr a) : distribute_right_lemma a r.cm_add r.cm_mult =
   fun x y z ->
-    CM?.commutativity r.cm_mult (cm_op r.cm_add x y) z;
-    r.distribute z x y;
-    CM?.commutativity r.cm_mult x z;
-    CM?.commutativity r.cm_mult y z
+    CM?.commutativity r.cm_add (cm_op r.cm_add x y) z;
+    CM?.commutativity r.cm_add x z;
+    CM?.commutativity r.cm_add y z;
+    r.distribute z x y
 
 [@canon_attr]
 let int_cr : cr int =
@@ -91,13 +76,6 @@ let rec exp_to_string (e:exp) : string =
   | Var x -> "Var " ^ string_of_int (x <: var)
   | Add e1 e2 -> "Add (" ^ exp_to_string e1 ^ ") (" ^ exp_to_string e2 ^ ")"
   | Mult e1 e2 -> "Mult (" ^ exp_to_string e1 ^ ") (" ^ exp_to_string e2 ^ ")"
-
-let rec quote_exp (e:exp) : Tac term =
-  match e with
-  | Var x -> mk_e_app (`Var) [pack (Tv_Const (C_Int x))]
-  | Add e1 e2 -> mk_e_app (`Add) [quote_exp e1; quote_exp e2]
-  | Mult e1 e2 -> mk_e_app (`Mult) [quote_exp e1; quote_exp e2]
-
 
 (***** Expression denotation *)
 
@@ -173,7 +151,7 @@ let rec exp_to_sum_correct (#a #b:Type) (r:cr a) (vm:vmap a b) (e:exp) : Lemma
       exp_to_sum_correct r vm e2;
       ()
     )
-  | Mult e1 e2 ->
+  | Mult e1 e2 -> 
     (
       exp_to_sum_correct r vm e1;
       exp_to_sum_correct r vm e2;
@@ -232,53 +210,51 @@ let semiring_reflect (#a #b:Type) (p:permute b) (pc:permute_correct p)
   canon_correct p pc r vm e2;
   ()
 
-let make_fvar (#a #b:Type) (f:term -> Tac b) (t:term) (unquotea:term->Tac a) (ts:list term) (vm:vmap a b) : Tac
+let make_fvar (#a #b:Type) (f:term -> Tac b) (t:term) (ts:list term) (vm:vmap a b) : Tac
     (exp * list term * vmap a b) =
   match where t ts with
   | Some v -> (Var v, ts, vm)
   | None ->
     let vfresh = length ts in
-    let z = unquotea t in
+    let z = unquote t in
     (Var vfresh, ts @ [t], update vfresh z (f t) vm)
 
 // This expects that add, mult, and t have already been normalized
-let rec reification_aux (#a #b:Type) (unquotea:term->Tac a) (ts:list term) (vm:vmap a b) (f:term -> Tac b)
-    (add mult t: term) : Tac (exp * list term * vmap a b) =
-  let hd, tl = collect_app_ref t in
-  match inspect hd, list_unref tl with
+let rec reification_aux (#a #b:Type) (ts:list term) (vm:vmap a b) (f:term -> Tac b)
+    (add mult t:term) : Tac (exp * list term * vmap a b) =
+  let (hd, tl) = collect_app_ref t in
+  match (inspect hd, list_unref tl) with
   | (Tv_FVar fv, [(t1, Q_Explicit) ; (t2, Q_Explicit)]) ->
     let binop (op:exp -> exp -> exp) : Tac (exp * list term * vmap a b) =
-      let (e1, ts, vm) = reification_aux unquotea ts vm f add mult t1 in
-      let (e2, ts, vm) = reification_aux unquotea ts vm f add mult t2 in
+      let (e1, ts, vm) = reification_aux ts vm f add mult t1 in
+      let (e2, ts, vm) = reification_aux ts vm f add mult t2 in
       (op e1 e2, ts, vm)
       in
     if term_eq (pack (Tv_FVar fv)) add then binop Add else
     if term_eq (pack (Tv_FVar fv)) mult then binop Mult else
-    make_fvar f t unquotea ts vm
-  | (_, _) -> make_fvar f t unquotea ts vm
+    make_fvar f t ts vm
+  | (_, _) -> make_fvar f t ts vm
 
-let reification (b:Type) (f:term -> Tac b) (def:b) (#a:Type)
-    (unquotea:term->Tac a) (quotea:a -> Tac term) (tadd tmult:term) (munit:a) (ts:list term) :
+let reification (b:Type) (f:term -> Tac b) (def:b) (#a:Type) (r:cr a) (ts:list term) :
     Tac (list exp * vmap a b) =
-  let add = norm_term [delta] tadd in
-  let mult = norm_term [delta] tmult in
+  let add = norm_term [delta] (quote (cm_op r.cm_add)) in
+  let mult = norm_term [delta] (quote (cm_op r.cm_mult)) in
   let ts = Tactics.Util.map (norm_term [delta]) ts in
-  //ddump ("add = " ^ term_to_string add ^ "; mult = " ^ term_to_string mult);
+  //dump ("add = " ^ term_to_string add ^ "; mult = " ^ term_to_string mult);
   let (es, _, vm) =
     Tactics.Util.fold_left
-      (fun (es,vs,vm) t ->
-        let (e,vs,vm) = reification_aux unquotea vs vm f add mult t
-        in (e::es,vs,vm))
-      ([],[], const munit def) ts
-  in (List.rev es,vm)
-
+      (fun (es, vs, vm) t ->
+        let (e, vs, vm) = reification_aux vs vm f add mult t in (e::es, vs, vm))
+      ([], [], const (CM?.unit r.cm_add) def) ts
+    in
+  (List.rev es, vm)
 
 let canon_norm () : Tac unit =
   norm [
     primops;
     iota;
     zeta;
-    delta_attr [`%canon_attr];
+    delta_attr canon_attr;
     delta_only [
       "FStar.Algebra.CommMonoid.int_plus_cm";
       "FStar.Algebra.CommMonoid.int_multiply_cm";
@@ -293,12 +269,9 @@ let canon_norm () : Tac unit =
       "CanonCommMonoid.const_last";
       "CanonCommMonoid.const_compare";
       "CanonCommMonoid.special_compare";
-      "CanonCommMonoid.sortWith_correct";
       "FStar.List.Tot.Base.assoc";
       "FStar.Pervasives.Native.fst";
-      "FStar.Pervasives.Native.snd";
       "FStar.Pervasives.Native.__proj__Mktuple2__item___1";
-      "FStar.Pervasives.Native.__proj__Mktuple2__item___2";
       "FStar.List.Tot.Base.op_At";
       "FStar.List.Tot.Base.append";
       "FStar.List.Tot.Base.sortWith";
@@ -308,70 +281,56 @@ let canon_norm () : Tac unit =
     ]
   ]
 
-[@plugin]
-let canon_semiring_aux
-    (a b: Type) (ta: term) (unquotea: term -> Tac a) (quotea: a -> Tac term)
-    (tr tadd tmult: term) (munit: a) (tb: term) (quoteb:b->Tac term)
-    (f:term->Tac b) (def:b) (tp:term) (tpc:term): Tac unit =
-  focus (fun () ->
+let canon_semiring_with
+    (b:Type) (f:term -> Tac b) (def:b) (p:permute b) (pc:permute_correct p)
+    (#a:Type) (r:cr a) : Tac unit = focus (fun () ->
   norm [];
   let g = cur_goal () in
   match term_as_formula g with
   | Comp (Eq (Some t)) t1 t2 ->
     (
-      //ddump ("t1 = " ^ term_to_string t1 ^ "; t2 = " ^ term_to_string t2);
-      if term_eq t ta then
+      //dump ("t1 = " ^ term_to_string t1 ^ "; t2 = " ^ term_to_string t2);
+      if term_eq t (quote a) then
       (
-        match reification b f def unquotea quotea tadd tmult munit [t1; t2] with
+        match reification b f def r [t1; t2] with
         | ([e1; e2], vm) ->
           (
             (*
-            ddump (
+            dump (
               "e1 = " ^ exp_to_string e1 ^
               "; e2 = " ^ exp_to_string e2);
-            ddump ("vm = " ^ term_to_string (quote vm));
-            ddump ("before = " ^ term_to_string (norm_term [delta; primops]
+            dump ("vm = " ^ term_to_string (quote vm));
+            dump ("before = " ^ term_to_string (norm_term [delta; primops]
               (quote (rdenote r vm e1 == rdenote r vm e2))));
-            ddump ("expected after = " ^ term_to_string (norm_term [delta; primops]
+            dump ("expected after = " ^ term_to_string (norm_term [delta; primops]
               (quote (
                 cdenote p r vm (exp_to_sum e1) ==
                 cdenote p r vm (exp_to_sum e2)))));
             *)
-            // let q_app0 = quote (semiring_reflect #a #b p pc r vm e1 e2) in
-            // ddump (term_to_string t1);
-            let tvm = CCM.quote_vm ta tb quotea quoteb vm in
-            let te1 = quote_exp e1 in
-            // ddump (exp_to_string e1);
-            // ddump (term_to_string te1);
-            let te2 = quote_exp e2 in
-            // ddump (term_to_string te2);
-            mapply (`(semiring_reflect #(`#ta) #(`#tb) (`#tp) (`#tpc) (`#tr) (`#tvm) (`#te1) (`#te2) (`#t1) (`#t2)));
-            unfold_def tp;
+            let q_app0 = quote (semiring_reflect #a #b p pc r vm e1 e2) in
+            let q_app1 = pack (Tv_App q_app0 (t1, Q_Explicit)) in
+            let q_app2 = pack (Tv_App q_app1 (t2, Q_Explicit)) in
+            mapply q_app2;
+            //dump ("after apply");
+            unfold_def (quote p);
+            //dump ("after unfold");
             canon_norm ();
+            dump ("after norm");
             later ();
+            dump ("after smt");
             canon_norm ();
-            //ddump ("after norm-left");
+            //dump ("after norm-left");
             trefl ();
             canon_norm ();
-            //ddump ("after norm-right");
+            //dump ("after norm-right");
             trefl ();
-            (* ddump "done"; *)
-            ()
+            dump "done"
           )
         | _ -> fail "Unexpected"
       )
       else fail "Found equality, but terms do not have the expected type"
     )
   | _ -> fail "Goal should be an equality")
-
-
-let canon_semiring_with
-    (b:Type) (f:term -> Tac b) (def:b) (tp:term) (tpc:term)
-    (#a:Type) (r:cr a) : Tac unit =
-  canon_semiring_aux a b
-    (quote a) (unquote #a) (fun (x:a) -> quote x)
-    (quote r) (quote (cm_op (r.cm_add))) (quote (cm_op (r.cm_mult))) (CM?.unit (r.cm_add))
-    (quote b) (fun (x:b) -> quote x) f def tp tpc
 
 let is_not_const (t:term) : Tac bool =
   let (hd, tl) = collect_app_ref t in
@@ -385,14 +344,11 @@ let is_not_const (t:term) : Tac bool =
     )
   | _ -> true
 
-// GM: Jul 10 2018 (POPL-30h): Having this as a top-level means it's
-// typechecked only once, and we save a few queries.
-let const_last_correct : permute_correct const_last =
-    (fun #a m vm xs -> CCM.sortWith_correct #bool (CCM.const_compare vm) #a m vm xs)
-
 let canon_semiring (#a:Type) (r:cr a) : Tac unit =
-  canon_semiring_with bool is_not_const true (quote const_last)
-    (quote (fun #a -> const_last_correct #a)) // eta the implicit due to a bug in inference
+//  canon_semiring_with unit (fun _ -> ()) () sort (fun #a -> sort_correct #a) r
+//  canon_semiring_with bool is_not_const true const_last (fun #a -> admit ()) r
+  canon_semiring_with bool is_not_const true const_last
+    (fun #a m vm xs -> CCM.sortWith_correct #bool (CCM.const_compare vm) #a m vm xs)
     r
 
 #reset-options "--z3cliopt smt.arith.nl=false"

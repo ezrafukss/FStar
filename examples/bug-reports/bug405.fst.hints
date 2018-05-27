@@ -1,9 +1,18 @@
 [
-  "O6§ùÔ±Ê†d§≠7Ô¢\u0010∂",
+  "}¢W,\u001a≠ ´úB\bi¯”F5",
   [
     [
       "Bug405.g",
       1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_unit" ],
+      0,
+      "a6b37f5637bcc2b6d0f95139676ca815"
+    ],
+    [
+      "Bug405.g",
+      2,
       2,
       1,
       [
@@ -12,7 +21,16 @@
         "unit_inversion", "unit_typing"
       ],
       0,
-      "aa5f10b820fd4899812627bed399cded"
+      "eb5b0eca4ebb631d8e70ffb444d11b30"
+    ],
+    [
+      "Bug405.v",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_unit" ],
+      0,
+      "fe6df84669d51506511e5a13e1bc8daa"
     ]
   ]
 ]

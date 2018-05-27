@@ -1,5 +1,5 @@
 [
-  "\u0005¯ã].ÿŸ&ˆ¢”À«NÃÀ",
+  "¹“Hš¶Õ–º°‹zczÅg‰",
   [
     [
       "Simple.id",
@@ -16,7 +16,16 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "0bbc4fff4487f1a28625353772c65714"
+      "35885fe64bc6eceeb06a4803f3f4359f"
+    ],
+    [
+      "Simple.id",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "e27b6cd58a4a96877d0890012ad769d3"
     ],
     [
       "Simple.poly_id",
@@ -33,7 +42,16 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "a788481cc7f29afc2855774dcf349c48"
+      "de326e6cfb067384341519c68230d653"
+    ],
+    [
+      "Simple.poly_id",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "060f77260f9a6088580d7b4f6213be72"
     ],
     [
       "Simple.mk_n_list",
@@ -49,7 +67,16 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "f0b6537cf8e38f541cc438ad9ab7b375"
+      "8d3b02c39c37be0f402e1f5e07562193"
+    ],
+    [
+      "Simple.mk_n_list",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "6015a8a2a3205ddd2ae36337bd82783f"
     ],
     [
       "Simple.poly_list_id",
@@ -62,7 +89,7 @@
         "subterm_ordering_Prims.Cons"
       ],
       0,
-      "db041d4647bccef6b4400ea2bb1f5a47"
+      "b9166f32ff0dae9199cc8e26bd39e11f"
     ],
     [
       "Simple.eq_int_list",
@@ -72,13 +99,21 @@
       [
         "@MaxIFuel_assumption", "@query",
         "binder_x_9a691d092aa1033ae30e6c0e5e60237c_0",
-        "equality_tok_Prims.LexTop@tok",
         "proj_equation_FStar.Pervasives.Native.Mktuple2__1",
         "projection_inverse_FStar.Pervasives.Native.Mktuple2__1",
         "subterm_ordering_Prims.Cons"
       ],
       0,
-      "b94eb3b80022259b1d2649f56e1137bc"
+      "b2d277c85afa9290361c3e818bd974c6"
+    ],
+    [
+      "Simple.eq_int_list",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "7b966f1b2328b58a7a7c092c32399af8"
     ]
   ]
 ]

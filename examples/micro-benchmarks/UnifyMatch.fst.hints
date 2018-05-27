@@ -1,5 +1,5 @@
 [
-  "èÁ«$Áå\u0015ﬁÍÚò>\u001fK…˛",
+  "S‘ÁêŒ+EÇÍÈNÁ Æ\u0003•",
   [
     [
       "UnifyMatch.unat",
@@ -8,7 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "012bf011baf68537667ed80190fafa31"
+      "3bb71b7723cdc4d4e4a637abb1014bba"
     ],
     [
       "UnifyMatch.__proj__S__item___0",
@@ -21,7 +21,7 @@
         "refinement_interpretation_UnifyMatch_Tm_refine_b909e5f5ff265386c08f5741455e23b9"
       ],
       0,
-      "1c74808cef9b39a038cb8ff1b52e6f7b"
+      "d0ac56cd4a51c0aa359d88f51b82725c"
     ],
     [
       "UnifyMatch.nat2unary",
@@ -37,7 +37,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "8fab91f760794469a064f11b576fe3e0"
+      "a11000897de55dff122f1607e205c58d"
     ],
     [
       "UnifyMatch.even",
@@ -46,7 +46,7 @@
       1,
       [ "@query", "assumption_UnifyMatch.unat__uu___haseq" ],
       0,
-      "fa93187de088089f4b4e597365228cf4"
+      "f1d3b3ca02669c7da265172e5853fef3"
     ],
     [
       "UnifyMatch.__proj__Even_SS__item__n",
@@ -59,7 +59,7 @@
         "refinement_interpretation_UnifyMatch_Tm_refine_b82e9317628d0fc1fba9e36ac5ed44f2"
       ],
       0,
-      "164fbf4fa3a3279799e71bf01f292413"
+      "1aa46288de73db5c1f2431e083e560d3"
     ],
     [
       "UnifyMatch.__proj__Even_SS__item___1",
@@ -74,7 +74,29 @@
         "refinement_interpretation_UnifyMatch_Tm_refine_b82e9317628d0fc1fba9e36ac5ed44f2"
       ],
       0,
-      "ae8b4dfebe68af555a85c1fa624b46cd"
+      "3863ed0469a838d8846dcc076655456b"
+    ],
+    [
+      "UnifyMatch.test1",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
+        "assumption_Prims.HasEq_bool",
+        "constructor_distinct_FStar.Tactics.Result.Failed",
+        "constructor_distinct_FStar.Tactics.Result.Success",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result",
+        "projection_inverse_FStar.Tactics.Result.Failed__0",
+        "projection_inverse_FStar.Tactics.Result.Failed__1",
+        "projection_inverse_FStar.Tactics.Result.Failed_a",
+        "projection_inverse_FStar.Tactics.Result.Success__0",
+        "projection_inverse_FStar.Tactics.Result.Success__1",
+        "projection_inverse_FStar.Tactics.Result.Success_a", "unit_typing"
+      ],
+      0,
+      "b4276764a42def0e495cfb83a510608d"
     ],
     [
       "UnifyMatch.unat",
@@ -83,7 +105,7 @@
       1,
       [ "@query" ],
       0,
-      "42bc8ea6738961b2f93c43fc2a2c9a17"
+      "efa4ecb8da4d8d83942c927d5eb9732c"
     ],
     [
       "UnifyMatch.__proj__S__item___0",
@@ -96,7 +118,7 @@
         "refinement_interpretation_UnifyMatch_Tm_refine_b909e5f5ff265386c08f5741455e23b9"
       ],
       0,
-      "37359e3cef26058246949e54a4ecb1aa"
+      "ee7113863245a3d88d5d2c73dc44d9c4"
     ],
     [
       "UnifyMatch.nat2unary",
@@ -112,7 +134,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "af7826aafb85bba7fec8099c1cb1b24a"
+      "ad8a91cb4113cacfb00f334ced20ab8c"
     ],
     [
       "UnifyMatch.even",
@@ -121,7 +143,7 @@
       1,
       [ "@query", "assumption_UnifyMatch.unat__uu___haseq" ],
       0,
-      "8f51831a1e18dd0cbf7aa9c4a31c8ce4"
+      "94d56277fa26846c31fe5e1f01a3a7e3"
     ],
     [
       "UnifyMatch.__proj__Even_SS__item__n",
@@ -134,7 +156,7 @@
         "refinement_interpretation_UnifyMatch_Tm_refine_b82e9317628d0fc1fba9e36ac5ed44f2"
       ],
       0,
-      "0ed6d2c9e05be110009f43ea28c94143"
+      "2dc50f09fafaaed74369d13a5795eff2"
     ],
     [
       "UnifyMatch.__proj__Even_SS__item___1",
@@ -149,7 +171,29 @@
         "refinement_interpretation_UnifyMatch_Tm_refine_b82e9317628d0fc1fba9e36ac5ed44f2"
       ],
       0,
-      "5900c5c2fa12f3ed43e29d1a19b70a17"
+      "c38c4dd25e32320e434ade88fd252842"
+    ],
+    [
+      "UnifyMatch.test1",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_f8666440faa91836cc5a13998af863fc",
+        "assumption_Prims.HasEq_bool",
+        "constructor_distinct_FStar.Tactics.Result.Failed",
+        "constructor_distinct_FStar.Tactics.Result.Success",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result",
+        "projection_inverse_FStar.Tactics.Result.Failed__0",
+        "projection_inverse_FStar.Tactics.Result.Failed__1",
+        "projection_inverse_FStar.Tactics.Result.Failed_a",
+        "projection_inverse_FStar.Tactics.Result.Success__0",
+        "projection_inverse_FStar.Tactics.Result.Success__1",
+        "projection_inverse_FStar.Tactics.Result.Success_a", "unit_typing"
+      ],
+      0,
+      "40694ddb49e8910c8c603c886c4ed2e4"
     ]
   ]
 ]

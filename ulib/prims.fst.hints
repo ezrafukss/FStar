@@ -1,5 +1,5 @@
 [
-  "Z≈úHF^(r\u00038+©Âπ\u00036",
+  "∆ΩM∫,”é8õ\u0007ﬁ.\u0007\"ÎC",
   [
     [
       "Prims.Ghost",
@@ -8,19 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "e10657d0d96a7e18b8218e2a8b2e7a19"
-    ],
-    [
-      "Prims.__proj__Mkdtuple2__item___2",
-      1,
-      2,
-      1,
-      [
-        "@query", "proj_equation_Prims.Mkdtuple2__1",
-        "projection_inverse_Prims.Mkdtuple2__1"
-      ],
-      0,
-      "2c0bf0bda3d2e099585e90ad680fbaa4"
+      "2ae2368b64cf4d3a51ee832bc344bd99"
     ],
     [
       "Prims.list",
@@ -29,7 +17,7 @@
       1,
       [ "@query" ],
       0,
-      "7b60394c8f4588835a1a12054a9856ee"
+      "ffd7b2638950cbfa5da863ae785b6d23"
     ],
     [
       "Prims.__proj__Cons__item__hd",
@@ -42,7 +30,7 @@
         "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
       ],
       0,
-      "05da5d5aa2125fa9d526d04e7ea63d8f"
+      "0055f138b1955e5d4897f62db10e46c1"
     ],
     [
       "Prims.__proj__Cons__item__tl",
@@ -55,7 +43,7 @@
         "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
       ],
       0,
-      "8aa7ea344738800149822a0bdf01ba9d"
+      "0b362858342764b7fd4d3a541746baf6"
     ],
     [
       "Prims.Lemma",
@@ -67,7 +55,7 @@
         "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "1d7239af70cb13a0e46c02a3aa760fb8"
+      "59b770dc43eac45a65723ff66c4c4dbc"
     ],
     [
       "Prims._assert",
@@ -76,7 +64,7 @@
       1,
       [ "@query" ],
       0,
-      "8456aed25e8eabddbb89aed20aab7a87"
+      "a9f614ed120d66949823407908706d1b"
     ],
     [
       "Prims.assert_spinoff",
@@ -85,7 +73,7 @@
       1,
       [ "@query" ],
       0,
-      "916a8a2d2712a3bdab2eded9764942f1"
+      "bfb869d95226d107542fcd06b184eac4"
     ],
     [
       "Prims.cut",
@@ -94,7 +82,16 @@
       1,
       [ "@query" ],
       0,
-      "c5ef3b023adc247129679b029dfd43c7"
+      "de8babfb4e04fd3c5c1481a9a966c3d0"
+    ],
+    [
+      "Prims.nonzero",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "f8a240e52835f71612b1e33d80393a8c"
     ],
     [
       "Prims.pow2",
@@ -112,7 +109,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "afe1fae677a1b13a488db87fa9abeafc"
+      "cedea9f02826cb15e6aab2e9218f53f2"
     ],
     [
       "Prims.Ghost",
@@ -121,19 +118,7 @@
       1,
       [ "@query" ],
       0,
-      "b66153b01a153939f2e52e9b9612f7b0"
-    ],
-    [
-      "Prims.__proj__Mkdtuple2__item___2",
-      2,
-      2,
-      1,
-      [
-        "@query", "proj_equation_Prims.Mkdtuple2__1",
-        "projection_inverse_Prims.Mkdtuple2__1"
-      ],
-      0,
-      "f05625f20772261ec1ad2c8a371ed2dc"
+      "e339c67e14cd9add892497bb011e7e59"
     ],
     [
       "Prims.list",
@@ -142,7 +127,7 @@
       1,
       [ "@query" ],
       0,
-      "86dc81cf57ed708833c9a0a9c546561e"
+      "f4851fba903752ebf53e2d1cd9a7da04"
     ],
     [
       "Prims.__proj__Cons__item__hd",
@@ -155,7 +140,7 @@
         "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
       ],
       0,
-      "381f689a89be4f9c9980dca91b27e1d8"
+      "46ccf426353f49630bd2825fcc02017e"
     ],
     [
       "Prims.__proj__Cons__item__tl",
@@ -168,7 +153,7 @@
         "refinement_interpretation_Prims_Tm_refine_7aac12c24449a22c34d98a0ea8ed4a32"
       ],
       0,
-      "3ffcd72022360d38ad413f1af8da9718"
+      "b8da11754d7fb8b5922c83e302abf307"
     ],
     [
       "Prims.Lemma",
@@ -180,34 +165,16 @@
         "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "e7a4597940742bcb783c9604b07f0dec"
+      "ccfe1653a8c9c50c0a48155126043a9a"
     ],
     [
-      "Prims._assert",
+      "Prims.nonzero",
       2,
       2,
       1,
-      [ "@query" ],
+      [ "@query", "assumption_Prims.HasEq_int" ],
       0,
-      "75b7094461497f199940e5e2e7dcd17d"
-    ],
-    [
-      "Prims.assert_spinoff",
-      2,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "54dd85b777ccf9dae035a6770dc108b4"
-    ],
-    [
-      "Prims.cut",
-      2,
-      2,
-      1,
-      [ "@query" ],
-      0,
-      "55d77e85964f5ecc8b4f1d806189f756"
+      "5dd35b6916b18840ede9c12efed8d104"
     ],
     [
       "Prims.pow2",
@@ -225,7 +192,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "fb4bd8a1b6199848875255d670deb89d"
+      "edc868db29d46a91c35f9c9b72a0a8f3"
     ]
   ]
 ]

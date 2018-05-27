@@ -1,5 +1,5 @@
 [
-  "u\u001aø˚6Ô°o\u001b\u001ah®J-b>",
+  "\u001a≤‘7¿HI4xù\bQ˜\u001f†D",
   [
     [
       "DoNotation.add",
@@ -15,7 +15,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "8fd4dbbbcb02a18839ead19956a0af40"
+      "e8a258e2e57e25cb3484f38a95060809"
     ],
     [
       "DoNotation.uu___8",
@@ -23,14 +23,12 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query",
-        "assumption_FStar.Pervasives.Native.tuple2__uu___haseq",
-        "equation_Prims.eqtype", "function_token_typing_Prims.int",
-        "function_token_typing_Prims.unit",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
+        "@query", "assumption_FStar.Pervasives.Native.tuple2__uu___haseq",
+        "assumption_Prims.HasEq_int", "assumption_Prims.HasEq_unit",
+        "function_token_typing_Prims.int", "function_token_typing_Prims.unit"
       ],
       0,
-      "dccb77ff239ac8f603c0423d858c0157"
+      "fac8c0268b9f7644b9e958f7704f3b46"
     ],
     [
       "DoNotation.add",
@@ -46,22 +44,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "ea1f5687f273179837625938c28bd1d5"
-    ],
-    [
-      "DoNotation.uu___8",
-      2,
-      2,
-      1,
-      [
-        "@MaxIFuel_assumption", "@query",
-        "assumption_FStar.Pervasives.Native.tuple2__uu___haseq",
-        "equation_Prims.eqtype", "function_token_typing_Prims.int",
-        "function_token_typing_Prims.unit",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
-      ],
-      0,
-      "b803f5d30d5a502ff1b554669c7ec235"
+      "abb72c1dab402b3c31a1bbac817bb2fa"
     ]
   ]
 ]

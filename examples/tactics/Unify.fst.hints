@@ -1,8 +1,8 @@
 [
-  "«\f04ƒ íçÙ\fƒf¤ìÇM",
+  "d™\u0012×7p÷\u0015$¹¯F\u000eZ-à",
   [
     [
-      "Unify.uu___64",
+      "Unify.uu___61",
       1,
       2,
       1,
@@ -12,20 +12,7 @@
         "primitive_Prims.op_Addition", "projection_inverse_BoxInt_proj_0"
       ],
       0,
-      "23b12a0bca63a004e1e4d3dbd60a3ef9"
-    ],
-    [
-      "Unify.uu___64",
-      2,
-      2,
-      1,
-      [
-        "@MaxIFuel_assumption", "@query", "equation_Unify.h",
-        "function_token_typing_Unify.h", "int_inversion",
-        "primitive_Prims.op_Addition", "projection_inverse_BoxInt_proj_0"
-      ],
-      0,
-      "926a0d7975d1c9414bd0aab950fd19c5"
+      "6b74b6db06a8111aa878a275d8ab36e4"
     ]
   ]
 ]

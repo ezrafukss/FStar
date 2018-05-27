@@ -919,14 +919,16 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
         desugar_machine_integer env i size top.range, noaqs
 
     | Const (Const_char c) ->
-        if z3_acceptable c then mk (Tm_constant (Const_char c))
+        if z3_acceptable c
+        then mk (Tm_constant (Const_char c)), noaqs
         else raise_error
                (Errors.Error_OutOfRange,
                 BU.format1 "%s is not a printable ASCII character" (BU.string_of_char c))
                top.range
 
     | Const (Const_string (s,r)) ->
-        if z3_acceptable_string s then mk (Tm_constant (Const_string (s,r)))
+        if z3_acceptable_string s
+        then mk (Tm_constant (Const_string (s,r))), noaqs
         else raise_error
                (Errors.Error_OutOfRange,
                 BU.format1 "%s is not a printable ASCII string" s)

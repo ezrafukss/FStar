@@ -40,7 +40,7 @@ let rfree
   (requires (fun h0 -> live h0 b /\ freeable b))
   (ensures (fun h0 _ h1 ->
     (not (g_is_null b)) /\
-    Map.domain (HS.get_hmap h1) `Set.equal` Map.domain (HS.get_hmap h0) /\ 
+    Map.domain (HS.get_hmap h1) `Set.equal` Map.domain (HS.get_hmap h0) /\
     (HS.get_tip h1) == (HS.get_tip h0) /\
     modifies (loc_addr_of_buffer b) h0 h1 /\
     HS.live_region h1 (frameOf b)

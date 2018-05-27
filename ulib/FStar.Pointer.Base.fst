@@ -271,7 +271,7 @@ let _union_get_key (#l: union_typ) (v: union l) : Tot (struct_field l) = _gtdata
 
 let struct_sel (#l: struct_typ) (s: struct l) (f: struct_field l) : Tot (type_of_struct_field l f) =
   DM.sel s f
- 
+
 let struct_upd (#l: struct_typ) (s: struct l) (f: struct_field l) (v: type_of_struct_field l f) : Tot (struct l) =
   DM.upd s f v
 
@@ -1313,7 +1313,7 @@ let path_includes_exists_concat
   (ensures (exists (r: path through to) . q == path_concat p r))
 = path_includes_ind
     (fun #to1_ #to2_ p1_ p2_ -> exists r . p2_ == path_concat p1_ r)
-    (fun #through #to_ p s -> 
+    (fun #through #to_ p s ->
       let r = PathStep through to_ PathBase s in
       assert_norm (PathStep through to_ p s == path_concat p r)
     )
@@ -2633,7 +2633,7 @@ let _singleton_buffer_of_pointer
   match pth with
   | PathStep _ _ pth' (StepCell ln ty i) ->
     (* reconstruct the buffer to the enclosing array *)
-    Buffer (BufferRootArray #ty #ln (Pointer from contents pth')) i 1ul 
+    Buffer (BufferRootArray #ty #ln (Pointer from contents pth')) i 1ul
   | _ ->
     Buffer (BufferRootSingleton p) 0ul 1ul
 
@@ -3293,7 +3293,7 @@ let loc_aux_includes_pointer
   (p: pointer t)
 : GTot Type0
 = match s with
-  | LocPointer p' -> 
+  | LocPointer p' ->
     p' `includes` p
   | LocBuffer b ->
     buffer_includes_pointer b p
@@ -3696,7 +3696,7 @@ let loc_includes_addresses_pointer #t r s p =
   MG.loc_includes_addresses_aloc #_ #cls false r s #(as_addr p) (LocPointer p)
 
 let loc_includes_addresses_buffer #t r s p =
-  MG.loc_includes_addresses_aloc #_ #cls false r s #(buffer_as_addr p) (LocBuffer p)  
+  MG.loc_includes_addresses_aloc #_ #cls false r s #(buffer_as_addr p) (LocBuffer p)
 
 let loc_includes_region_pointer #t s p =
   MG.loc_includes_region_aloc #_ #cls false s #(frameOf p) #(as_addr p) (LocPointer p)
@@ -3963,7 +3963,7 @@ let reference_of
   (p: pointer value)
 : Pure (HS.reference pointer_ref_contents)
   (requires (live h p))
-  (ensures (fun x -> 
+  (ensures (fun x ->
     live h p /\
     x == HS.reference_of h (Pointer?.contents p) pointer_ref_contents (Heap.trivial_preorder pointer_ref_contents) /\
     HS.frameOf x == HS.frameOf (greference_of p) /\
@@ -4150,18 +4150,18 @@ let modifies_1_readable_array #t #len i p h h' =
   readable_array h' p
 
 (* buffer read: can be defined as a derived operation: pointer_of_buffer_cell ; read *)
-		
-let read_buffer		
-  (#t: typ)		
-  (b: buffer t)		
-  i		
-= read (pointer_of_buffer_cell b i)		
-		
-let write_buffer		
-  (#t: typ)		
-  (b: buffer t)		
-  i v		
-= write (pointer_of_buffer_cell b i) v		
+
+let read_buffer
+  (#t: typ)
+  (b: buffer t)
+  i
+= read (pointer_of_buffer_cell b i)
+
+let write_buffer
+  (#t: typ)
+  (b: buffer t)
+  i v
+= write (pointer_of_buffer_cell b i) v
 
 (* unused_in, cont'd *)
 
@@ -4193,7 +4193,7 @@ let buffer_live_reference_unused_in_disjoint #t1 #t2 h b1 b2 =
 (* Buffer inclusion without existential quantifiers: remnants of the legacy buffer interface *)
 
 let root_buffer #t b =
-  let root = Buffer?.broot b in 
+  let root = Buffer?.broot b in
   match root with
   | BufferRootSingleton p -> Buffer root 0ul 1ul
   | BufferRootArray #_ #len _ -> Buffer root 0ul len

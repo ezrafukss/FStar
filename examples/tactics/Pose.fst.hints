@@ -1,8 +1,8 @@
 [
-  ":dê\u001fÂ)ábˆd\næßšU®",
+  "Q\u0013HþV\u0014\u0017\u007f\u0004ÛÛ\u0017¼Í§5",
   [
     [
-      "Pose.uu___64",
+      "Pose.uu___61",
       1,
       2,
       1,
@@ -12,20 +12,7 @@
         "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "444efb82b499c3021f9632db4a1f361f"
-    ],
-    [
-      "Pose.uu___64",
-      2,
-      2,
-      1,
-      [
-        "@MaxIFuel_assumption", "@query", "equation_Prims.l_False",
-        "equation_Prims.squash", "false_interp",
-        "refinement_interpretation_Prims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
-      ],
-      0,
-      "1b52d778e6a5fb0982e7ddcf38843f2e"
+      "f84348d40d7eba8c847c2fed3645368b"
     ]
   ]
 ]

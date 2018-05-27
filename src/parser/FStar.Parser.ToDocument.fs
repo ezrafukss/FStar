@@ -303,19 +303,19 @@ let matches_level s (assoc_levels, tokens) =
 (* Precedence and associativity levels, taken from ../src/parse.mly *)
 //let opinfix4 = Right, [Inr "**"]
 // level backtick won't be used here
-let opinfix3 = Left,  [Inl '*' ; Inl '/' ; Inl '%'; Inr "**"]
-let opinfix2 = Left,  [Inl '+' ; Inl '-' ]
-let minus_lvl = Left, [Inr "-"] // Sublevel of opinfix2, not a level on its own !!!
-let opinfix1 = Right, [Inl '@' ; Inl '^']
+let opinfix3: associativity_level = Left,  [Inl '*' ; Inl '/' ; Inl '%'; Inr "**"]
+let opinfix2: associativity_level = Left,  [Inl '+' ; Inl '-' ]
+let minus_lvl: associativity_level = Left, [Inr "-"] // Sublevel of opinfix2, not a level on its own !!!
+let opinfix1: associativity_level = Right, [Inl '@' ; Inl '^']
 //let pipe_right = Left,  [Inr "|>"]
-let opinfix0d = Left,  [Inl '$']
-let opinfix0c = Left,  [Inl '=' ; Inl '<' ; Inl '>'; Inr "|>"]
-let equal = Left, [Inr "="] // Sublevel of opinfix0c, not a level on its own !!!
-let opinfix0b = Left,  [Inl '&']
-let opinfix0a = Left,  [Inl '|']
-let colon_equals = NonAssoc, [Inr ":="]
-let amp = Right, [Inr "&"]
-let colon_colon = Right, [Inr "::"]
+let opinfix0d: associativity_level = Left,  [Inl '$']
+let opinfix0c: associativity_level = Left,  [Inl '=' ; Inl '<' ; Inl '>'; Inr "|>"]
+let equal: associativity_level = Left, [Inr "="] // Sublevel of opinfix0c, not a level on its own !!!
+let opinfix0b: associativity_level = Left,  [Inl '&']
+let opinfix0a: associativity_level = Left,  [Inl '|']
+let colon_equals: associativity_level = NonAssoc, [Inr ":="]
+let amp: associativity_level = Right, [Inr "&"]
+let colon_colon: associativity_level = Right, [Inr "::"]
 
 (* The latter the element, the tighter it binds *)
 let level_associativity_spec : list<associativity_level> =

@@ -591,6 +591,7 @@ and translate_type env t: typ =
   | MLTY_Named ([arg; _; _], p) when
     Syntax.string_of_mlpath p = "LowStar.Monotonic.Buffer.mbuffer" -> TBuf (translate_type env arg)
   | MLTY_Named ([arg], p) when
+    Syntax.string_of_mlpath p = "LowStar.Buffer.buffer" ||
     Syntax.string_of_mlpath p = "FStar.Buffer.buffer" ||
     Syntax.string_of_mlpath p = "LowStar.Buffer.buffer" ||
     Syntax.string_of_mlpath p = "LowStar.ImmutableBuffer.ibuffer" ||
@@ -715,7 +716,7 @@ and translate_expr env e: expr =
           string_of_mlpath p = "LowStar.Monotonic.Buffer.malloca" ||
           string_of_mlpath p = "LowStar.ImmutableBuffer.ialloca") ->
       EBufCreate (Stack, translate_expr env e1, translate_expr env e2)
-  
+
   | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) } , [ elen ])
     when string_of_mlpath p = "LowStar.UninitializedBuffer.ualloca" ->
       EBufCreateNoInit (Stack, translate_expr env elen)
@@ -771,7 +772,7 @@ and translate_expr env e: expr =
       EBufFree (translate_expr env e2)
 
   (* Generic buffer operations. *)
-  | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2; _e3 ]) when (string_of_mlpath p = "FStar.Buffer.sub") ->
+  | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2; _e3 ]) when (string_of_mlpath p = "FStar.Buffer.sub" || string_of_mlpath p = "LowStar.Buffer.sub") ->
       EBufSub (translate_expr env e1, translate_expr env e2)
 
   | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2; _e3 ]) when string_of_mlpath p = "LowStar.Monotonic.Buffer.msub" ->
@@ -780,7 +781,7 @@ and translate_expr env e: expr =
   | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2 ]) when (string_of_mlpath p = "FStar.Buffer.join") ->
       (translate_expr env e1)
 
-  | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2 ]) when (string_of_mlpath p = "FStar.Buffer.offset") ->
+  | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2 ]) when (string_of_mlpath p = "FStar.Buffer.offset" || string_of_mlpath p = "LowStar.Buffer.offset") ->
       EBufSub (translate_expr env e1, translate_expr env e2)
 
   | MLE_App ({ expr = MLE_TApp({ expr = MLE_Name p }, _) }, [ e1; e2 ]) when string_of_mlpath p = "LowStar.Monotonic.Buffer.moffset" ->

@@ -1,5 +1,5 @@
 [
-  "©\u007f©Àp?eH<\u0004º†ZSX",
+  "‰Ö\u0001šìãPÿGTðì“ƒ×\u0014",
   [
     [
       "TestGhost.h",
@@ -8,20 +8,37 @@
       1,
       [ "@query" ],
       0,
-      "487f095aab61836ce566bcf9d4b800e8"
+      "b2c097b5702e9832ce7223dda6ce8567"
     ],
     [
       "TestGhost.i",
       1,
       2,
       1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "47c867c743ed7c85df8d8438675e9678"
+    ],
+    [
+      "TestGhost.i",
+      2,
+      2,
+      1,
       [
-        "@MaxIFuel_assumption", "@query", "equation_Prims.eqtype",
-        "function_token_typing_Prims.int", "lemma_FStar.Ghost.hide_reveal",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
+        "@query", "function_token_typing_Prims.int",
+        "lemma_FStar.Ghost.hide_reveal"
       ],
       0,
-      "b72a94d8e41c9dfd9e51b49dc20f1fec"
+      "fe309dab9bbbb7ff09a5e1abc0d7c7ca"
+    ],
+    [
+      "TestGhost.j",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "06599a9445ff3e25303542712422ba4b"
     ],
     [
       "TestGhost.h",
@@ -30,20 +47,37 @@
       1,
       [ "@query" ],
       0,
-      "4d83e2423a9019b773b8177227e7ebad"
+      "0117d3a0a81b5104ea416168c4b5aa21"
     ],
     [
       "TestGhost.i",
-      2,
+      3,
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query", "equation_Prims.eqtype",
-        "function_token_typing_Prims.int", "lemma_FStar.Ghost.hide_reveal",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
+        "@query", "function_token_typing_Prims.int",
+        "lemma_FStar.Ghost.hide_reveal"
       ],
       0,
-      "080cec8e5a191a479abd2556ae0e939e"
+      "994e702fff7eca670578e7b20010ac23"
+    ],
+    [
+      "TestGhost.i",
+      4,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "f8de99eb2563e6b2ec38b837f5970533"
+    ],
+    [
+      "TestGhost.j",
+      2,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "1dc2da29e3a717165d62d753ad242ee1"
     ]
   ]
 ]

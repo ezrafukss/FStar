@@ -1,5 +1,5 @@
 [
-  "ﬁﬁ£ÆÔ[l≥\u001dBóe\u0013‡⁄Ä",
+  "‹˛∞R^≈ÎÈì\u0018çÀ\f0€8",
   [
     [
       "Unfold.guard",
@@ -10,16 +10,14 @@
         "@MaxIFuel_assumption", "@query", "bool_inversion",
         "disc_equation_FStar.Tactics.Result.Failed",
         "disc_equation_FStar.Tactics.Result.Success",
-        "equation_Prims.eqtype",
         "function_token_typing_FStar.Reflection.Types.term",
         "function_token_typing_Prims.string",
         "lemma_FStar.Tactics.Result.result_split",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f",
         "typing_FStar.Tactics.Result.uu___is_Failed",
         "typing_FStar.Tactics.Result.uu___is_Success"
       ],
       0,
-      "385cff5b2ba07c7f11675684ddf9a412"
+      "2943aa20debbc0a686bf3f23692768d3"
     ]
   ]
 ]
