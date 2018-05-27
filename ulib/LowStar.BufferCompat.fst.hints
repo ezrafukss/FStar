@@ -1,0 +1,95 @@
+[
+  "UOq‰;.K\u0012ALv{∏x…^",
+  [
+    [
+      "LowStar.BufferCompat.rfree",
+      1,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "0ba762a84a01fa857f6ce69cf0552d6e"
+    ],
+    [
+      "LowStar.BufferCompat.rcreate",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_LowStar.BufferCompat_Tm_refine_5b03403a8d3fa4c655ec2b3c1e1359f8"
+      ],
+      0,
+      "38a343fdb70b1fc5daa39a916a53aa65"
+    ],
+    [
+      "LowStar.BufferCompat.rcreate_mm",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_LowStar.BufferCompat_Tm_refine_5b03403a8d3fa4c655ec2b3c1e1359f8"
+      ],
+      0,
+      "ce6ba1fdfa8438918668dca9b09f5ff0"
+    ],
+    [
+      "LowStar.BufferCompat.create",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_LowStar.BufferCompat_Tm_refine_f91c442f4e872efb5dc260d2bd566195"
+      ],
+      0,
+      "d065e9dfd1901a7b6f1f846722b0c6d3"
+    ],
+    [
+      "LowStar.BufferCompat.rfree",
+      2,
+      2,
+      1,
+      [ "@query" ],
+      0,
+      "c56a1848c4c6dbdf5ba4a23f929211bf"
+    ],
+    [
+      "LowStar.BufferCompat.rcreate",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_LowStar.BufferCompat_Tm_refine_5b03403a8d3fa4c655ec2b3c1e1359f8"
+      ],
+      0,
+      "c585af74bc03ae70674067efc82b9f21"
+    ],
+    [
+      "LowStar.BufferCompat.rcreate_mm",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_LowStar.BufferCompat_Tm_refine_5b03403a8d3fa4c655ec2b3c1e1359f8"
+      ],
+      0,
+      "14841ec346f593e3f828f3996b281c8e"
+    ],
+    [
+      "LowStar.BufferCompat.create",
+      2,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "refinement_interpretation_LowStar.BufferCompat_Tm_refine_f91c442f4e872efb5dc260d2bd566195"
+      ],
+      0,
+      "85ae3f0f3091e4ff48413f245736d9a4"
+    ]
+  ]
+]

@@ -44,7 +44,6 @@ val debug           : string -> tac<unit>
 val dump_proofstate : proofstate -> string -> unit
 val print_proof_state1 : string -> tac<unit>
 val print_proof_state  : string -> tac<unit>
-val goal_to_string : goal -> string
 
 val fail : string -> tac<'a>
 val trivial : unit -> tac<unit>
@@ -102,7 +101,7 @@ val unquote : typ -> term -> tac<term>
 val uvar_env : env -> option<typ> -> tac<term>
 val unshelve : term -> tac<unit>
 
-val unify : term -> term -> tac<bool>
+val unify_env : env -> term -> term -> tac<bool>
 val change : typ -> tac<unit>
 
 val goal_of_goal_ty : env -> typ -> goal * guard_t
