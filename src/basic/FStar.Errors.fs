@@ -224,7 +224,7 @@ type raw_error =
   | Fatal_UnfoldableDeprecated
   | Fatal_UnificationNotWellFormed
   | Fatal_Uninstantiated
-  | Fatal_UninstantiatedUnificationVarInTactic
+  | Error_UninstantiatedUnificationVarInTactic
   | Fatal_UninstantiatedVarInTactic
   | Fatal_UniverseMightContainSumOfTwoUnivVars
   | Fatal_UniversePolymorphicInnerLetBound
@@ -308,11 +308,14 @@ type raw_error =
   | Error_NoSMTButNeeded
   | Fatal_UnexpectedAntiquotation
   | Fatal_SplicedUndef
+  | Fatal_SpliceUnembedFail
   | Warning_ExtractionUnexpectedEffect
   | Error_DidNotFail
   | Warning_UnappliedFail
   | Warning_QuantifierWithoutPattern
   | Error_EmptyFailErrs
+  | Warning_logicqualifier
+  | Fatal_CyclicDependence
 
 type flag =
   | CFatal          //CFatal: these are reported using a raise_error: compiler cannot progress
@@ -545,7 +548,7 @@ let default_flags =
   (Fatal_UnfoldableDeprecated                        , CFatal);
   (Fatal_UnificationNotWellFormed                    , CFatal);
   (Fatal_Uninstantiated                              , CFatal);
-  (Fatal_UninstantiatedUnificationVarInTactic        , CFatal);
+  (Error_UninstantiatedUnificationVarInTactic        , CError);
   (Fatal_UninstantiatedVarInTactic                   , CFatal);
   (Fatal_UniverseMightContainSumOfTwoUnivVars        , CFatal);
   (Fatal_UniversePolymorphicInnerLetBound            , CFatal);
@@ -629,11 +632,14 @@ let default_flags =
   (Error_NoSMTButNeeded                              , CAlwaysError);
   (Fatal_UnexpectedAntiquotation                     , CFatal);
   (Fatal_SplicedUndef                                , CFatal);
+  (Fatal_SpliceUnembedFail                           , CFatal);
   (Warning_ExtractionUnexpectedEffect                , CWarning);
   (Error_DidNotFail                                  , CAlwaysError);
   (Warning_UnappliedFail                             , CWarning);
   (Warning_QuantifierWithoutPattern                  , CSilent);
   (Error_EmptyFailErrs                               , CAlwaysError);
+  (Warning_logicqualifier                            , CWarning);
+  (Fatal_CyclicDependence                            , CFatal)
   ]
 
 exception Err of raw_error* string

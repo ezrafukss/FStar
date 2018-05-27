@@ -338,3 +338,34 @@ let must_erase_for_extraction :unit = ()
 
 let dm4f_bind_range : unit = ()
 
+(** When attached a top-level definition, the typechecker will succeed
+ * if and only if checking the definition results in an error. The
+ * error number list is actually OPTIONAL. If present, it will be
+ * checked that the definition raises exactly those errors in the
+ * specified multiplicity, but order does not matter. *)
+irreducible
+let fail (errs : list int) : unit = ()
+
+(** When --lax is present, we ignore both previous attributes since some definitions
+ * only fail when verification is turned on. With this attribute, one can ensure
+ * that a definition fails lax-checking too.
+ *
+ * (Note: this will NOT turn on --lax for you.) *)
+irreducible
+let fail_lax : unit = ()
+
+(**
+ * **THIS ATTRIBUTE IS AN ESCAPE HATCH AND CAN BREAK SOUNDNESS**
+ * **USE WITH CARE**
+ * The positivity check for inductive types stops at abstraction
+ * boundaries. This results in spurious errors about positivity,
+ * e.g., when defining types like `type t = ref (option t)`
+ * By adding this attribute to a declaration of a top-level name
+ * positivity checks on applications of that name are admitted.
+ * See, for instance, FStar.Monotonic.Heap.mref
+ * We plan to decorate binders of abstract types with polarities
+ * to allow us to check positivity across abstraction boundaries
+ * and will eventually remove this attribute.
+ *)
+irreducible
+let assume_strictly_positive : unit = ()

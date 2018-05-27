@@ -24,7 +24,9 @@ true: \
   package(pprint), \
   package(ulex), \
   package(stdint), \
-  package(yojson)
+  package(yojson), \
+  package(ocaml-migrate-parsetree), \
+  package(process)
 
 # This ensures that main.native bundles its dependencies, which dynlinked tactics might need.
 "src/fstar/ml/main.native": \

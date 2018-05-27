@@ -815,7 +815,7 @@ let decr r = FStar_ST.(Z.(write r (read r - one)))
 let geq (i:int) (j:int) = i >= j
 
 let get_exec_dir () = Filename.dirname (Sys.executable_name)
-let expand_environment_variable x = try Sys.getenv x with Not_found -> ""
+let expand_environment_variable x = try Some (Sys.getenv x) with Not_found -> None
 
 let physical_equality (x:'a) (y:'a) = x == y
 let check_sharing a b msg = if physical_equality a b then print1 "Sharing OK: %s\n" msg else print1 "Sharing broken in %s\n" msg
@@ -1000,7 +1000,11 @@ let write_hints (filename: string) (hints: hints_db): unit =
           ]
     ) hints.hints)
   ] in
-  Yojson.Safe.pretty_to_channel (open_out_bin filename) json
+  let channel = open_out_bin filename in
+  BatPervasives.finally
+    (fun () -> close_out channel)
+    (fun channel -> Yojson.Safe.pretty_to_channel channel json)
+    channel
 
 let read_hints (filename: string): hints_db option =
   let mk_hint nm ix fuel ifuel unsat_core time hash_opt = {

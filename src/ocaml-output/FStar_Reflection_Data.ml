@@ -104,7 +104,8 @@ type term_view =
   | Tv_Refine of (FStar_Syntax_Syntax.bv,FStar_Syntax_Syntax.term)
   FStar_Pervasives_Native.tuple2 
   | Tv_Const of vconst 
-  | Tv_Uvar of (FStar_BigInt.t,typ) FStar_Pervasives_Native.tuple2 
+  | Tv_Uvar of (FStar_BigInt.t,FStar_Syntax_Syntax.ctx_uvar_and_subst)
+  FStar_Pervasives_Native.tuple2 
   | Tv_Let of
   (Prims.bool,FStar_Syntax_Syntax.bv,FStar_Syntax_Syntax.term,FStar_Syntax_Syntax.term)
   FStar_Pervasives_Native.tuple4 
@@ -187,8 +188,10 @@ let (uu___is_Tv_Uvar : term_view -> Prims.bool) =
     match projectee with | Tv_Uvar _0 -> true | uu____540 -> false
   
 let (__proj__Tv_Uvar__item___0 :
-  term_view -> (FStar_BigInt.t,typ) FStar_Pervasives_Native.tuple2) =
-  fun projectee  -> match projectee with | Tv_Uvar _0 -> _0 
+  term_view ->
+    (FStar_BigInt.t,FStar_Syntax_Syntax.ctx_uvar_and_subst)
+      FStar_Pervasives_Native.tuple2)
+  = fun projectee  -> match projectee with | Tv_Uvar _0 -> _0 
 let (uu___is_Tv_Let : term_view -> Prims.bool) =
   fun projectee  ->
     match projectee with | Tv_Let _0 -> true | uu____574 -> false
@@ -417,59 +420,59 @@ let (mk_inspect_pack_pair :
       { lid = pack_lid; t = uu____1228 }  in
     (inspect, pack)
   
-let (uu___52 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
+let (uu___80 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
   = mk_inspect_pack_pair "_ln" 
 let (fstar_refl_inspect_ln : refl_constant) =
-  match uu___52 with
+  match uu___80 with
   | (fstar_refl_inspect_ln,fstar_refl_pack_ln) -> fstar_refl_inspect_ln 
 let (fstar_refl_pack_ln : refl_constant) =
-  match uu___52 with
+  match uu___80 with
   | (fstar_refl_inspect_ln1,fstar_refl_pack_ln) -> fstar_refl_pack_ln 
-let (uu___53 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
+let (uu___81 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
   = mk_inspect_pack_pair "_fv" 
 let (fstar_refl_inspect_fv : refl_constant) =
-  match uu___53 with
+  match uu___81 with
   | (fstar_refl_inspect_fv,fstar_refl_pack_fv) -> fstar_refl_inspect_fv 
 let (fstar_refl_pack_fv : refl_constant) =
-  match uu___53 with
+  match uu___81 with
   | (fstar_refl_inspect_fv1,fstar_refl_pack_fv) -> fstar_refl_pack_fv 
-let (uu___54 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
+let (uu___82 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
   = mk_inspect_pack_pair "_bv" 
 let (fstar_refl_inspect_bv : refl_constant) =
-  match uu___54 with
+  match uu___82 with
   | (fstar_refl_inspect_bv,fstar_refl_pack_bv) -> fstar_refl_inspect_bv 
 let (fstar_refl_pack_bv : refl_constant) =
-  match uu___54 with
+  match uu___82 with
   | (fstar_refl_inspect_bv1,fstar_refl_pack_bv) -> fstar_refl_pack_bv 
-let (uu___55 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
+let (uu___83 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
   = mk_inspect_pack_pair "_binder" 
 let (fstar_refl_inspect_binder : refl_constant) =
-  match uu___55 with
+  match uu___83 with
   | (fstar_refl_inspect_binder,fstar_refl_pack_binder) ->
       fstar_refl_inspect_binder
   
 let (fstar_refl_pack_binder : refl_constant) =
-  match uu___55 with
+  match uu___83 with
   | (fstar_refl_inspect_binder1,fstar_refl_pack_binder) ->
       fstar_refl_pack_binder
   
-let (uu___56 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
+let (uu___84 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
   = mk_inspect_pack_pair "_comp" 
 let (fstar_refl_inspect_comp : refl_constant) =
-  match uu___56 with
+  match uu___84 with
   | (fstar_refl_inspect_comp,fstar_refl_pack_comp) -> fstar_refl_inspect_comp 
 let (fstar_refl_pack_comp : refl_constant) =
-  match uu___56 with
+  match uu___84 with
   | (fstar_refl_inspect_comp1,fstar_refl_pack_comp) -> fstar_refl_pack_comp 
-let (uu___57 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
+let (uu___85 : (refl_constant,refl_constant) FStar_Pervasives_Native.tuple2)
   = mk_inspect_pack_pair "_sigelt" 
 let (fstar_refl_inspect_sigelt : refl_constant) =
-  match uu___57 with
+  match uu___85 with
   | (fstar_refl_inspect_sigelt,fstar_refl_pack_sigelt) ->
       fstar_refl_inspect_sigelt
   
 let (fstar_refl_pack_sigelt : refl_constant) =
-  match uu___57 with
+  match uu___85 with
   | (fstar_refl_inspect_sigelt1,fstar_refl_pack_sigelt) ->
       fstar_refl_pack_sigelt
   

@@ -21,6 +21,10 @@ open FStar.String
 *)
 (* (c) Microsoft Corporation. All rights reserved *)
 (* TODO : these files should be deprecated and removed *)
+
+let logic_qualifier_deprecation_warning =
+  "logic qualifier is deprecated, please remove it from the source program. In case your program verifies with the qualifier annotated but not without it, please try to minimize the example and file a github issue"
+
 %}
 %start inputFragment
 %start term
@@ -1038,7 +1042,9 @@ qualifier:
                   ( New )}
 | LOGIC
     {let _1 = () in
-                  ( Logic )}
+                  ( log_issue (lhs parseState) (Warning_logicqualifier,
+                                                logic_qualifier_deprecation_warning);
+                    Logic )}
 | OPAQUE
     {let _1 = () in
                   ( Opaque )}
@@ -1696,7 +1702,7 @@ in
       (
         let lbs = (attrs, lb)::lbs in
         let lbs = focusAttrLetBindings lbs (rhs2 parseState 2 3) in
-        mk_term (Let(q, lbs, e)) (rhs2 parseState 1 5) Expr
+        mk_term (Let(q, lbs, e)) (rhs2 parseState 1 6) Expr
       )}
 | attribute LET letqualifier letbinding list_attr_letbinding_ IN term
     {let (x0, _2, q, lb, lbs, _6, e) = ($1, $2, $3, $4, $5, (), $7) in
@@ -1707,7 +1713,7 @@ in
       (
         let lbs = (attrs, lb)::lbs in
         let lbs = focusAttrLetBindings lbs (rhs2 parseState 2 3) in
-        mk_term (Let(q, lbs, e)) (rhs2 parseState 1 5) Expr
+        mk_term (Let(q, lbs, e)) (rhs2 parseState 1 6) Expr
       )}
 | FUNCTION reverse_left_flexible_nonempty_list_BAR_patternBranch_
     {let (_1, xs0) = ((), $2) in

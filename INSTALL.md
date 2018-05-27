@@ -65,7 +65,7 @@ following commands. (On Windows this requires Cygwin and `make`)
 
         $ export PATH=/path/to/z3/bin:/path/to/fstar/bin:$PATH
         $ fstar.exe --version
-        F* 0.9.6.0~alpha1
+        F* 0.9.7.0~dev
         platform=Linux_x86_64
         compiler=OCaml 4.05.0
         date=yyyy-mm-ddThh:nn:ss+02:00
@@ -95,7 +95,7 @@ following commands. (On Windows this requires Cygwin and `make`)
    your OS; then use the following command to install the packages
    required to compile OCaml programs extracted from F\* code:
 
-        $ opam install ocamlfind batteries stdint zarith ppx_deriving ppx_deriving_yojson
+        $ opam install ocamlfind batteries stdint zarith ppx_deriving ppx_deriving_yojson ocaml-migrate-parsetree process
 
 4. You can verify all the examples, keeping in mind that this might
    take a long time.
@@ -325,7 +325,7 @@ This will install both OCaml and OPAM.
 4. F\* depends on a bunch of external OCaml packages which you should install using OPAM:
 
   ```sh
-  $ opam install ocamlbuild ocamlfind batteries stdint zarith yojson fileutils pprint menhir ulex ppx_deriving ppx_deriving_yojson
+  $ opam install ocamlbuild ocamlfind batteries stdint zarith yojson fileutils pprint menhir ulex ppx_deriving ppx_deriving_yojson process
   ```
   Some of the examples also require the `sqlite3` opam package, which depends
   on SQLite itself that you can install with `opam depext sqlite3` (at least on Linux)
