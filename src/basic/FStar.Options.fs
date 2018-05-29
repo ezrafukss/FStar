@@ -1223,7 +1223,7 @@ let resettable_specs = all_specs |> List.filter (fun (_, x, _, _) -> resettable 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 let display_usage () = display_usage_aux (specs())
 
-let fstar_bin_directory = Util.get_exec_dir ()
+// let fstar_bin_directory = Util.get_exec_dir ()
 
 exception File_argument of string
 
@@ -1286,15 +1286,15 @@ let include_path () =
   if get_no_default_includes() then
     cache_dir @ get_include()
   else
-    let lib_paths =
-        match FStar.Util.expand_environment_variable "FSTAR_LIB" with
-        | None ->
-          let fstar_home = fstar_bin_directory ^ "/.."  in
-          let defs = universe_include_path_base_dirs in
-          defs |> List.map (fun x -> fstar_home ^ x) |> List.filter file_exists
-        | Some s -> [s]
-    in
-    cache_dir @ lib_paths @ get_include() @ [ "." ]
+    //let lib_paths =
+    //    match FStar.Util.expand_environment_variable "FSTAR_LIB" with
+    //    | None ->
+    //      let fstar_home = fstar_bin_directory ^ "/.."  in
+    //      let defs = universe_include_path_base_dirs in
+    //      defs |> List.map (fun x -> fstar_home ^ x) |> List.filter file_exists
+    //    | Some s -> [s]
+    //in
+    get_include() @ [ "." ] //lib_paths @ get_include() @ [ "." ]
 
 let find_file =
   let file_map = FStar.Util.smap_create 100 in
