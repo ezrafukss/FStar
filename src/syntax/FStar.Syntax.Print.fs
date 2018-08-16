@@ -161,13 +161,15 @@ let rec int_of_univ n u = match Subst.compress_univ u with
     | _ -> n, Some u
 
 let rec univ_to_string u =
-  if not (Options.ugly()) then
-    let e = Resugar.resugar_universe u Range.dummyRange in
-    let d = ToDocument.term_to_document e in
-    Pp.pretty_string (float_of_string "1.0") 100 d
-  else match Subst.compress_univ u with
-    | U_unif u -> univ_uvar_to_string u
-    | U_name x -> x.idText
+  // VD: commented out for testing NBE
+  // if not (Options.ugly()) then
+  //   let e = Resugar.resugar_universe u Range.dummyRange in
+  //   let d = ToDocument.term_to_document e in
+  //   Pp.pretty_string (float_of_string "1.0") 100 d
+  // else
+  match Subst.compress_univ u with
+    | U_unif u -> "U_unif "^univ_uvar_to_string u
+    | U_name x -> "U_name "^x.idText
     | U_bvar x -> "@"^string_of_int x
     | U_zero   -> "0"
     | U_succ u ->
@@ -265,13 +267,25 @@ and term_to_string x =
       | Tm_app(_, []) ->  failwith "Empty args!"
 
       // TODO: add an option to mark where this happens
-      | Tm_lazy i -> term_to_string (must !lazy_chooser i.lkind i) // can't call into Syntax.Util here..
+      | Tm_lazy ({blob=b; lkind=Lazy_embedding (_, thunk)}) ->
+        "[LAZYEMB:" ^
+        term_to_string (FStar.Common.force_thunk thunk) ^ "]"
+      | Tm_lazy i ->
+        "[lazy:" ^
+        term_to_string (must !lazy_chooser i.lkind i) // can't call into Syntax.Util here..
+        ^"]"
 
-      | Tm_quoted (tm, { qkind = Quote_static  }) ->
-        U.format1 "`(%s)" (term_to_string tm)
-
-      | Tm_quoted (tm, { qkind = Quote_dynamic }) ->
-        U.format1 "quote (%s)" (term_to_string tm)
+      | Tm_quoted (tm, qi) ->
+        begin match qi.qkind with
+        | Quote_static ->
+            let print_aq (bv, t) =
+              U.format2 "%s -> %s" (bv_to_string bv) (term_to_string t)
+            in
+            U.format2 "`(%s)%s" (term_to_string tm)
+                                (FStar.Common.string_of_list print_aq qi.antiquotes)
+        | Quote_dynamic ->
+            U.format1 "quote (%s)" (term_to_string tm)
+        end
 
       | Tm_meta(t, Meta_pattern ps) ->
         let pats = ps |> List.map (fun args -> args |> List.map (fun (t, _) -> term_to_string t) |> String.concat "; ") |> String.concat "\/" in
@@ -377,7 +391,10 @@ and pat_to_string x =
       then U.format2 "%s:%s" (bv_to_string x) (term_to_string x.sort)
       else bv_to_string x
     | Pat_constant c -> const_to_string c
-    | Pat_wild x -> if (Options.print_real_names()) then "Pat_wild " ^ (bv_to_string x) else "_"
+    | Pat_wild x ->
+      if Options.print_bound_var_types()
+      then U.format2 "_wild_%s:%s" (bv_to_string x) (term_to_string x.sort)
+      else bv_to_string x
 
 
 and lbs_to_string quals lbs =
@@ -649,21 +666,24 @@ let eff_decl_to_string for_free ed =
   eff_decl_to_string' for_free Range.dummyRange [] ed
 
 let rec sigelt_to_string (x: sigelt) =
- if not (Options.ugly()) then
-    let e = Resugar.resugar_sigelt x in
-    begin match e with
-    | Some d ->
-      let d = ToDocument.decl_to_document d in
-      Pp.pretty_string (float_of_string "1.0") 100 d
-    | _ -> ""
-    end
- else
+ // if not (Options.ugly()) then
+ //    let e = Resugar.resugar_sigelt x in
+ //    begin match e with
+ //    | Some d ->
+ //      let d = ToDocument.decl_to_document d in
+ //      Pp.pretty_string (float_of_string "1.0") 100 d
+ //    | _ -> ""
+ //    end
+ // else
    let basic =
       match x.sigel with
       | Sig_pragma(LightOff) -> "#light \"off\""
       | Sig_pragma(ResetOptions None) -> "#reset-options"
       | Sig_pragma(ResetOptions (Some s)) -> U.format1 "#reset-options \"%s\"" s
       | Sig_pragma(SetOptions s) -> U.format1 "#set-options \"%s\"" s
+      | Sig_pragma(PushOptions None) -> "#push-options"
+      | Sig_pragma(PushOptions (Some s)) -> U.format1 "#push-options \"%s\"" s
+      | Sig_pragma(PopOptions) -> "#pop-options"
       | Sig_inductive_typ(lid, univs, tps, k, _, _) ->
         let quals_str = quals_to_string' x.sigquals in
         let binders_str = binders_to_string " " tps in
@@ -775,3 +795,9 @@ let set_to_string f s =
             U.string_of_string_builder strb
 
 let bvs_to_string sep bvs = binders_to_string sep (List.map mk_binder bvs)
+
+let rec emb_typ_to_string = function
+    | ET_abstract -> "abstract"
+    | ET_app (h, []) -> h
+    | ET_app(h, args) -> "(" ^h^ " " ^ (List.map emb_typ_to_string args |> String.concat " ")  ^")"
+    | ET_fun(a, b) -> "(" ^ emb_typ_to_string a ^ ") -> " ^ emb_typ_to_string b

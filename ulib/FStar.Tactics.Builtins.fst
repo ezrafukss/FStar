@@ -8,16 +8,22 @@ open FStar.Tactics.Effect
 open FStar.Reflection.Types
 open FStar.Reflection.Data
 open FStar.Tactics.Types
+open FStar.Tactics.Result
 
-(** Simply fail *)
-assume val fail : #a:Type -> string -> Tac a
+(** Simply fail. The specs ensures that it fails *without changing the
+proofstate*, but hides the message. *)
+assume val fail : #a:Type -> m:string -> TacH a (requires (fun _ -> True)) (ensures (fun ps r -> Failed? r /\ Failed?.ps r == ps))
+
+// NOTE: The only reason `fail` is assumed as a primitive is to enable
+// the TacFail debugging flag. We could instead define it like this,
+// with the exact same spec and runtime behaviour (minus the
+// debugging aspect).
+(* val fail : #a:Type -> m:string -> TacH a (requires (fun _ -> True)) (ensures (fun ps r -> Failed? r /\ Failed?.ps r == ps)) *)
+(* let fail = fail_act *)
 
 (** [top_env] returns the environment where the tactic started running.
  * This works even if no goals are present. *)
 assume val top_env : unit -> Tac env
-
-(** [cur_env] returns the current goal's environment *)
-assume val cur_env : unit -> Tac env
 
 (** [push_binder] extends the environment with a single binder.
     This is useful as one traverses the syntax of a term,
@@ -27,24 +33,9 @@ assume val cur_env : unit -> Tac env
 (* TODO: move to FStar.Reflection.Basic? *)
 assume val push_binder : env -> binder -> env
 
-(** [cur_goal] returns the current goal's type *)
-assume val cur_goal : unit -> Tac term
-
-(** [cur_witness] returns the current goal's witness *)
-assume val cur_witness : unit -> Tac term
-
-(** [ngoals ()] returns the number of goals *)
-assume val ngoals : unit -> Tac int
-
-(** [ngoals_smt ()] returns the number of SMT goals *)
-assume val ngoals_smt : unit -> Tac int
-
 (** [fresh ()] returns a fresh integer. It does not get reset when
 catching a failure. *)
 assume val fresh : unit -> Tac int
-
-(** [is_guard] returns whether the current goal arised from a typechecking guard *)
-assume val is_guard : unit -> Tac bool
 
 (** [refine_intro] will turn a goal of shape [w : x:t{phi}]
 into [w : t] and [phi{w/x}] *)
@@ -66,12 +57,11 @@ any type. This will fail at tactic runtime if the quoted term does not
 typecheck to type [a]. *)
 assume val unquote : #a:Type -> term -> Tac a
 
-assume private val __trytac : #a:Type -> __tac a -> __tac (option a)
-(** [trytac t] will attempt to run [t] and allow to recover from a failure.
-If [t] succeeds with return value [a], [trytac t] returns [Some a].
-On failure, it returns [None]. See also [or_else].
-*)
-let trytac (t : unit -> Tac 'a) = TAC?.reflect (__trytac (reify (t ())))
+(** [catch t] will attempt to run [t] and allow to recover from a failure.
+If [t] succeeds with return value [a], [catch t] returns [Inr a].
+On failure, it returns [Inl msg], where [msg] is the error [t]
+raised. See also [or_else].  *)
+assume val catch : #a:Type -> (unit -> Tac a) -> TacS (either string a)
 
 (** [trivial] will discharge the goal if it's exactly [True] after
 doing normalization and simplification of it. *)
@@ -145,39 +135,24 @@ the variable [v] for [r] everywhere in the current goal type and witness/
 *)
 assume val rewrite : binder -> Tac unit
 
-(** [smt] will mark the current goal for being solved through the SMT.
-This does not immediately run the SMT:  it is a marker.
-This tactic never fails, and a goal marked for SMT cannot be brought back. *)
-assume val smt     : unit -> Tac unit
+(** First boolean is whether to attempt to intrpoduce a refinement
+before solving. In that case, a goal for the refinement formula will be
+added. Second boolean is whether to set the expected type internally.
+Just use `exact` from FStar.Tactics.Derived if you don't know what's up
+with all this. *)
+assume val t_exact : bool -> bool -> term -> Tac unit
 
-assume val __divide : int -> __tac 'a -> __tac 'b -> __tac ('a * 'b)
-(** [divide n t1 t2] will split the current set of goals into the [n]
-first ones, and the rest. It then runs [t1] on the first set, and [t2]
-on the second, returning both results (and concatenating remaining goals). *)
-let divide (n:int) (f:unit -> Tac 'a) (g:unit -> Tac 'b): Tac ('a * 'b) =
-    TAC?.reflect (__divide n (reify (f ())) (reify (g ())))
+(** Inner primitive for [apply], takes a boolean specifying whether
+to not ask for implicits that appear free in posterior goals. Example:
+when the boolean is true, applying transitivity to
+[|- a = c] will give two goals, [|- a = ?u] and [|- ?u = c] without
+asking to instantiate [?u] since it will most likely be constrained
+later by solving these goals. In any case, we track [?u] and will fail
+if it's not solved later.
 
-(* could be implemented using divide *)
-assume val __seq : __tac unit -> __tac unit -> __tac unit
-(** Runs tactic [t1] on the current goal, and then tactic [t2] on *each*
-subgoal produced by [t1]. Each invocation of [t2] runs on a proofstate
-with a single goal (they're "focused"). *)
-let seq (f:unit -> Tac unit) (g:unit -> Tac unit) : Tac unit =
-  TAC?.reflect (__seq (reify (f ())) (reify (g ())))
-
-(** boolean is whether to set the expected type internally.
- * Just use `exact` from FStar.Tactics.Derived if you don't know what that means. *)
-assume val t_exact : bool -> term -> Tac unit
-
-(** [apply f] will attempt to produce a solution to the goal by an application
-of [f] to any amount of arguments (which need to be solved as further goals).
-The amount of arguments introduced is the least such that [f a_i] unifies
-with the goal's type. *)
-assume val apply : term -> Tac unit
-
-(** [apply_raw f] is like [apply], but will ask for all arguments regardless
-of whether they appear free in further goals. *)
-assume val apply_raw : term -> Tac unit
+You probably want [apply] from FStar.Tactics.Derived.
+*)
+assume val t_apply : bool -> term -> Tac unit
 
 (** [apply_lemma l] will solve a goal of type [squash phi] when [l] is a Lemma
 ensuring [phi]. The arguments to [l] and its requires clause are introduced as new goals.
@@ -189,9 +164,9 @@ assume val apply_lemma : term -> Tac unit
 of printing [str] on the compiler's standard output. *)
 assume val print : string -> Tac unit
 
-(** [debug str] is similar to [print str], but will only print the message
-if the [--debug] option was given for the current module. *)
-assume val debug : string -> Tac unit
+(** [debugging ()] returns true if the current module has the debug flag
+on, i.e. when [--debug MyModule] was passed in. *)
+assume val debugging : unit -> Tac bool
 
 (** Similar to [print], but will dump a text representation of the proofstate
 along with the message. *)
@@ -205,7 +180,6 @@ assume val dump1 : string -> Tac unit
 when trying to [apply] a reflexivity lemma. *)
 assume val trefl : unit -> Tac unit
 
-assume val __pointwise : direction -> __tac unit -> __tac unit
 (** (TODO: explain bettter) When running [pointwise tau] For every
 subterm [t'] of the goal's type [t], the engine will build a goal [Gamma
 |= t' == ?u] and run [tau] on it. When the tactic proves the goal,
@@ -213,11 +187,7 @@ the engine will rewrite [t'] for [?u] in the original goal type. This
 is done for every subterm, bottom-up. This allows to recurse over an
 unknown goal type. By inspecting the goal, the [tau] can then decide
 what to do (to not do anything, use [trefl]). *)
-(* TODO: move these away *)
-let pointwise  (tau : unit -> Tac unit) : Tac unit = TAC?.reflect (__pointwise BottomUp (reify (tau ())))
-let pointwise' (tau : unit -> Tac unit) : Tac unit = TAC?.reflect (__pointwise TopDown  (reify (tau ())))
-
-assume val __topdown_rewrite : (term -> __tac (bool * int)) -> __tac unit -> __tac unit
+assume val t_pointwise : direction -> (unit -> Tac unit) -> Tac unit
 
 (** [topdown_rewrite ctrl rw] is used to rewrite those sub-terms [t]
     of the goal on which [fst (ctrl t)] returns true.
@@ -226,27 +196,20 @@ assume val __topdown_rewrite : (term -> __tac (bool * int)) -> __tac unit -> __t
     of the form [Gamma |= t == ?u]. When [rw] proves the goal,
     the engine will rewrite [t] for [?u] in the original goal
     type.
-    
+
     The goal formula is traversed top-down and the traversal can be
     controlled by [snd (ctrl t)]:
-    
+
     When [snd (ctrl t) = 0], the traversal continues down through the
     position in the goal term.
-    
+
     When [snd (ctrl t) = 1], the traversal continues to the next
     sub-tree of the goal.
 
     When [snd (ctrl t) = 2], no more rewrites are performed in the
     goal.
 *)
-let topdown_rewrite
-       (ctrl : term -> Tac (bool * int))
-       (rw:unit -> Tac unit)
-    : Tac unit
-    = TAC?.reflect (__topdown_rewrite (fun x -> reify (ctrl x)) (reify (rw ())))
-
-(** Push the current goal to the back. *)
-assume val later : unit -> Tac unit
+assume val topdown_rewrite : (ctrl : term -> Tac (bool * int)) -> (rw:unit -> Tac unit) -> Tac unit
 
 (** Given the current goal [Gamma |- w : t],
 [dup] will turn this goal into
@@ -256,12 +219,6 @@ a goal's witness in any way needed, by choosing
 some [?u] (possibly with exact) and then solving the other goal.
 *)
 assume val dup : unit -> Tac unit
-
-(** Flip the order of the first two goals. *)
-assume val flip : unit -> Tac unit
-
-(** Succeed if there are no more goals left, and fail otherwise. *)
-assume val qed : unit -> Tac unit
 
 // Proof namespace management
 (** [prune "A.B.C"] will mark all top-level definitions in module
@@ -279,6 +236,13 @@ The first one is only valid in the first goal, and likewise for
 the second (TODO: change this awful behaviour).
 *)
 assume val cases : term -> Tac (term * term)
+
+(** Destruct a value of an inductive type by matching on it. The generated
+match has one branch for each constructor and is therefore trivially
+exhaustive, no VC is generated for that purpose. It returns a list
+with the fvars of each constructor and their arities, in the order
+they appear as goals. *)
+assume val t_destruct : term -> Tac (list (fv * nat))
 
 (** Set command line options for the current goal. Mostly useful to
 change SMT encoding options such as [set_options "--z3rlimit 20"]. *)
@@ -319,15 +283,36 @@ assume val get_guard_policy : unit -> Tac guard_policy
 (** Set the current guard policy. See [get_guard_policy} for an explanation *)
 assume val set_guard_policy : guard_policy -> Tac unit
 
-(** Ignore the current goal. If left unproven, this will fail after
-the tactic finishes. *)
-assume val dismiss : unit -> Tac unit
+(** [lax_on] returns true iff the current environment has the
+`--lax` option set, and thus drops all verification conditions. *)
+assume val lax_on : unit -> Tac bool
 
-(** Admit the current goal. Raises a warning. *)
-assume val tadmit : unit -> Tac unit
+(** Admit the current goal and set the witness to the given term.
+Absolutely unsafe. Raises a warning. *)
+assume val tadmit_t : term -> Tac unit
 
 (** View a term in a fully-named representation *)
 assume val inspect : term -> Tac term_view
 
 (** Pack a term view on a fully-named representation back into a term *)
 assume val pack    : term_view -> Tac term
+
+(** Join the first two goals, which must be irrelevant, in a single
+one by finding a maximal prefix of their environment and reverting
+appropriately. Useful to minimize SMT queries that share internal
+obligations. *)
+assume val join : unit -> Tac unit
+
+(* Local metastate via a string-keyed map. [lget] fails if the
+found element is not typeable at the requested type. *)
+assume val lget     : #a:Type -> string -> Tac a
+assume val lset     : #a:Type -> string -> a -> Tac unit
+
+(** Set the current set of active goals at will. Obligations remain
+in the implicits. *)
+assume val set_goals     : list goal -> Tac unit
+
+(** Set the current set of SMT goals at will. Obligations remain in the
+implicits. TODO: This is a really bad name, there's no special "SMT"
+about these goals. *)
+assume val set_smt_goals : list goal -> Tac unit

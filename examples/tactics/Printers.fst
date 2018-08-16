@@ -1,5 +1,8 @@
 module Printers
 
+(* TODO: This is pretty much a blast-to-the-past of Meta-F*, we can do
+ * much better now. *)
+
 open FStar.Tactics
 module TD = FStar.Tactics.Derived
 module TU = FStar.Tactics.Util
@@ -10,8 +13,7 @@ let print_Prims_int : int -> Tot string = string_of_int
 let rec mk_concat (sep : term) (ts : list term) : Tac term =
     mk_e_app (pack (Tv_FVar (pack_fv ["FStar"; "String"; "concat"]))) [sep; mk_list ts]
 
-(* TODO: we get stuck if this is not eta-expanded, since it has a top-level effect *)
-let mk_flatten ts = mk_concat (pack (Tv_Const (C_String ""))) ts
+let mk_flatten ts = mk_concat (`"") ts
 
 let paren (e : term) : Tac term =
     mk_flatten [mk_stringlit "("; e; mk_stringlit ")"]
@@ -56,8 +58,8 @@ let mk_printer_fun (dom : term) : Tac term =
     in
 
     match inspect_sigelt se with
-    | Sg_Let _ _ _ _ -> fail "cannot create printer for let"
-    | Sg_Inductive _ bs t ctors ->
+    | Sg_Let _ _ _ _ _ -> fail "cannot create printer for let"
+    | Sg_Inductive _ _ bs t ctors ->
         let br1 ctor : Tac branch =
             let se = match lookup_typ e ctor with
                      | None -> fail "Constructor not found..?"
@@ -113,7 +115,7 @@ let mk_printer dom : Tac unit =
              | _ -> fail "not an fv?"
     in
     let nm = maplast (fun s -> s ^ "_print") nm in
-    let sv : sigelt_view = Sg_Let false (pack_fv nm) (mk_printer_type dom) (mk_printer_fun dom) in
+    let sv : sigelt_view = Sg_Let false (pack_fv nm) [] (mk_printer_type dom) (mk_printer_fun dom) in
     let ses : list sigelt = [pack_sigelt sv] in
     exact (quote ses)
 
@@ -129,7 +131,7 @@ type t1 =
 (* We need to provide the name of the generated definition
  * by hand, since desugaring this module occurs entirely
  * before running the metaprograms. *)
-%splice[t1_print] (fun () -> mk_printer (`t1))
+%splice[t1_print] (mk_printer (`t1))
 
 let _ = assert_norm (t1_print (A 5 "hey") = "(Printers.A 5 \"hey\")")
 let _ = assert_norm (t1_print (B (D "thing") 42) = "(Printers.B (Printers.D \"thing\") 42)")

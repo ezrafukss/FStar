@@ -20,6 +20,9 @@ module FStar.Seq.Properties
 open FStar.Seq.Base
 module Seq = FStar.Seq.Base
 
+let lseq (a: Type) (l: nat) : Type =
+    s: Seq.seq a { Seq.length s == l }
+
 let indexable (#a:Type) (s:Seq.seq a) (j:int) = 0 <= j /\ j < Seq.length s
 
 val lemma_append_inj_l: #a:Type -> s1:seq a -> s2:seq a -> t1:seq a -> t2:seq a{length s1 = length t1 /\ equal (append s1 s2) (append t1 t2)} -> i:nat{i < length s1}
@@ -230,24 +233,23 @@ let rec sorted_concat_lemma #a f lo pivot hi =
         lemma_append_cons lo (cons pivot hi);
         lemma_tl (head lo) (append (tail lo) (cons pivot hi)))
 
-#set-options "--max_fuel 1 --initial_fuel 1 --z3rlimit 30"
 abstract val split_5 : #a:Type -> s:seq a -> i:nat -> j:nat{i < j && j < length s} -> Pure (seq (seq a))
   (requires True)
   (ensures (fun x ->
-            ((length x = 5)
-             /\ (s == append (index x 0) (append (index x 1) (append (index x 2) (append (index x 3) (index x 4)))))
+            (length x = 5
+             /\ equal s (append (index x 0) (append (index x 1) (append (index x 2) (append (index x 3) (index x 4)))))
              /\ equal (index x 0) (slice s 0 i)
              /\ equal (index x 1) (slice s i (i+1))
              /\ equal (index x 2) (slice s (i+1) j)
              /\ equal (index x 3) (slice s j (j + 1))
              /\ equal (index x 4) (slice s (j + 1) (length s)))))
 let split_5 #a s i j =
-  let frag_lo, rest  = split_eq s i in
-  let frag_i,  rest  = split_eq rest 1 in
-  let frag_mid,rest  = split_eq rest (j - (i + 1)) in
-  let frag_j,frag_hi = split_eq rest 1 in
+  let frag_lo = slice s 0 i in
+  let frag_i = slice s i (i + 1) in
+  let frag_mid = slice s (i + 1) j in
+  let frag_j = slice s j (j + 1) in
+  let frag_hi = slice s (j + 1) (length s) in
   upd (upd (upd (upd (create 5 frag_lo) 1 frag_i) 2 frag_mid) 3 frag_j) 4 frag_hi
-#reset-options
 
 val lemma_swap_permutes_aux_frag_eq: #a:Type -> s:seq a -> i:nat{i<length s} -> j:nat{i <= j && j<length s}
                           -> i':nat -> j':nat{i' <= j' /\ j'<=length s /\
@@ -623,7 +625,7 @@ let rec seq_to_list #a s =
 val seq_of_list: #a:Type -> l:list a -> Tot (s:seq a{L.length l = length s})
 let rec seq_of_list #a l =
   match l with
-  | [] -> createEmpty #a
+  | [] -> Seq.empty #a
   | hd::tl -> create 1 hd @| seq_of_list tl
 
 val lemma_seq_list_bij: #a:Type -> s:seq a -> Lemma
@@ -694,7 +696,7 @@ let contains_elim (#a:Type) (s:seq a) (x:a)
 	  (exists (k:nat). k < Seq.length s /\ Seq.index s k == x))
   = ()
 
-let lemma_contains_empty (#a:Type) : Lemma (forall (x:a). ~ (contains Seq.createEmpty x)) = ()
+let lemma_contains_empty (#a:Type) : Lemma (forall (x:a). ~ (contains Seq.empty x)) = ()
 
 let lemma_contains_singleton (#a:Type) (x:a) : Lemma (forall (y:a). contains (create 1 x) y ==> y == x) = ()
 
@@ -870,9 +872,9 @@ let slice_is_empty
   (i: nat {i <= length s})
 : Lemma
   (requires True)
-  (ensures (slice s i i == createEmpty))
+  (ensures (slice s i i == Seq.empty))
   [SMTPat (slice s i i)]
-= lemma_eq_elim (slice s i i) createEmpty
+= lemma_eq_elim (slice s i i) Seq.empty
 
 let slice_length
   (#a: Type)
@@ -896,14 +898,33 @@ let slice_slice
   [SMTPat (slice (slice s i1 j1) i2 j2)]
 = lemma_eq_elim (slice (slice s i1 j1) i2 j2) (slice s (i1 + i2) (i1 + j2))
 
+let lemma_seq_of_list_induction (#a:Type) (l:list a)
+  :Lemma (requires True)
+         (ensures (let s = seq_of_list l in
+	           match l with
+	           | []    -> Seq.equal s empty
+		   | hd::tl -> head s == hd /\ tail s == seq_of_list tl))
+  = if List.Tot.length l > 0 then lemma_tl (List.Tot.hd l) (seq_of_list (List.Tot.tl l))
+
+let rec lemma_seq_of_list_index (#a:Type) (l:list a) (i:nat{i < List.Tot.length l})
+  :Lemma (requires True)
+         (ensures  (index (seq_of_list l) i == List.Tot.index l i))
+	 [SMTPat (index (seq_of_list l) i)]
+  = match l with
+    | []    -> ()
+    | hd::tl -> if i = 0 then () else lemma_seq_of_list_index tl (i - 1)
+
+[@(deprecated "seq_of_list")]
+let of_list (#a:Type) (l:list a) :seq a = seq_of_list l
+
 let seq_of_list_tl
   (#a: Type)
   (l: list a { List.Tot.length l > 0 } )
 : Lemma
   (requires True)
-  (ensures (seq_of_list (List.Tot.tl l) == tail (seq_of_list l)))
-  [SMTPat (seq_of_list (List.Tot.tl l))]
-= lemma_tl (List.Tot.hd l) (seq_of_list (List.Tot.tl l))
+  (ensures (seq_of_list (List.Tot.tl l) == tail (seq_of_list l))) =
+  lemma_seq_of_list_induction l;
+  ()
 
 let rec mem_seq_of_list
   (#a: eqtype)
@@ -922,3 +943,42 @@ let rec mem_seq_of_list
      lemma_mem_inversion (seq_of_list l)
     in
     mem_seq_of_list x q
+
+(****** sortWith ******)
+let sortWith (#a:eqtype) (f:a -> a -> Tot int) (s:seq a) :seq a
+  = seq_of_list (List.Tot.Base.sortWith f (seq_to_list s))
+
+let rec lemma_seq_to_list_permutation (#a:eqtype) (s:seq a)
+  :Lemma (requires True) (ensures (forall x. count x s == List.Tot.Base.count x (seq_to_list s))) (decreases (length s))
+  = if length s > 0 then lemma_seq_to_list_permutation (slice s 1 (length s))
+
+let rec lemma_seq_of_list_permutation (#a:eqtype) (l:list a)
+  :Lemma (forall x. List.Tot.Base.count x l == count x (seq_of_list l))
+  =
+    lemma_seq_of_list_induction l;
+    match l with
+    | []   -> ()
+    | _::tl -> lemma_seq_of_list_permutation tl
+
+let rec lemma_seq_of_list_sorted (#a:Type) (f:a -> a -> Tot bool) (l:list a)
+  :Lemma (requires (List.Tot.Properties.sorted f l)) (ensures  (sorted f (seq_of_list l)))
+  =
+    lemma_seq_of_list_induction l;
+    if length (seq_of_list l) > 1 then lemma_seq_of_list_sorted f (List.Tot.Base.tl l)
+
+let lemma_seq_sortwith_correctness (#a:eqtype) (f:a -> a -> Tot int) (s:seq a)
+  :Lemma (requires (total_order a (List.Tot.Base.bool_of_compare f)))
+         (ensures  (let s' = sortWith f s in sorted (List.Tot.Base.bool_of_compare f) s' /\ permutation a s s'))
+  = let l = seq_to_list s in
+    let l' = List.Tot.Base.sortWith f l in
+    let s' = seq_of_list l' in
+    let cmp = List.Tot.Base.bool_of_compare f in
+
+    (* sortedness *)
+    List.Tot.Properties.sortWith_sorted f l;  //the list returned by List.sortWith is sorted
+    lemma_seq_of_list_sorted cmp l';  //seq_of_list preserves sortedness
+
+    (* permutation *)
+    lemma_seq_to_list_permutation s;  //seq_to_list is a permutation
+    List.Tot.Properties.sortWith_permutation f l;  //List.sortWith is a permutation
+    lemma_seq_of_list_permutation l'  //seq_of_list is a permutation

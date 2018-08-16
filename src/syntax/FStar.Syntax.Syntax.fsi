@@ -45,20 +45,25 @@ type sconst = FStar.Const.sconst
 type pragma =
   | SetOptions of string
   | ResetOptions of option<string>
+  | PushOptions of option<string>
+  | PopOptions
   | LightOff
 
 type memo<'a> = ref<option<'a>>
+
+(* Simple types used in native compilation
+ * to record the types of lazily embedded terms
+ *)
+type emb_typ =
+  | ET_abstract
+  | ET_fun  of emb_typ * emb_typ
+  | ET_app  of string * list<emb_typ>
 
 //versioning for unification variables
 type version = {
     major:int;
     minor:int
 }
-
-type arg_qualifier =
-  | Implicit of bool //boolean marks an inaccessible implicit argument of a data constructor
-  | Equality
-type aqual = option<arg_qualifier>
 type universe =
   | U_zero
   | U_succ  of universe
@@ -86,22 +91,6 @@ type delta_depth =
   | Delta_constant_at_level of int    //A symbol that can be unfolded n types to a term whose head is a constant, e.g., nat is (Delta_unfoldable 1) to int, level 0 is a constant
   | Delta_equational_at_level of int  //level 0 is a symbol that may be equated to another by extensional reasoning, n > 0 can be unfolded n times to a Delta_equational_at_level 0 term
   | Delta_abstract of delta_depth   //A symbol marked abstract whose depth is the argument d
-
-///[@ PpxDerivingYoJson PpxDerivingShow ]
-// Different kinds of lazy terms. These are used to decide the unfolding
-// function, instead of keeping the closure inside the lazy node, since
-// that means we cannot have equality on terms (not serious) nor call
-// output_value on them (serious).
-type lazy_kind =
-  | BadLazy
-  | Lazy_bv
-  | Lazy_binder
-  | Lazy_fvar
-  | Lazy_comp
-  | Lazy_env
-  | Lazy_proofstate
-  | Lazy_sigelt
-  | Lazy_uvar
 
 type should_check_uvar =
   | Allow_unresolved      (* Escape hatch for uvars in logical guards that are sometimes left unresolved *)
@@ -159,7 +148,7 @@ and letbinding = {  //let f : forall u1..un. M t = e
     lbattrs:list<attribute>; //attrs
     lbpos  :range;           //original position of 'e'
 }
-and antiquotations = list<(bv * bool * term)>
+and antiquotations = list<(bv * term)>
 and quoteinfo = {
     qkind      : quote_kind;
     antiquotes : antiquotations;
@@ -259,15 +248,36 @@ and attribute = term
 and lazyinfo = {
     blob  : dyn;
     lkind : lazy_kind;
-    typ   : typ;
+    ltyp  : typ;
     rng   : Range.range;
 }
+// Different kinds of lazy terms. These are used to decide the unfolding
+// function, instead of keeping the closure inside the lazy node, since
+// that means we cannot have equality on terms (not serious) nor call
+// output_value on them (serious).
+and lazy_kind =
+  | BadLazy
+  | Lazy_bv
+  | Lazy_binder
+  | Lazy_fvar
+  | Lazy_comp
+  | Lazy_env
+  | Lazy_proofstate
+  | Lazy_goal
+  | Lazy_sigelt
+  | Lazy_uvar
+  | Lazy_embedding of emb_typ * FStar.Common.thunk<term>
 and binding =
   | Binding_var      of bv
   | Binding_lid      of lident * tscheme
   | Binding_univ     of univ_name
 and tscheme = list<univ_name> * typ
 and gamma = list<binding>
+and arg_qualifier =
+  | Implicit of bool //boolean marks an inaccessible implicit argument of a data constructor
+  | Meta of term
+  | Equality
+and aqual = option<arg_qualifier>
 
 type lcomp = { //a lazy computation
     eff_name: lident;
@@ -277,7 +287,7 @@ type lcomp = { //a lazy computation
 }
 
 val on_antiquoted : (term -> term) -> quoteinfo -> quoteinfo
-val lookup_aq : bv -> antiquotations -> option<(bool * term)>
+val lookup_aq : bv -> antiquotations -> option<term>
 
 // This is set in FStar.Main.main, where all modules are in-scope.
 val lazy_chooser : ref<option<(lazy_kind -> lazyinfo-> term)>>
@@ -285,8 +295,11 @@ type freenames_l = list<bv>
 type formula = typ
 type formulae = list<typ>
 val new_bv_set: unit -> set<bv>
+val new_id_set: unit -> set<ident>
 val new_fv_set: unit -> set<lident>
 val new_universe_names_set: unit -> set<univ_name>
+
+val eq_binding : binding -> binding -> bool
 
 type qualifier =
   | Assumption                             //no definition provided, just a declaration
@@ -519,6 +532,7 @@ val is_top_level:   list<letbinding> -> bool
 val next_id:        (unit -> int)
 val reset_gensym:   (unit -> unit)
 val freshen_bv:     bv -> bv
+val freshen_binder:  binder -> binder
 val gen_bv:         string -> option<Range.range> -> typ -> bv
 val new_bv:         option<range> -> typ -> bv
 val new_univ_name:  option<range> -> univ_name
@@ -543,33 +557,34 @@ module C = FStar.Parser.Const
 
 val delta_constant  : delta_depth
 val delta_equational: delta_depth
-val tconst        : lident -> term
-val tabbrev       : lident -> term
-val tdataconstr   : lident -> term
-val t_unit        : term
-val t_bool        : term
-val t_int         : term
-val t_int8        : term
-val t_int16       : term
-val t_int32       : term
-val t_int64       : term
-val t_uint8       : term
-val t_uint16      : term
-val t_uint32      : term
-val t_uint64      : term
-val t_string      : term
-val t_float       : term
-val t_char        : term
-val t_range       : term
-val t_norm_step   : term
-val t_term        : term
-val t_order       : term
-val t_decls       : term
-val t_binder      : term
-val t_bv          : term
-val t_tactic_unit : term
-val t_tac_unit    : term
-val t_list_of     : term -> term
-val t_option_of   : term -> term
+val fvconst         : lident -> fv
+val tconst          : lident -> term
+val tabbrev         : lident -> term
+val tdataconstr     : lident -> term
+val t_unit          : term
+val t_bool          : term
+val t_int           : term
+val t_int8          : term
+val t_int16         : term
+val t_int32         : term
+val t_int64         : term
+val t_uint8         : term
+val t_uint16        : term
+val t_uint32        : term
+val t_uint64        : term
+val t_string        : term
+val t_float         : term
+val t_char          : term
+val t_range         : term
+val t_norm_step     : term
+val t_term          : term
+val t_order         : term
+val t_decls         : term
+val t_binder        : term
+val t_bv            : term
+val t_tactic_unit   : term
+val t_list_of       : term -> term
+val t_option_of     : term -> term
 val t_tuple2_of     : term -> term -> term
-val unit_const    : term
+val t_either_of     : term -> term -> term
+val unit_const      : term

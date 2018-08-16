@@ -1,7 +1,9 @@
-.PHONY: all
+.PHONY: all package clean 0 1 2 3 hints
 
 all:
 	$(MAKE) -C src/ocaml-output
+	$(MAKE) -C ulib
+	$(MAKE) -C ulib/ml
 
 package:
 	git clean -ffdx .
@@ -28,3 +30,7 @@ clean:
 # Build the snapshot and then regen, i.e. 1 + 2
 3:
 	$(MAKE) -C src ocaml-fstar-ocaml
+
+# Regenerate all hints for the regression test suite
+hints:
+	OTHERFLAGS=--record_hints $(MAKE) -C src/ uregressions

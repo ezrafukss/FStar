@@ -513,6 +513,8 @@ let is_tactic t =
 
 exception Let_rec_unencodeable
 
+let copy_env (en:env_t) = { en with cache = BU.smap_copy en.cache }  //Make a copy of all the mutable state of env_t, central place for keeping track of mutable fields in env_t
+
 let encode_top_level_let :
     env_t -> (bool * list<letbinding>) -> list<qualifier> -> list<decl> * env_t =
     fun env (is_rec, bindings) quals ->
@@ -567,10 +569,10 @@ let encode_top_level_let :
 
             (* have another go, after unfolding all definitions *)
             | _ when not norm ->
-              let t_norm = N.normalize [N.AllowUnboundUniverses; N.Beta; N.Weak; N.HNF;
+              let t_norm = N.normalize [Env.AllowUnboundUniverses; Env.Beta; Env.Weak; Env.HNF;
                                         (* we don't know if this will terminate; so don't do recursive steps *)
-                                        N.Exclude N.Zeta;
-                                        N.UnfoldUntil delta_constant; N.EraseUniverses] env.tcenv t_norm
+                                        Env.Exclude Env.Zeta;
+                                        Env.UnfoldUntil delta_constant; Env.EraseUniverses] env.tcenv t_norm
               in
                 aux true t_norm
 
@@ -615,6 +617,18 @@ let encode_top_level_let :
         in
         let toks_fvbs = List.rev toks in
         let decls = List.rev decls |> List.flatten in
+        (*
+         * AR: decls are the declarations for the top-level lets
+         *     if one of the let body contains a let rec (inner let rec), we simply return decls at that point, inner let recs are not encoded to the solver yet (see Inner_let_rec below)
+         *     the way it is implemented currently is that, the call to encode the let body throws an exception Inner_let_rec which is caught below in this function
+         *     and the exception handler simply returns decls
+         *     however, it seems to mess up the env cache
+         *     basically, the let rec can be quite deep in the body, and then traversing the body before it, we might encode new decls, add them to the cache etc.
+         *     since the cache is stateful, this would mean that there would be some symbols in the cache but not in the returned decls list (which only contains the top-level lets)
+         *     this results in z3 errors
+         *     so, taking a snapshot of the env, and return this env in handling of the Inner_let_rec (see also #1502)
+         *)
+        let env_decls = copy_env env in
         let typs = List.rev typs in
 
         let mk_app rng curry fvb vars =
@@ -806,7 +820,7 @@ let encode_top_level_let :
         if quals |> BU.for_some (function HasMaskedEffect -> true | _ -> false)
         || typs  |> BU.for_some (fun t -> not <| (U.is_pure_or_ghost_function t ||
                                                   is_reifiable_function env.tcenv t))
-        then decls, env
+        then decls, env_decls
         else
           try
             if not is_rec
@@ -815,7 +829,7 @@ let encode_top_level_let :
               encode_non_rec_lbdef bindings typs toks_fvbs env
             else
               encode_rec_lbdefs bindings typs toks_fvbs env
-          with Inner_let_rec -> decls, env  //decls are type declarations for the lets, if there is an inner let rec, only those are encoded to the solver
+          with Inner_let_rec -> decls, env_decls  //decls are type declarations for the lets, if there is an inner let rec, only those are encoded to the solver
 
     with Let_rec_unencodeable ->
       let msg = bindings |> List.map (fun lb -> Print.lbname_to_string lb.lbname) |> String.concat " and " in
@@ -859,7 +873,7 @@ and encode_sigelt' (env:env_t) (se:sigelt) : (decls_t * env_t) =
      | Sig_sub_effect _ -> [], env
 
      | Sig_new_effect(ed) ->
-       if se.sigquals |> List.contains Reifiable |> not
+       if not (Env.is_reifiable_effect env.tcenv ed.mname)
        then [], env
        else (* The basic idea:
                     1. Encode M.bind_repr: a:Type -> b:Type -> wp_a -> wp_b -> f:st_repr a wp_a -> g:(a -> st_repr b) : st_repr b
@@ -938,7 +952,7 @@ and encode_sigelt' (env:env_t) (se:sigelt) : (decls_t * env_t) =
      | Sig_assume(l, us, f) ->
         let uvs, f = SS.open_univ_vars us f in
         let env = { env with tcenv = Env.push_univ_vars env.tcenv uvs } in
-        let f = N.normalize [N.Beta; N.Eager_unfolding] env.tcenv f in
+        let f = N.normalize [Env.Beta; Env.Eager_unfolding] env.tcenv f in
         let f, decls = encode_formula f env in
         let g = [Util.mkAssume(f, Some (BU.format1 "Assumption: %s" (Print.lid_to_string l)), (varops.mk_unique ("assumption_"^l.str)))] in
         decls@g, env
@@ -1291,7 +1305,7 @@ let encode_env_bindings (env:env_t) (bindings:list<S.binding>) : (decls_t * env_
           i+1, decls, env
 
         | S.Binding_var x ->
-            let t1 = N.normalize [N.Beta; N.Eager_unfolding; N.Simplify; N.Primops; N.EraseUniverses] env.tcenv x.sort in
+            let t1 = N.normalize [Env.Beta; Env.Eager_unfolding; Env.Simplify; Env.Primops; Env.EraseUniverses] env.tcenv x.sort in
             if Env.debug env.tcenv <| Options.Other "SMTEncoding"
             then (BU.print3 "Normalized %s : %s to %s\n" (Print.bv_to_string x) (Print.term_to_string x.sort) (Print.term_to_string t1));
             let t, decls' = encode_term t1 env in
@@ -1341,10 +1355,11 @@ let get_env cmn tcenv = match !last_env with
 let set_env env = match !last_env with
     | [] -> failwith "Empty env stack"
     | _::tl -> last_env := env::tl
+
 let push_env () = match !last_env with
     | [] -> failwith "Empty env stack"
     | hd::tl ->
-      let top = {hd with cache = BU.smap_copy hd.cache} in
+      let top = copy_env hd in
       last_env := top::hd::tl
 let pop_env () = match !last_env with
     | [] -> failwith "Popping an empty stack"
@@ -1452,7 +1467,7 @@ let encode_query use_env_msg tcenv q
                       //if the assumption is of the form x:(forall y. P) etc.
                     | _ ->
                       x.sort in
-                let t = N.normalize [N.Eager_unfolding; N.Beta; N.Simplify; N.Primops; N.EraseUniverses] env.tcenv t in
+                let t = N.normalize [Env.Eager_unfolding; Env.Beta; Env.Simplify; Env.Primops; Env.EraseUniverses] env.tcenv t in
                 Syntax.mk_binder ({x with sort=t})::out, rest
             | _ -> [], bindings in
         let closing, bindings = aux tcenv.gamma in

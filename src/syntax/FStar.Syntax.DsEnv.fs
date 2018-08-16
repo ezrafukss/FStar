@@ -95,7 +95,8 @@ type env = {
   docs:                 BU.smap<Parser.AST.fsdoc>;        (* Docstrings of lids *)
   remaining_iface_decls:list<(lident*list<Parser.AST.decl>)>;  (* A map from interface names to their stil-to-be-processed top-level decls *)
   syntax_only:          bool;                             (* Whether next push should skip type-checking *)
-  ds_hooks:             dsenv_hooks                       (* hooks that the interactive more relies onto for symbol tracking *)
+  ds_hooks:             dsenv_hooks;                       (* hooks that the interactive more relies onto for symbol tracking *)
+  dep_graph:            FStar.Parser.Dep.deps
 }
 and dsenv_hooks =
   { ds_push_open_hook : env -> open_module_or_namespace -> unit;
@@ -156,7 +157,7 @@ let set_syntax_only env b = { env with syntax_only = b }
 let ds_hooks env = env.ds_hooks
 let set_ds_hooks env hooks = { env with ds_hooks = hooks }
 let new_sigmap () = BU.smap_create 100
-let empty_env () = {curmodule=None;
+let empty_env deps = {curmodule=None;
                     curmonad=None;
                     modules=[];
                     scope_mods=[];
@@ -171,8 +172,10 @@ let empty_env () = {curmodule=None;
                     docs=new_sigmap();
                     remaining_iface_decls=[];
                     syntax_only=false;
-                    ds_hooks=default_ds_hooks}
-
+                    ds_hooks=default_ds_hooks;
+                    dep_graph=deps}
+let dep_graph env = env.dep_graph
+let set_dep_graph env ds = {env with dep_graph=ds}
 let sigmap env = env.sigmap
 let has_all_in_scope env =
   List.existsb (fun (m, _) ->
@@ -459,7 +462,7 @@ let shorten_module_path env ids is_full_path =
       | None -> ([], ids)
       | Some (stripped_ids, rev_kept_ids) -> (stripped_ids, List.rev rev_kept_ids) in
 
-  if is_full_path then
+  if is_full_path && List.length ids > 0 then
     // Try to strip the entire prefix.  This is the cheap common case.
     match resolve_module_name env (FStar.Ident.lid_of_ids ids) true with
     | Some m when module_is_open env m -> (ids, [])
@@ -907,7 +910,7 @@ let push_top_level_rec_binding env (x:ident) dd =
   then push_scope_mod env (Rec_binding (x,l,dd))
   else raise_error (Errors.Fatal_DuplicateTopLevelNames, ("Duplicate top-level names " ^ l.str)) (range_of_lid l)
 
-let push_sigelt env s =
+let push_sigelt' fail_on_dup env s =
   let err l =
     let sopt = BU.smap_try_find (sigmap env) l.str in
     let r = match sopt with
@@ -926,7 +929,7 @@ let push_sigelt env s =
         | _ -> false, false in
       let lids = lids_of_sigelt s in
       begin match BU.find_map lids (fun l -> if not (unique any_val exclude_interface env l) then Some l else None) with
-        | Some l -> err l
+        | Some l when fail_on_dup -> err l
         | _ -> extract_record env globals s; {env with sigaccum=s::env.sigaccum}
       end in
   let env = {env with scope_mods = !globals} in
@@ -953,6 +956,9 @@ let push_sigelt env s =
       BU.smap_add (sigmap env) lid.str (se, env.iface && not env.admitted_iface)));
   let env = {env with scope_mods = !globals } in
   env
+
+let push_sigelt       env se = push_sigelt' true  env se
+let push_sigelt_force env se = push_sigelt' false env se
 
 let push_namespace env ns =
   (* namespace resolution disabled, but module abbrevs enabled *)

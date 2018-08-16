@@ -11,6 +11,17 @@ Guidelines for the changelog:
   possibly with details in the PR or links to sample fixes (for example, changes
   to F*'s test suite).
 
+# Version 0.9.7.0
+
+## Module system
+
+  * Friend modules (https://github.com/FStarLang/FStar/wiki/Friend-modules)
+
+## Core typechecker
+
+  * Revised typechecking of nested patterns and ascriptions on
+    patterns, fixing unsoundnesses (issue #238, for example)
+
 # Version 0.9.6.0
 
 ## Command line options
@@ -349,6 +360,21 @@ Date:   Mon Apr 30 16:57:21 2018 -0700
      so the above should just work. This change simplifies the point 3
      above, in that there is no extra proof obligation when creating
      regions now.
+
+  5. `FStar.HyperStack.mem` is now `abstract`. The client changes include
+     the following mappings (where `h` has type `mem`):
+
+     1. `h.tip` --> `HS.get_tip h`
+     2. `h.h` --> `HS.get_hmap h`
+
+     The script `FStar/.scripts/renamings.sh` has a new option
+     `rename_hs_mem_projectors` that tries to do this renaming
+     in all the `fst` and `fsti` files. If you use this script,
+     make sure the gloss over the renamings (using `git diff`) to
+     see that the changes are fine.
+
+     The change is only syntactic in the clients, there shouldn't
+     be any other proof changes.
 
 * Consolidation of HyperHeap and HyperStack memory models, and
   corresponding APIs for `contains`, `modifies`, etc.

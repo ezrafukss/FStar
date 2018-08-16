@@ -26,6 +26,7 @@ open FStar.Extraction.ML.Syntax
 open FStar.Extraction.ML.UEnv
 open FStar.Extraction.ML.Util
 open FStar.Ident
+open FStar.Syntax
 
 module Term = FStar.Extraction.ML.Term
 module Print = FStar.Syntax.Print
@@ -40,6 +41,7 @@ module PC = FStar.Parser.Const
 module Util = FStar.Extraction.ML.Util
 module Env = FStar.TypeChecker.Env
 module TcUtil = FStar.TypeChecker.Util
+module Env = FStar.TypeChecker.Env
 
 (*This approach assumes that failwith already exists in scope. This might be problematic, see below.*)
 let fail_exp (lid:lident) (t:typ) =
@@ -80,6 +82,7 @@ let rec extract_meta x =
       | "FStar.Pervasives.CInline" -> Some CInline
       | "FStar.Pervasives.Substitute" -> Some Substitute
       | "FStar.Pervasives.Gc" -> Some GCType
+      | "FStar.Pervasives.CAbstractStruct" -> Some CAbstract
       | _ -> None
       end
   | { n = Tm_app ({ n = Tm_fvar fv }, [{ n = Tm_constant (Const_string (s, _)) }, _]) } ->
@@ -89,6 +92,7 @@ let rec extract_meta x =
       | "FStar.Pervasives.CPrologue" -> Some (CPrologue s)
       | "FStar.Pervasives.CEpilogue" -> Some (CEpilogue s)
       | "FStar.Pervasives.CConst" -> Some (CConst s)
+      | "FStar.Pervasives.CCConv" -> Some (CCConv s)
       | _ -> None
       end
   | { n = Tm_constant (Const_string ("KremlinPrivate", _)) } -> Some Private // This one generated internally
@@ -176,7 +180,7 @@ let bundle_as_inductive_families env ses quals attrs : UEnv.env * list<inductive
                         let t = U.arrow rest (S.mk_Total body) |> SS.subst subst in
                         [{dname=d; dtyp=t}]
                     | _ -> []) in
-                let metadata = extract_metadata (se.sigattrs @ attrs) in
+                let metadata = extract_metadata (se.sigattrs @ attrs) @ List.choose flag_of_qual quals in
                 let env = UEnv.extend_type_name env (S.lid_as_fv l delta_constant None) in
                 env, [{   iname=l
                         ; iparams=bs
@@ -195,7 +199,7 @@ let extract_bundle env se =
         env_t * (mlsymbol * list<(mlsymbol * mlty)>)
         =
         let mlt = Util.eraseTypeDeep (Util.udelta_unfold env) (Term.term_as_mlty env ctor.dtyp) in
-        let steps = [ N.Inlining; N.UnfoldUntil S.delta_constant; N.EraseUniverses; N.AllowUnboundUniverses ] in
+        let steps = [ Env.Inlining; Env.UnfoldUntil S.delta_constant; Env.EraseUniverses; Env.AllowUnboundUniverses ] in
         let names = match (SS.compress (N.normalize steps env.tcenv ctor.dtyp)).n with
           | Tm_arrow (bs, _) ->
               List.map (fun ({ ppname = ppname }, _) -> ppname.idText) bs
@@ -242,33 +246,50 @@ let extract_bundle env se =
    is extracted along with an invocation to FStar.Tactics.Native.register_tactic or register_plugin,
    which installs the compiled term as a primitive step in the normalizer
  *)
+module EMB=FStar.Syntax.Embeddings
 let maybe_register_plugin (g:env_t) (se:sigelt) : list<mlmodule1> =
     let w = with_ty MLTY_Top in
-    if Options.codegen() <> Some Options.Plugin
-    || not (U.has_attribute se.sigattrs PC.plugin_attr)
-    then []
-    else match se.sigel with
-         | Sig_let(lbs, lids) ->
-           let mk_registration lb : list<mlmodule1> =
-              let fv = (right lb.lbname).fv_name.v in
-              let fv_t = lb.lbtyp in
-              let ml_name_str = MLE_Const (MLC_String (Ident.string_of_lid fv)) in
-              match Util.interpret_plugin_as_term_fun g.tcenv fv fv_t ml_name_str with
-              | Some (interp, arity, plugin) ->
-                  let register =
-                    if plugin
-                    then "FStar_Tactics_Native.register_plugin"
-                    else "FStar_Tactics_Native.register_tactic"
-                  in
-                  let h = with_ty MLTY_Top <| MLE_Name (mlpath_of_lident (lid_of_str register)) in
-                  let arity  = MLE_Const (MLC_Int(string_of_int arity, None)) in
-                  let app = with_ty MLTY_Top <| MLE_App (h, [w ml_name_str; w arity; interp]) in
-                  [MLM_Top app]
-              | None -> []
-           in
-           List.collect mk_registration (snd lbs)
-        | _ -> []
-
+    let plugin_with_arity attrs =
+        BU.find_map attrs (fun t ->
+              let head, args = U.head_and_args t in
+              if not (U.is_fvar PC.plugin_attr head)
+              then None
+              else match args with
+                   | [({n=Tm_constant (Const_int(s, _))}, _)] ->
+                     Some (Some (BU.int_of_string s))
+                   | _ -> Some None)
+    in
+    if Options.codegen() <> Some Options.Plugin then []
+    else match plugin_with_arity se.sigattrs with
+         | None -> []
+         | Some arity_opt ->
+           // BU.print2 "Got plugin with attrs = %s; arity_opt=%s"
+           //          (List.map Print.term_to_string se.sigattrs |> String.concat " ")
+           //          (match arity_opt with None -> "None" | Some x -> "Some " ^ string_of_int x);
+           begin
+           match se.sigel with
+           | Sig_let(lbs, lids) ->
+               let mk_registration lb : list<mlmodule1> =
+                  let fv = right lb.lbname in
+                  let fv_lid = fv.fv_name.v in
+                  let fv_t = lb.lbtyp in
+                  let ml_name_str = MLE_Const (MLC_String (Ident.string_of_lid fv_lid)) in
+                  match Util.interpret_plugin_as_term_fun g.tcenv fv fv_t arity_opt ml_name_str with
+                  | Some (interp, nbe_interp, arity, plugin) ->
+                      let register, args =
+                        if plugin
+                        then "FStar_Tactics_Native.register_plugin", [interp; nbe_interp]
+                        else "FStar_Tactics_Native.register_tactic", [interp]
+                      in
+                      let h = with_ty MLTY_Top <| MLE_Name (mlpath_of_lident (lid_of_str register)) in
+                      let arity  = MLE_Const (MLC_Int(string_of_int arity, None)) in
+                      let app = with_ty MLTY_Top <| MLE_App (h, [w ml_name_str; w arity] @ args) in
+                      [MLM_Top app]
+                  | None -> []
+               in
+               List.collect mk_registration (snd lbs)
+           | _ -> []
+           end
 (*****************************************************************************)
 (* Extracting the top-level definitions in a module                          *)
 (*****************************************************************************)
@@ -280,7 +301,7 @@ let rec extract_sig (g:env_t) (se:sigelt) : env_t * list<mlmodule1> =
         | Sig_datacon _ ->
           extract_bundle g se
 
-        | Sig_new_effect ed when se.sigquals |> List.contains Reifiable ->
+        | Sig_new_effect ed when Env.is_reifiable_effect g.tcenv ed.mname ->
           let extend_env g lid ml_name tm tysc =
             let g, mangled_name = extend_fv' g (S.lid_as_fv lid delta_equational None) ml_name tysc false false in
             if Env.debug g.tcenv <| Options.Other "ExtractionReify" then
@@ -371,7 +392,7 @@ let rec extract_sig (g:env_t) (se:sigelt) : env_t * list<mlmodule1> =
             let tcenv, _, def_typ =
                 FStar.TypeChecker.Env.open_universes_in g.tcenv lb.lbunivs [lb.lbdef; lb.lbtyp] in
             tcenv, as_pair def_typ in
-          let lbtyp = FStar.TypeChecker.Normalize.normalize [FStar.TypeChecker.Normalize.Beta;FStar.TypeChecker.Normalize.UnfoldUntil delta_constant] tcenv lbtyp in
+          let lbtyp = FStar.TypeChecker.Normalize.normalize [Env.Beta;Env.UnfoldUntil delta_constant] tcenv lbtyp in
           let lbdef = FStar.TypeChecker.Normalize.eta_expand_with_type tcenv lbdef lbtyp in
           //eta expansion is important; see issue #490
           extract_typ_abbrev g (right lb.lbname) quals se.sigattrs lbdef

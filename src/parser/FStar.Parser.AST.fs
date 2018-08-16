@@ -31,15 +31,6 @@ open FStar.Const
    expressions, formulas, types, and so on
  *)
 type level = | Un | Expr | Type_level | Kind | Formula
-type imp =
-    | FsTypApp
-    | Hash
-    | UnivApp
-    | Nothing
-type arg_qualifier =
-    | Implicit
-    | Equality
-type aqual = option<arg_qualifier>
 
 // let rec mutable makes no sense, so just don't do it
 type let_qualifier =
@@ -89,7 +80,7 @@ type term' =
   | Labeled   of term * string * bool
   | Discrim   of lid   (* Some?  (formerly is_Some) *)
   | Attributes of list<term>   (* attributes decorating a term *)
-  | Antiquote of bool * term   (* Antiquotation within a quoted term. Boolean is true when value. *)
+  | Antiquote of term  (* Antiquotation within a quoted term *)
   | Quote     of term * quote_kind
   | VQuote    of term        (* Quoting an lid, this gets removed by the desugarer *)
 
@@ -107,7 +98,7 @@ and binder' =
 and binder = {b:binder'; brange:range; blevel:level; aqual:aqual}
 
 and pattern' =
-  | PatWild
+  | PatWild     of option<arg_qualifier>
   | PatConst    of sconst
   | PatApp      of pattern * list<pattern>
   | PatVar      of ident * option<arg_qualifier>
@@ -123,6 +114,17 @@ and pattern' =
 and pattern = {pat:pattern'; prange:range}
 
 and branch = (pattern * option<term> * term)
+and arg_qualifier =
+    | Implicit
+    | Equality
+    | Meta of term
+and aqual = option<arg_qualifier>
+and imp =
+    | FsTypApp
+    | Hash
+    | UnivApp
+    | HashBrace of term
+    | Nothing
 
 type knd = term
 type typ = term
@@ -185,17 +187,21 @@ type lift = {
 type pragma =
   | SetOptions of string
   | ResetOptions of option<string>
+  | PushOptions of option<string>
+  | PopOptions
   | LightOff
 
 type decl' =
   | TopLevelModule of lid
   | Open of lid
+  | Friend of lid
   | Include of lid
   | ModuleAbbrev of ident * lid
   | TopLevelLet of let_qualifier * list<(pattern * term)>
   | Main of term
-  | Tycon of bool * list<(tycon * option<fsdoc>)>
-    (* bool is for effect *)
+  | Tycon of bool * bool * list<(tycon * option<fsdoc>)>
+    (* first bool is for effect *)
+    (* second bool is for typeclass *)
   | Val of ident * term  (* bool is for logic val *)
   | Exception of ident * option<term>
   | NewEffect of effect_decl
@@ -340,7 +346,7 @@ let mkAdmitMagic r =
     let admit_magic = mk_term(Seq(admit, magic)) r Expr in
     admit_magic
 
-let mkWildAdmitMagic r = (mk_pattern PatWild r, None, mkAdmitMagic r)
+let mkWildAdmitMagic r = (mk_pattern (PatWild None) r, None, mkAdmitMagic r)
 
 let focusBranches branches r =
     let should_filter = Util.for_some fst branches in
@@ -408,7 +414,7 @@ let mkRefinedPattern pat t should_bind_pat phi_opt t_range range =
                         let x_var = mk_term (Var (lid_of_ids [x])) phi.range Formula in
                         let pat_branch = (pat, None, phi)in
                         let otherwise_branch =
-                            (mk_pattern PatWild phi.range, None,
+                            (mk_pattern (PatWild None) phi.range, None,
                              mk_term (Name (lid_of_path ["False"] phi.range)) phi.range Formula)
                         in
                         mk_term (Match (x_var, [pat_branch ; otherwise_branch])) phi.range Formula
@@ -631,7 +637,8 @@ and aqual_to_string = function
   | _ -> ""
 
 and pat_to_string x = match x.pat with
-  | PatWild -> "_"
+  | PatWild None -> "_"
+  | PatWild _ -> "#_"
   | PatConst c -> C.const_to_string c
   | PatApp(p, ps) -> Util.format2 "(%s %s)" (p |> pat_to_string) (to_string_l " " pat_to_string ps)
   | PatTvar (i, aq)
@@ -669,12 +676,13 @@ let id_of_tycon = function
 let decl_to_string (d:decl) = match d.d with
   | TopLevelModule l -> "module " ^ l.str
   | Open l -> "open " ^ l.str
+  | Friend l -> "friend " ^ l.str
   | Include l -> "include " ^ l.str
   | ModuleAbbrev (i, l) -> Util.format2 "module %s = %s" i.idText l.str
   | TopLevelLet(_, pats) -> "let " ^ (lids_of_let pats |> List.map (fun l -> l.str) |> String.concat ", ")
   | Main _ -> "main ..."
   | Assume(i, _) -> "assume " ^ i.idText
-  | Tycon(_, tys) -> "type " ^ (tys |> List.map (fun (x,_)->id_of_tycon x) |> String.concat ", ")
+  | Tycon(_, _, tys) -> "type " ^ (tys |> List.map (fun (x,_)->id_of_tycon x) |> String.concat ", ")
   | Val(i, _) -> "val " ^ i.idText
   | Exception(i, _) -> "exception " ^ i.idText
   | NewEffect(DefineEffect(i, _, _, _))

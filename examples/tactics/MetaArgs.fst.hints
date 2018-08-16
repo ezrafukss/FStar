@@ -1,0 +1,49 @@
+[
+  "˜˘ê†HÑ\\p1k·\u000f∞_[\f",
+  [
+    [
+      "MetaArgs.uu___61",
+      1,
+      2,
+      1,
+      [ "@query", "equation_MetaArgs.test1" ],
+      0,
+      "d60982c2c25b0947f067255be2e373f0"
+    ],
+    [
+      "MetaArgs.uu___62",
+      1,
+      2,
+      1,
+      [ "@query", "equation_MetaArgs.diag" ],
+      0,
+      "e3ad62ced23c7988b382b64442319aa2"
+    ],
+    [
+      "MetaArgs.uu___63",
+      1,
+      2,
+      1,
+      [ "@query", "equation_MetaArgs.diag" ],
+      0,
+      "8bd0c704ce3f616556af41419eddeaa1"
+    ],
+    [
+      "MetaArgs.same_as",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "bool_inversion",
+        "disc_equation_FStar.Tactics.Result.Failed",
+        "disc_equation_FStar.Tactics.Result.Success",
+        "function_token_typing_FStar.Reflection.Types.term",
+        "lemma_FStar.Tactics.Result.result_split",
+        "projection_inverse_BoxBool_proj_0",
+        "typing_FStar.Tactics.Result.uu___is_Failed"
+      ],
+      0,
+      "663d4f89b0d603f6b22c23483147c3bb"
+    ]
+  ]
+]

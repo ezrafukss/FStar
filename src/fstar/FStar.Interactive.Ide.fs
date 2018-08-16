@@ -343,7 +343,6 @@ let deps_and_repl_ld_tasks_of_our_file filename
     (get_mod_name f = our_mod_name) in
 
   let deps, dep_graph = FStar.Dependencies.find_deps_if_needed [filename] in
-
   let same_name, real_deps =
     List.partition has_our_mod_name deps in
 
@@ -431,9 +430,13 @@ let run_repl_ld_transactions (st: repl_state) (tasks: list<repl_task>)
   let rec revert_many st = function
     | [] -> st
     | (_id, (task, _st')) :: entries ->
+      //NS: this assertion has been failing for a while in debug mode; not sure why
       assert (task = fst (snd (List.hd !repl_stack)));
       debug "Reverting" task;
-      revert_many (pop_repl "run_repl_ls_transactions" st) entries in
+      let st' = pop_repl "run_repl_ls_transactions" st in
+      let dep_graph = FStar.TypeChecker.Env.dep_graph st.repl_env in
+      let st' = {st' with repl_env=FStar.TypeChecker.Env.set_dep_graph st'.repl_env dep_graph} in
+      revert_many st' entries in
 
   let rec aux (st: repl_state)
               (tasks: list<repl_task>)
@@ -505,12 +508,12 @@ let js_pushkind s : push_kind = match js_str s with
   | _ -> js_fail "push_kind" s
 
 let js_reductionrule s = match js_str s with
-  | "beta" -> FStar.TypeChecker.Normalize.Beta
-  | "delta" -> FStar.TypeChecker.Normalize.UnfoldUntil SS.delta_constant
-  | "iota" -> FStar.TypeChecker.Normalize.Iota
-  | "zeta" -> FStar.TypeChecker.Normalize.Zeta
-  | "reify" -> FStar.TypeChecker.Normalize.Reify
-  | "pure-subterms" -> FStar.TypeChecker.Normalize.PureSubtermsWithinComputations
+  | "beta" -> FStar.TypeChecker.Env.Beta
+  | "delta" -> FStar.TypeChecker.Env.UnfoldUntil SS.delta_constant
+  | "iota" -> FStar.TypeChecker.Env.Iota
+  | "zeta" -> FStar.TypeChecker.Env.Zeta
+  | "reify" -> FStar.TypeChecker.Env.Reify
+  | "pure-subterms" -> FStar.TypeChecker.Env.PureSubtermsWithinComputations
   | _ -> js_fail "reduction rule" s
 
 type completion_context =
@@ -570,7 +573,7 @@ type query' =
 | VfsAdd of option<string> (* fname *) * string (* contents *)
 | AutoComplete of string * completion_context
 | Lookup of string * lookup_context * option<position> * list<string>
-| Compute of string * option<list<FStar.TypeChecker.Normalize.step>>
+| Compute of string * option<list<FStar.TypeChecker.Env.step>>
 | Search of string
 | GenericError of string
 | ProtocolViolation of string
@@ -1264,13 +1267,13 @@ let run_compute st term rules =
   let rules =
     (match rules with
      | Some rules -> rules
-     | None -> [FStar.TypeChecker.Normalize.Beta;
-               FStar.TypeChecker.Normalize.Iota;
-               FStar.TypeChecker.Normalize.Zeta;
-               FStar.TypeChecker.Normalize.UnfoldUntil SS.delta_constant])
-    @ [FStar.TypeChecker.Normalize.Inlining;
-       FStar.TypeChecker.Normalize.Eager_unfolding;
-       FStar.TypeChecker.Normalize.Primops] in
+     | None -> [FStar.TypeChecker.Env.Beta;
+               FStar.TypeChecker.Env.Iota;
+               FStar.TypeChecker.Env.Zeta;
+               FStar.TypeChecker.Env.UnfoldUntil SS.delta_constant])
+    @ [FStar.TypeChecker.Env.Inlining;
+       FStar.TypeChecker.Env.Eager_unfolding;
+       FStar.TypeChecker.Env.Primops] in
 
   let normalize_term tcenv rules t =
     FStar.TypeChecker.Normalize.normalize rules tcenv t in
