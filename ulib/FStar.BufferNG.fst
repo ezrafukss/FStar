@@ -133,7 +133,7 @@ val create
     b `unused_in` h0 /\
     live h1 b /\
     length b == UInt32.v len /\
-    frameOf b == h0.HS.tip /\
+    frameOf b == (HS.get_tip h0) /\
     P.modifies_0 h0 h1 /\
     as_seq h1 b == Seq.create (UInt32.v len) init
   ))
@@ -160,9 +160,9 @@ val createL
      b `unused_in` h0 /\
      live h1 b /\
      length b == len /\
-     frameOf b == h0.HS.tip /\
+     frameOf b == (HS.get_tip h0) /\
      P.modifies_0 h0 h1 /\
-     as_seq h1 b == Seq.of_list init /\
+     as_seq h1 b == Seq.seq_of_list init /\
      q #a len b
    ))
  
@@ -171,8 +171,7 @@ val createL
 
 let createL #a init =
   let len : P.array_length_t = UInt32.uint_to_t (List.Tot.length init) in
-  let s = Seq.of_list init in
-  Seq.lemma_of_list_length s init;
+  let s = Seq.seq_of_list init in
   let content = P.screate (P.TArray len a) (Some s) in
   P.buffer_of_array_pointer content
 
@@ -193,7 +192,7 @@ val rcreate
     b `unused_in` h0 /\
     live h1 b /\
     length b == UInt32.v len /\
-    h1.HS.tip == h0.HS.tip /\
+    (HS.get_tip h1) == (HS.get_tip h0) /\
     P.modifies (P.loc_addresses r Set.empty) h0 h1 /\
     as_seq h1 b == Seq.create (UInt32.v len) init
   ))

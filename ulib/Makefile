@@ -56,11 +56,17 @@ fstartaclib.mgen: fstarlib.mgen
 # OCaml extraction of fstarlib and fstar-tactics-lib #
 ######################################################
 
+ifeq ($(OS),Windows_NT)
+  OCAMLPATH_SEP=;
+else
+  OCAMLPATH_SEP=:
+endif
+
 # relative path to build directory, which is ulib/ml/_build
-OCAMLPATH=../../../bin/
+OCAMLPATH:="../../../bin/$(OCAMLPATH_SEP)$(OCAMLPATH)"
 
 FSTAR_OCAMLBUILD_EXTRAS ?= -cflag -g
-OCAMLBUILD=cd ../ && OCAMLPATH="$(OCAMLPATH)" ocamlbuild $(FSTAR_OCAMLBUILD_EXTRAS) -use-ocamlfind
+OCAMLBUILD=cd ../ && OCAMLPATH=$(OCAMLPATH) ocamlbuild $(FSTAR_OCAMLBUILD_EXTRAS) -use-ocamlfind
 
 FSTARLIB_OCAMLBUILD=$(OCAMLBUILD) -build-dir ulib/ml/_build \
   -I ulib/ml \
@@ -119,7 +125,7 @@ install-fstar-tactics: $(TACLIB_OBJECTS)
 clean:
 	rm -f .depend .depend.extract
 	rm -f *.mgen
-	rm -f *.checked *.source *.checked.lax
+	rm -f *.checked *.checked.lax
 	rm -fr ml/extracted tactics_ml/extracted tactics_ml/fstarlib_leftovers
 	rm -f ml/*.mllib tactics_ml/*.mllib tactics_ml/*.mldylib *~
 	rm -f $(FSTARLIB_DIR)/*.cm[aiox]

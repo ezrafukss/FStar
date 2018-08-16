@@ -10,6 +10,7 @@ open FStar.Errors
 
 module S = FStar.Syntax.Syntax // TODO: remove, it's open
 
+module I = FStar.Ident
 module SS = FStar.Syntax.Subst
 module BU = FStar.Util
 module Range = FStar.Range
@@ -18,18 +19,27 @@ module Print = FStar.Syntax.Print
 module Env = FStar.TypeChecker.Env
 module Err = FStar.Errors
 module Z = FStar.BigInt
+module EMB = FStar.Syntax.Embeddings
 open FStar.Reflection.Basic //needed for inspect_fv, but that feels wrong
+module NBETerm = FStar.TypeChecker.NBETerm
+module PC = FStar.Parser.Const
 
 open FStar.Dyn
 
 (*
- * Most of this file is tedious and repetitive.
- * We should really allow for some metaprogramming in F*. Oh wait....
+ * embed   : from compiler to user
+ * unembed : from user to compiler
  *)
 
 (* -------------------------------------------------------------------------------------- *)
 (* ------------------------------------- EMBEDDINGS ------------------------------------- *)
 (* -------------------------------------------------------------------------------------- *)
+let mk_emb f g t =
+    mk_emb (fun x r _topt _norm -> f r x)
+           (fun x w _norm -> g w x)
+           (EMB.term_as_fv t)
+let embed e r x = embed e x r None id_norm_cb
+let unembed' w e x = unembed e x w id_norm_cb
 
 let e_bv =
     let embed_bv (rng:Range.range) (bv:bv) : term =
@@ -37,8 +47,8 @@ let e_bv =
     in
     let unembed_bv w (t:term) : option<bv> =
         match (SS.compress t).n with
-        | Tm_lazy i when i.lkind = Lazy_bv ->
-            Some (undyn i.blob)
+        | Tm_lazy {blob=b; lkind=Lazy_bv} ->
+            Some (undyn b)
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded bv: %s" (Print.term_to_string t)));
@@ -52,8 +62,8 @@ let e_binder =
     in
     let unembed_binder w (t:term) : option<binder> =
         match (SS.compress t).n with
-        | Tm_lazy i when i.lkind = Lazy_binder ->
-            Some (undyn i.blob)
+        | Tm_lazy {blob=b; lkind=Lazy_binder} ->
+            Some (undyn b)
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded binder: %s" (Print.term_to_string t)));
@@ -76,13 +86,11 @@ let e_term_aq aq =
     in
     let rec unembed_term w (t:term) : option<term> =
         let apply_antiquotes (t:term) (aq:antiquotations) : option<term> =
-            BU.bind_opt (mapM_opt (fun (bv, b, e) ->
-                                   if b
-                                   then Some (NT (bv, e))
-                                   else BU.bind_opt (unembed_term w e) (fun e -> Some (NT (bv, e))))
-                              aq) (fun s ->
+            BU.bind_opt (mapM_opt (fun (bv, e) -> BU.bind_opt (unembed_term w e) (fun e -> Some (NT (bv, e))))
+                                   aq) (fun s ->
             Some (SS.subst s t))
         in
+        let t = U.unmeta t in
         match (SS.compress t).n with
         | Tm_quoted (tm, qi) ->
             apply_antiquotes tm qi.antiquotes
@@ -101,6 +109,9 @@ let e_aqualv =
         match q with
         | Data.Q_Explicit -> ref_Q_Explicit.t
         | Data.Q_Implicit -> ref_Q_Implicit.t
+        | Data.Q_Meta t   ->
+            S.mk_Tm_app ref_Q_Meta.t [S.as_arg (embed e_term rng t)]
+                        None Range.dummyRange
         in { r with pos = rng }
     in
     let unembed_aqualv w (t : term) : option<aqualv> =
@@ -109,6 +120,10 @@ let e_aqualv =
         match (U.un_uinst hd).n, args with
         | Tm_fvar fv, [] when S.fv_eq_lid fv ref_Q_Explicit.lid -> Some Data.Q_Explicit
         | Tm_fvar fv, [] when S.fv_eq_lid fv ref_Q_Implicit.lid -> Some Data.Q_Implicit
+        | Tm_fvar fv, [(t, _)] when S.fv_eq_lid fv ref_Q_Meta.lid ->
+            BU.bind_opt (unembed' w e_term t) (fun t ->
+            Some (Data.Q_Meta t))
+
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded aqualv: %s" (Print.term_to_string t)));
@@ -124,8 +139,8 @@ let e_fv =
     in
     let unembed_fv w (t:term) : option<fv> =
         match (SS.compress t).n with
-        | Tm_lazy i when i.lkind = Lazy_fvar ->
-            Some (undyn i.blob)
+        | Tm_lazy {blob=b; lkind=Lazy_fvar} ->
+            Some (undyn b)
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded fvar: %s" (Print.term_to_string t)));
@@ -139,8 +154,8 @@ let e_comp =
     in
     let unembed_comp w (t:term) : option<comp> =
         match (SS.compress t).n with
-        | Tm_lazy i when i.lkind = Lazy_comp ->
-            Some (undyn i.blob)
+        | Tm_lazy {blob=b; lkind=Lazy_comp} ->
+            Some (undyn b)
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded comp: %s" (Print.term_to_string t)));
@@ -154,8 +169,8 @@ let e_env =
     in
     let unembed_env w (t:term) : option<Env.env> =
         match (SS.compress t).n with
-        | Tm_lazy i when i.lkind = Lazy_env ->
-            Some (undyn i.blob)
+        | Tm_lazy {blob=b; lkind=Lazy_env} ->
+            Some (undyn b)
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded env: %s" (Print.term_to_string t)));
@@ -176,6 +191,10 @@ let e_const =
                         None Range.dummyRange
         | C_String s ->
             S.mk_Tm_app ref_C_String.t [S.as_arg (embed e_string rng s)]
+                        None Range.dummyRange
+
+        | C_Range r ->
+            S.mk_Tm_app ref_C_Range.t [S.as_arg (embed e_range rng r)]
                         None Range.dummyRange
         in { r with pos = rng }
     in
@@ -199,6 +218,10 @@ let e_const =
         | Tm_fvar fv, [(s, _)] when S.fv_eq_lid fv ref_C_String.lid ->
             BU.bind_opt (unembed' w e_string s) (fun s ->
             Some <| C_String s)
+
+        | Tm_fvar fv, [(r, _)] when S.fv_eq_lid fv ref_C_Range.lid ->
+            BU.bind_opt (unembed' w e_range r) (fun r ->
+            Some <| C_Range r)
 
         | _ ->
             if w then
@@ -518,8 +541,8 @@ let e_sigelt =
     in
     let unembed_sigelt w (t:term) : option<sigelt> =
         match (SS.compress t).n with
-        | Tm_lazy i when i.lkind = Lazy_sigelt ->
-            Some (undyn i.blob)
+        | Tm_lazy {blob=b; lkind=Lazy_sigelt} ->
+            Some (undyn b)
         | _ ->
             if w then
                 Err.log_issue t.pos (Err.Warning_NotEmbedded, (BU.format1 "Not an embedded sigelt: %s" (Print.term_to_string t)));
@@ -527,13 +550,41 @@ let e_sigelt =
     in
     mk_emb embed_sigelt unembed_sigelt fstar_refl_sigelt
 
+// TODO: It would be nice to have a
+// embed_as : ('a -> 'b) -> ('b -> 'a) -> embedding<'a> -> embedding<'b>
+// so we don't write these things
+let e_ident : embedding<I.ident> =
+    let repr = e_tuple2 e_range e_string in
+    let embed_ident (i:I.ident) (rng:Range.range)  _ _ : term =
+        embed repr rng (I.range_of_id i, I.text_of_id i)
+    in
+    let unembed_ident (t:term) w _ : option<I.ident> =
+        match unembed' w repr t with
+        | Some (rng, s) -> Some (I.mk_ident (s, rng))
+        | None -> None
+    in
+    mk_emb_full
+      embed_ident
+      unembed_ident
+      (S.t_tuple2_of S.t_range S.t_string)
+      FStar.Ident.text_of_id
+      (emb_typ_of repr)
+
+let e_univ_name =
+    (* TODO: Should be this, but there's a delta depth issue *)
+    (* set_type fstar_refl_univ_name e_ident *)
+    e_ident
+
+let e_univ_names = e_list e_univ_name
+
 let e_sigelt_view =
     let embed_sigelt_view (rng:Range.range) (sev:sigelt_view) : term =
         match sev with
-        | Sg_Let (r, fv, ty, t) ->
+        | Sg_Let (r, fv, univs, ty, t) ->
             S.mk_Tm_app ref_Sg_Let.t
                         [S.as_arg (embed e_bool rng r);
                             S.as_arg (embed e_fv rng fv);
+                            S.as_arg (embed e_univ_names rng univs);
                             S.as_arg (embed e_term rng ty);
                             S.as_arg (embed e_term rng t)]
                         None rng
@@ -544,9 +595,10 @@ let e_sigelt_view =
                             S.as_arg (embed e_term rng ty)]
                         None rng
 
-        | Sg_Inductive (nm, bs, t, dcs) ->
+        | Sg_Inductive (nm, univs, bs, t, dcs) ->
             S.mk_Tm_app ref_Sg_Inductive.t
                         [S.as_arg (embed e_string_list rng nm);
+                            S.as_arg (embed e_univ_names rng univs);
                             S.as_arg (embed e_binders rng bs);
                             S.as_arg (embed e_term rng t);
                             S.as_arg (embed (e_list e_string_list)  rng dcs)]
@@ -559,19 +611,21 @@ let e_sigelt_view =
         let t = U.unascribe t in
         let hd, args = U.head_and_args t in
         match (U.un_uinst hd).n, args with
-        | Tm_fvar fv, [(nm, _); (bs, _); (t, _); (dcs, _)] when S.fv_eq_lid fv ref_Sg_Inductive.lid ->
+        | Tm_fvar fv, [(nm, _); (us, _); (bs, _); (t, _); (dcs, _)] when S.fv_eq_lid fv ref_Sg_Inductive.lid ->
             BU.bind_opt (unembed' w e_string_list nm) (fun nm ->
+            BU.bind_opt (unembed' w e_univ_names us) (fun us ->
             BU.bind_opt (unembed' w e_binders bs) (fun bs ->
             BU.bind_opt (unembed' w e_term t) (fun t ->
             BU.bind_opt (unembed' w (e_list e_string_list) dcs) (fun dcs ->
-            Some <| Sg_Inductive (nm, bs, t, dcs)))))
+            Some <| Sg_Inductive (nm, us, bs, t, dcs))))))
 
-        | Tm_fvar fv, [(r, _); (fvar, _); (ty, _); (t, _)] when S.fv_eq_lid fv ref_Sg_Let.lid ->
+        | Tm_fvar fv, [(r, _); (fvar, _); (univs, _); (ty, _); (t, _)] when S.fv_eq_lid fv ref_Sg_Let.lid ->
             BU.bind_opt (unembed' w e_bool r) (fun r ->
             BU.bind_opt (unembed' w e_fv fvar) (fun fvar ->
+            BU.bind_opt (unembed' w e_univ_names univs) (fun univs ->
             BU.bind_opt (unembed' w e_term ty) (fun ty ->
             BU.bind_opt (unembed' w e_term t) (fun t ->
-            Some <| Sg_Let (r, fvar, ty, t)))))
+            Some <| Sg_Let (r, fvar, univs, ty, t))))))
 
         | Tm_fvar fv, [] when S.fv_eq_lid fv ref_Unk.lid ->
             Some Unk
@@ -621,6 +675,8 @@ let e_exp =
 
 let e_binder_view = e_tuple2 e_bv e_aqualv
 
+let e_attribute  = e_term
+let e_attributes = e_list e_attribute
 
 (* -------------------------------------------------------------------------------------- *)
 (* ------------------------------------- UNFOLDINGS ------------------------------------- *)

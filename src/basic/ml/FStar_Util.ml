@@ -289,6 +289,7 @@ let string_builder_append b s = BatBuffer.add_string b s
 
 let message_of_exn (e:exn) = Printexc.to_string e
 let trace_of_exn (e:exn) = Printexc.get_backtrace ()
+let stack_dump () = Printexc.raw_backtrace_to_string (Printexc.get_callstack 1000)
 
 type 'a set = ('a list) * ('a -> 'a -> bool)
 [@@deriving show]
@@ -773,7 +774,7 @@ let copy_file input_name output_name =
   (* see https://ocaml.github.io/ocamlunix/ocamlunix.html#sec33 *)
   let open Unix in
   let buffer_size = 8192 in
-  let buffer = String.create buffer_size in
+  let buffer = Bytes.create buffer_size in
   let fd_in = openfile input_name [O_RDONLY] 0 in
   let fd_out = openfile output_name [O_WRONLY; O_CREAT; O_TRUNC] 0o666 in
   let rec copy_loop () =
@@ -961,6 +962,12 @@ let measure_execution_time tag f =
   let retv = f () in
   print2 "Execution time of %s: %s ms\n" tag (string_of_float (1000.0 *. (Sys.time() -. t)));
   retv
+
+let return_execution_time f =
+  let t1 = Sys.time () in
+  let retv = f () in
+  let t2 = Sys.time () in
+  (retv, 1000.0 *. (t2 -. t1))
 
 (** Hints. *)
 type hint = {

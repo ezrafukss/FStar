@@ -30,6 +30,8 @@ open FStar.Parser.AST
 open FStar.Ident
 open FStar.Const
 open FStar.Errors
+open FStar.Syntax
+
 module C = FStar.Parser.Const
 module S = FStar.Syntax.Syntax
 module U = FStar.Syntax.Util
@@ -39,13 +41,16 @@ module P = FStar.Syntax.Print
 module EMB = FStar.Syntax.Embeddings
 module SS = FStar.Syntax.Subst
 
-let desugar_disjunctive_pattern pats when_opt branch =
-    pats |> List.map (fun pat -> U.branch(pat, when_opt, branch))
+type annotated_pat = Syntax.pat * list<(bv * Syntax.typ)>
 
-let trans_aqual = function
-  | Some AST.Implicit -> Some S.imp_tag
-  | Some AST.Equality -> Some S.Equality
-  | _ -> None
+let desugar_disjunctive_pattern annotated_pats when_opt branch =
+    annotated_pats |> List.map (fun (pat, annots) ->
+        let branch = List.fold_left (fun br (bv, ty) ->
+                        let lb = U.mk_letbinding (Inl bv) [] ty C.effect_Tot_lid (S.bv_to_name bv) [] br.pos in
+                        let branch = SS.close [S.mk_binder bv] branch in
+                        mk (Tm_let ((false, [lb]), branch)) None br.pos) branch annots in
+        U.branch(pat, when_opt, branch)
+    )
 
 let trans_qual r maybe_effect_id = function
   | AST.Private ->       S.Private
@@ -75,6 +80,8 @@ let trans_qual r maybe_effect_id = function
 let trans_pragma = function
   | AST.SetOptions s -> S.SetOptions s
   | AST.ResetOptions sopt -> S.ResetOptions sopt
+  | AST.PushOptions sopt -> S.PushOptions sopt
+  | AST.PopOptions -> S.PopOptions
   | AST.LightOff -> S.LightOff
 
 let as_imp = function
@@ -149,8 +156,8 @@ let op_as_term env arity rng op : option<S.term> =
       r C.read_lid delta_equational
     | "@" ->
       if Options.ml_ish ()
-      then r C.list_append_lid delta_equational
-      else r C.list_tot_append_lid delta_equational
+      then r C.list_append_lid     (Delta_equational_at_level 2)
+      else r C.list_tot_append_lid (Delta_equational_at_level 2)
     | "^" ->
       r C.strcat_lid delta_equational
     | "|>" ->
@@ -288,7 +295,7 @@ let rec uncurry bs t = match t.tm with
     | _ -> bs, t
 
 let rec is_var_pattern p = match p.pat with
-  | PatWild
+  | PatWild _
   | PatTvar(_, _)
   | PatVar(_, _) -> true
   | PatAscribed(p, _) -> is_var_pattern p
@@ -301,7 +308,7 @@ let rec is_app_pattern p = match p.pat with
 
 let replace_unit_pattern p = match p.pat with
   | PatConst FStar.Const.Const_unit ->
-    mk_pattern (PatAscribed (mk_pattern PatWild p.prange, (unit_ty, None))) p.prange
+    mk_pattern (PatAscribed (mk_pattern (PatWild None) p.prange, (unit_ty, None))) p.prange
   | _ -> p
 
 let rec destruct_app_pattern env is_top_level p = match p.pat with
@@ -320,7 +327,7 @@ let rec gather_pattern_bound_vars_maybe_top acc p =
       List.fold_left gather_pattern_bound_vars_maybe_top acc
   in
   match p.pat with
-  | PatWild
+  | PatWild _
   | PatConst _
   | PatVar (_, Some Implicit)
   | PatName _
@@ -334,7 +341,7 @@ let rec gather_pattern_bound_vars_maybe_top acc p =
   | PatRecord guarded_pats -> gather_pattern_bound_vars_from_list (List.map snd guarded_pats)
   | PatAscribed (pat, _) -> gather_pattern_bound_vars_maybe_top acc pat
 
-let gather_pattern_bound_vars =
+let gather_pattern_bound_vars : pattern -> set<Ident.ident> =
   let acc = new_set (fun id1 id2 -> if id1.idText = id2.idText then 0 else 1) in
   fun p -> gather_pattern_bound_vars_maybe_top acc p
 
@@ -344,11 +351,6 @@ type bnd =
 let binder_of_bnd = function
   | LocalBinder (a, aq) -> a, aq
   | _ -> failwith "Impossible"
-let as_binder env imp = function
-  | (None, k) -> null_binder k, env
-  | (Some a, k) ->
-    let env, a = Env.push_bv env a in
-    ({a with sort=k}, trans_aqual imp), env
 
 type env_t = Env.env
 type lenv_t = list<bv>
@@ -447,7 +449,30 @@ let generalize_annotated_univs (s:sigelt) :sigelt =
   | _ -> s
 
 let is_special_effect_combinator = function
-  | "repr" | "post" | "pre" | "wp" -> true
+  | "lift1"
+  | "lift2"
+  | "pure"
+  | "app"
+  | "push"
+  | "wp_if_then_else"
+  | "wp_assert"
+  | "wp_assume"
+  | "wp_close"
+  | "stronger"
+  | "wp_ite"
+  | "null_wp"
+  | "wp_trivial"
+  | "ctx"
+  | "g_ctx"
+  | "lift_from_pure"
+  | "return_wp"
+  | "return_elab"
+  | "bind_wp"
+  | "bind_elab"
+  | "repr"
+  | "post"
+  | "pre"
+  | "wp" -> true
   | _ -> false
 
 let rec sum_to_universe u n =
@@ -510,10 +535,12 @@ let rec desugar_universe t : Syntax.universe =
 let check_no_aq (aq : antiquotations) : unit =
     match aq with
     | [] -> ()
-    | (bv, b, e)::_ ->
+    | (bv, { n = Tm_quoted (e, { qkind = Quote_dynamic })})::_ ->
         raise_error (Errors.Fatal_UnexpectedAntiquotation,
-                      BU.format2 "Unexpected antiquotation: %s(%s)" (if b then "`@" else "`#")
-                                                                    (Print.term_to_string e)) e.pos
+                      BU.format1 "Unexpected antiquotation: `@(%s)" (Print.term_to_string e)) e.pos
+    | (bv, e)::_ ->
+        raise_error (Errors.Fatal_UnexpectedAntiquotation,
+                      BU.format1 "Unexpected antiquotation: `#(%s)" (Print.term_to_string e)) e.pos
 
 (* issue 769: check that other fields are also of the same record. If
    so, then return the record found by field name resolution. *)
@@ -539,7 +566,7 @@ let check_fields env fields rg =
 
 (* TODO : Patterns should be checked that there are no incompatible type ascriptions *)
 (* and these type ascriptions should not be dropped !!!                              *)
-let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
+let rec desugar_data_pat env p (is_mut:bool) : (env_t * bnd * list<annotated_pat>) =
   let check_linear_pattern_variables pats r =
     // returns the set of pattern variables
     let rec pat_vars p = match p.v with
@@ -556,7 +583,7 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
               let duplicate_bv = List.hd (BU.set_elements intersection) in
               raise_error ( Errors.Fatal_NonLinearPatternNotPermitted,
                             BU.format1
-                              "Non-linear patterns are not permitted. %s appears more than once in this pattern."
+                              "Non-linear patterns are not permitted: `%s` appears more than once in this pattern."
                                (duplicate_bv.ppname.idText) )
 
                           r
@@ -597,7 +624,7 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
         let e, x = if is_mut then push_bv_mutable e x else push_bv e x in
         (x::l), e, x
   in
-  let rec aux' (top:bool) (loc:lenv_t) env (p:pattern) =
+  let rec aux' (top:bool) (loc:lenv_t) env (p:pattern) : lenv_t * env_t * bnd * pat * list<(bv * Syntax.typ)> * bool =
     let pos q = Syntax.withinfo q p.prange in
     let pos_r r q = Syntax.withinfo q r in
     let orig = p in
@@ -610,9 +637,9 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
       | PatAscribed(p, (t, tacopt)) ->
         let _ = match tacopt with
                 | None -> ()
-                | Some _ -> raise_error (Errors.Fatal_TypeWithinPatternsAllowedOnVariablesOnly, "Type ascriptions within patterns are cannot be associated with a tactic") orig.prange
+                | Some _ -> raise_error (Errors.Fatal_TypeWithinPatternsAllowedOnVariablesOnly, "Type ascriptions within patterns cannot be associated with a tactic") orig.prange
         in
-        let loc, env', binder, p, imp = aux loc env p in
+        let loc, env', binder, p, annots, imp = aux loc env p in
         let annot_pat_var p t =
             match p.v with
             | Pat_var x -> {p with v=Pat_var({x with sort=t})}
@@ -620,66 +647,62 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
             | _ when top -> p
             | _  -> raise_error (Errors.Fatal_TypeWithinPatternsAllowedOnVariablesOnly, "Type ascriptions within patterns are only allowed on variables") orig.prange
         in
-        let p, binder = match binder with
+        let annots', binder = match binder with
             | LetBinder _ -> failwith "impossible"
             | LocalBinder(x, aq) ->
               let t = desugar_term env (close_fun env t) in
-              (* TODO : This should be a real check instead of just a warning *)
-              if (match x.sort.n with | S.Tm_unknown -> false | _ -> true)
-              then Errors.log_issue orig.prange (Errors.Warning_MultipleAscriptions, (BU.format3 "Multiple ascriptions for %s in pattern, type %s was shadowed by %s\n"
-                                             (Print.bv_to_string x)
-                                             (Print.term_to_string x.sort)
-                                             (Print.term_to_string t))) ;
-              annot_pat_var p t,
-              LocalBinder({x with sort=t}, aq)
+              let x = { x with sort = t } in
+              [(x, t)], LocalBinder(x, aq)
         in
-        loc, env', binder, p, imp
+        loc, env', binder, p, annots'@annots, imp
 
-      | PatWild ->
+      | PatWild aq ->
+        let imp = (aq=Some Implicit) in
+        let aq = trans_aqual env aq in
         let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x, None), pos <| Pat_wild x, false
+        loc, env, LocalBinder(x, aq), pos <| Pat_wild x, [], imp
 
       | PatConst c ->
         let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x, None), pos <| Pat_constant c, false
+        loc, env, LocalBinder(x, None), pos <| Pat_constant c, [], false
 
       | PatTvar(x, aq)
       | PatVar (x, aq) ->
         let imp = (aq=Some Implicit) in
-        let aq = trans_aqual aq in
+        let aq = trans_aqual env aq in
         let loc, env, xbv = resolvex loc env x in
-        loc, env, LocalBinder(xbv, aq), pos <| Pat_var xbv, imp
+        loc, env, LocalBinder(xbv, aq), pos <| Pat_var xbv, [], imp
 
       | PatName l ->
         let l = fail_or env (try_lookup_datacon env) l in
         let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x,  None), pos <| Pat_cons(l, []), false
+        loc, env, LocalBinder(x,  None), pos <| Pat_cons(l, []), [], false
 
       | PatApp({pat=PatName l}, args) ->
-        let loc, env, args = List.fold_right (fun arg (loc,env,args) ->
-          let loc, env, _, arg, imp = aux loc env arg in
-          (loc, env, (arg, imp)::args)) args (loc, env, []) in
+        let loc, env, annots, args = List.fold_right (fun arg (loc,env, annots, args) ->
+          let loc, env, _, arg, ans, imp = aux loc env arg in
+          (loc, env, ans@annots, (arg, imp)::args)) args (loc, env, [], []) in
         let l = fail_or env  (try_lookup_datacon env) l in
         let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x, None), pos <| Pat_cons(l, args), false
+        loc, env, LocalBinder(x, None), pos <| Pat_cons(l, args), annots, false
 
       | PatApp _ -> raise_error (Errors.Fatal_UnexpectedPattern, "Unexpected pattern") p.prange
 
       | PatList pats ->
-        let loc, env, pats = List.fold_right (fun pat (loc, env, pats) ->
-          let loc,env,_,pat, _ = aux loc env pat in
-          loc, env, pat::pats) pats (loc, env, []) in
+        let loc, env, annots, pats = List.fold_right (fun pat (loc, env, annots, pats) ->
+          let loc,env,_,pat, ans, _ = aux loc env pat in
+          loc, env, ans@annots, pat::pats) pats (loc, env, [], []) in
         let pat = List.fold_right (fun hd tl ->
             let r = Range.union_ranges hd.p tl.p in
             pos_r r <| Pat_cons(S.lid_as_fv C.cons_lid delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
                         (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.nil_lid delta_constant (Some Data_ctor), [])) in
         let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x, None), pat, false
+        loc, env, LocalBinder(x, None), pat, annots, false
 
       | PatTuple(args, dep) ->
-        let loc, env, args = List.fold_left (fun (loc, env, pats) p ->
-          let loc, env, _, pat, _ = aux loc env p in
-          loc, env, (pat, false)::pats) (loc,env,[]) args in
+        let loc, env, annots, args = List.fold_left (fun (loc, env, annots, pats) p ->
+          let loc, env, _, pat, ans, _ = aux loc env p in
+          loc, env, ans@annots, (pat, false)::pats) (loc,env,[], []) args in
         let args = List.rev args in
         let l = if dep then C.mk_dtuple_data_lid (List.length args) p.prange
                 else C.mk_tuple_data_lid (List.length args) p.prange in
@@ -688,7 +711,7 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
           | Tm_fvar fv -> fv
           | _ -> failwith "impossible" in
         let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x, None), pos <| Pat_cons(l, args), false
+        loc, env, LocalBinder(x, None), pos <| Pat_cons(l, args), annots, false
 
       | PatRecord ([]) ->
         raise_error (Errors.Fatal_UnexpectedPattern, "Unexpected pattern") p.prange
@@ -698,14 +721,14 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
         let fields = fields |> List.map (fun (f, p) -> (f.ident, p)) in
         let args = record.fields |> List.map (fun (f, _) ->
           match fields |> List.tryFind (fun (g, _) -> f.idText = g.idText) with
-            | None -> mk_pattern PatWild p.prange
+            | None -> mk_pattern (PatWild None) p.prange
             | Some (_, p) -> p) in
         let app = mk_pattern (PatApp(mk_pattern (PatName (lid_of_ids (record.typename.ns @ [record.constrname]))) p.prange, args)) p.prange in
-        let env, e, b, p, _ = aux loc env app in
+        let env, e, b, p, annots, _ = aux loc env app in
         let p = match p.v with
             | Pat_cons(fv, args) -> pos <| Pat_cons(({fv with fv_qual=Some (Record_ctor (record.typename, record.fields |> List.map fst))}), args)
             | _ -> p in
-        env, e, b, p, false
+        env, e, b, p, annots, false
   and aux loc env p = aux' false loc env p
   in
   let aux_maybe_or env (p:pattern) =
@@ -713,21 +736,21 @@ let rec desugar_data_pat env p is_mut : (env_t * bnd * list<Syntax.pat>) =
     match p.pat with
       | PatOr [] -> failwith "impossible"
       | PatOr (p::ps) ->
-        let loc, env, var, p, _ = aux' true loc env p in
+        let loc, env, var, p, ans, _ = aux' true loc env p in
         let loc, env, ps = List.fold_left (fun (loc, env, ps) p ->
-          let loc, env, _, p, _ = aux' true loc env p in
-          loc, env, p::ps) (loc, env, []) ps in
-        let pats = (p::List.rev ps) in
+          let loc, env, _, p, ans, _ = aux' true loc env p in
+          loc, env, (p,ans)::ps) (loc, env, []) ps in
+        let pats = ((p,ans)::List.rev ps) in
         env, var, pats
       | _ ->
-        let loc, env, vars, pat, b = aux' true loc env p in
-        env, vars, [pat]
+        let loc, env, vars, pat, ans, b = aux' true loc env p in
+        env, vars, [(pat, ans)]
   in
   let env, b, pats = aux_maybe_or env p in
-  check_linear_pattern_variables pats p.prange;
+  check_linear_pattern_variables (List.map fst pats) p.prange;
   env, b, pats
 
-and desugar_binding_pat_maybe_top top env p is_mut : (env_t * bnd * list<pat>) =
+and desugar_binding_pat_maybe_top top env p is_mut : (env_t * bnd * list<annotated_pat>) =
   let mklet x = env, LetBinder(qualify env x, (tun, None)), [] in
   if top
   then match p.pat with
@@ -740,8 +763,8 @@ and desugar_binding_pat_maybe_top top env p is_mut : (env_t * bnd * list<pat>) =
   else
     let (env, binder, p) = desugar_data_pat env p is_mut in
     let p = match p with
-      | [{v=Pat_var _}]
-      | [{v=Pat_wild _}] -> []
+      | [{v=Pat_var _}, _]
+      | [{v=Pat_wild _}, _] -> []
       | _ -> p in
     (env, binder, p)
 
@@ -1030,6 +1053,29 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       end
 
     | Abs(binders, body) ->
+      (* First of all, forbid definitions such as `f x x = ...` *)
+      let bvss = List.map gather_pattern_bound_vars binders in
+      let check_disjoint (sets : list<set<ident>>) : option<ident> =
+        let rec aux acc sets =
+            match sets with
+            | [] -> None
+            | set::sets ->
+                let i = BU.set_intersect acc set in
+                if BU.set_is_empty i
+                then aux (BU.set_union acc set) sets
+                else Some (List.hd (BU.set_elements i))
+        in
+        aux (S.new_id_set ()) sets
+      in
+      begin match check_disjoint bvss with
+      | None -> ()
+      | Some id ->
+          raise_error (Errors.Fatal_NonLinearPatternNotPermitted,
+                       BU.format1
+                         "Non-linear patterns are not permitted: `%s` appears more than once in this function definition."
+                          (id.idText)) (range_of_id id)
+      end;
+
       let binders = binders |> List.map replace_unit_pattern in
       let _, ftv = List.fold_left (fun (env, ftvs) pat ->
         match pat.pat with
@@ -1064,7 +1110,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
             let pat =
                 match pat with
                 | [] -> None
-                | [p] -> Some p
+                | [p, _] -> Some p // NB: We ignore the type annotation here, the typechecker catches that anyway in tc_abs
                 | _ ->
                   raise_error (Errors.Fatal_UnsupportedDisjuctivePatterns, "Disjunctive patterns are not supported in abstractions") p.prange
             in
@@ -1128,7 +1174,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
     | Seq(t1, t2) ->
       (* Convert it to a letbinding, desugar it, and then slap a Meta_desugared sequence on it to keep track of this *)
       (* TODO: GM: Maybe we don't really care about that *)
-      let t = mk_term (Let(NoLetQualifier, [None, (mk_pattern PatWild t1.range,t1)], t2)) top.range Expr in
+      let t = mk_term (Let(NoLetQualifier, [None, (mk_pattern (PatWild None) t1.range,t1)], t2)) top.range Expr in
       let tm, s = desugar_term_aq env t in
       mk (Tm_meta(tm, Meta_desugared Sequence)), s
 
@@ -1258,10 +1304,11 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
               mk <| Tm_let((false, [mk_lb (attrs, Inr fv, t, t1, t1.pos)]), body), aq
 
             | LocalBinder (x,_) ->
+                // TODO GGGGG unsure if keep _ or [] on second comp below
               let body, aq = desugar_term_aq env t2 in
               let body = match pat with
                 | []
-                | [{v=Pat_wild _}] -> body
+                | [{v=Pat_wild _}, _] -> body
                 | _ ->
                   S.mk (Tm_match(S.bv_to_name x, desugar_disjunctive_pattern pat None body)) None top.range in
               mk <| Tm_let((false, [mk_lb (attrs, Inl x, x.sort, t1, t1.pos)]), Subst.close [S.mk_binder x] body), aq
@@ -1309,12 +1356,16 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       mk <| Tm_match(e, brs), join_aqs (aq::aqs)
 
     | Ascribed(e, t, tac_opt) ->
-      let annot = if is_comp_type env t
-                  then Inr (desugar_comp t.range env t)
-                  else Inl (desugar_term env t) in
+      let annot, aq0 =
+        if is_comp_type env t
+        then let comp = desugar_comp t.range env t in
+             (Inr comp, [])
+        else let tm, aq = desugar_term_aq env t in
+             (Inl tm, aq)
+      in
       let tac_opt = BU.map_opt tac_opt (desugar_term env) in
       let e, aq = desugar_term_aq env e in
-      mk <| Tm_ascribed(e, (annot, tac_opt), None), aq
+      mk <| Tm_ascribed(e, (annot, tac_opt), None), aq0@aq
 
     | Record(_, []) ->
       raise_error (Errors.Fatal_UnexpectedEmptyRecord, "Unexpected empty record") top.range
@@ -1387,10 +1438,10 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
                } in
       mk <| Tm_quoted (tm, qi), noaqs
 
-    | Antiquote (b, e) ->
+    | Antiquote e ->
         let bv = S.new_bv (Some e.range) S.tun in
         (* We use desugar_term, so the there can be double antiquotations *)
-        S.bv_to_name bv, [(bv, b, desugar_term env e)]
+        S.bv_to_name bv, [(bv, desugar_term env e)]
 
     | Quote (e, Dynamic) ->
       let qi = { qkind = Quote_dynamic
@@ -1459,7 +1510,7 @@ and desugar_comp r env t =
         (* The postcondition for Lemma is thunked, to allow to assume the precondition
          * (c.f. #57), so add the thunking here *)
         let thunk_ens_ (ens : AST.term) : AST.term =
-            let wildpat = mk_pattern PatWild ens.range in
+            let wildpat = mk_pattern (PatWild None) ens.range in
             mk_term (Abs ([wildpat], ens)) ens.range Expr
         in
         let thunk_ens (e, i) = (thunk_ens_ e, i) in
@@ -1714,7 +1765,7 @@ and typars_of_binders env bs =
             | Some a, k ->
                 let env, a = push_bv env a in
                 let a = {a with sort=k} in
-                (env, (a, trans_aqual b.aqual)::out)
+                (env, (a, trans_aqual env b.aqual)::out)
             | _ -> raise_error (Errors.Fatal_UnexpectedBinder, "Unexpected binder") b.brange) (env, []) bs in
     env, List.rev tpars
 
@@ -1725,9 +1776,22 @@ and desugar_binder env b : option<ident> * S.term = match b.b with
   | NoName t        -> None, desugar_typ env t
   | Variable x      -> Some x, tun
 
+and as_binder env imp = function
+  | (None, k) -> null_binder k, env
+  | (Some a, k) ->
+    let env, a = Env.push_bv env a in
+    ({a with sort=k}, trans_aqual env imp), env
+
+and trans_aqual env = function
+  | Some AST.Implicit -> Some S.imp_tag
+  | Some AST.Equality -> Some S.Equality
+  | Some (AST.Meta t) -> Some (S.Meta (desugar_term env t))
+  | None -> None
+
 // FIXME: Would be nice to add auto-generated docs to these
 let mk_data_discriminators quals env datas =
     let quals = quals |> List.filter (function
+        | S.NoExtract
         | S.Abstract
         | S.Private -> true
         | _ -> false)
@@ -1764,6 +1828,7 @@ let mk_indexed_projector_names iquals fvq env lid (fields:list<S.binder>) =
         in
         let quals =
             let iquals = iquals |> List.filter (function
+                | S.NoExtract
                 | S.Abstract
                 | S.Private -> true
                 | _ -> false)
@@ -1818,7 +1883,7 @@ let mk_data_projector_names iquals env se =
                 | Some q -> q
             in
             let iquals =
-                if List.contains S.Abstract iquals
+                if List.contains S.Abstract iquals && not (List.contains S.Private iquals)
                 then S.Private::iquals
                 else iquals
             in
@@ -2003,17 +2068,17 @@ let rec desugar_tycon env (d: AST.decl) quals tcs : (env_t * sigelts) =
           | TyconAbbrev(id, binders, kopt, t) ->
             let env, _, se, tconstr = desugar_abstract_tc quals env mutuals (TyconAbstract(id, binders, kopt)) in
             env, Inr(se, binders, t, quals)::tcs
-          | _ -> failwith "Unrecognized mutual type definition" in
+          | _ -> raise_error (Errors.Fatal_NonInductiveInMutuallyDefinedType, ("Mutually defined type contains a non-inductive element")) rng in
       let env, tcs = List.fold_left (collect_tcs quals) (env, []) tcs in
       let tcs = List.rev tcs in
       let docs_tps_sigelts = tcs |> List.collect (function
         | Inr ({ sigel = Sig_inductive_typ(id, uvs, tpars, k, _, _) }, binders, t, quals) -> //type abbrevs in mutual type definitions
-	      let t =
-	          let env, tpars = typars_of_binders env binders in
-	          let env_tps, tpars = push_tparams env tpars in
-	          let t = desugar_typ env_tps t in
-	          let tpars = Subst.close_binders tpars in
-	          Subst.close tpars t
+              let t =
+                  let env, tpars = typars_of_binders env binders in
+                  let env_tps, tpars = push_tparams env tpars in
+                  let t = desugar_typ env_tps t in
+                  let tpars = Subst.close_binders tpars in
+                  Subst.close tpars t
           in
           [((id, d.doc), [], mk_typ_abbrev id uvs tpars (Some k) t [id] quals rng)]
 
@@ -2065,7 +2130,7 @@ let rec desugar_tycon env (d: AST.decl) quals tcs : (env_t * sigelts) =
       let discs = sigelts |> List.collect (fun se -> match se.sigel with
         | Sig_inductive_typ(tname, _, tps, k, _, constrs) when (List.length constrs > 1)->
           let quals = se.sigquals in
-          let quals = if List.contains S.Abstract quals
+          let quals = if List.contains S.Abstract quals && not (List.contains S.Private quals)
                       then S.Private::quals
                       else quals in
           mk_data_discriminators quals env constrs
@@ -2104,28 +2169,31 @@ let push_reflect_effect env quals (effect_name:Ident.lid) range =
 let get_fail_attr warn (at : S.term) : option<(list<int> * bool)> =
     let hd, args = U.head_and_args at in
     match (SS.compress hd).n, args with
-    | Tm_fvar fv, [(a1, _)] when S.fv_eq_lid fv C.fail_attr ->
-        begin match EMB.unembed (EMB.e_list EMB.e_int) a1 with
-        | Some [] ->
-            raise_error (Errors.Error_EmptyFailErrs, "Found ill-applied fail, argument should be a non-empty list of integers") at.pos
+    | Tm_fvar fv, [(a1, _)] when S.fv_eq_lid fv C.fail_attr
+                              || S.fv_eq_lid fv C.fail_lax_attr ->
+        begin match EMB.unembed (EMB.e_list EMB.e_int) a1 true EMB.id_norm_cb with
+        | Some es when List.length es > 0->
+            (* Is this an expect_lax_failure? *)
+            let b = S.fv_eq_lid fv C.fail_lax_attr in
+            Some (List.map FStar.BigInt.to_int_fs es, b)
 
-        | Some es -> Some (List.map FStar.BigInt.to_int_fs es, false)
-        | None ->
+        | _ ->
             if warn then
-                Errors.log_issue at.pos (Errors.Warning_UnappliedFail, "Found ill-applied fail, argument should be a non-empty list of integer literals");
+                Errors.log_issue at.pos (Errors.Warning_UnappliedFail, "Found ill-applied 'expect_failure', argument should be a non-empty list of integer literals");
             None
         end
 
-    | Tm_fvar fv, [] when S.fv_eq_lid fv C.fail_attr ->
-        Some ([], false)
+    | Tm_fvar fv, [] when S.fv_eq_lid fv C.fail_attr
+                       || S.fv_eq_lid fv C.fail_lax_attr ->
+        (* Is this an expect_lax_failure? *)
+        let b = S.fv_eq_lid fv C.fail_lax_attr in
+        Some ([], b)
 
-    | Tm_fvar fv, _ when S.fv_eq_lid fv C.fail_attr ->
+    | Tm_fvar fv, _ when S.fv_eq_lid fv C.fail_attr
+                      || S.fv_eq_lid fv C.fail_lax_attr ->
         if warn then
-            Errors.log_issue at.pos (Errors.Warning_UnappliedFail, "Found ill-applied fail, argument should be a non-empty list of integer literals");
+            Errors.log_issue at.pos (Errors.Warning_UnappliedFail, "Found ill-applied 'expect_failure', argument should be a non-empty list of integer literals");
         None
-
-    | Tm_fvar fv, [] when S.fv_eq_lid fv C.fail_lax_attr ->
-        Some ([], true)
 
     | _ ->
         None
@@ -2161,7 +2229,7 @@ let rec desugar_effect env d (quals: qualifiers) eff_name eff_binders eff_typ ef
 
     let name_of_eff_decl decl =
       match decl.d with
-      | Tycon(_, [TyconAbbrev(name, _, _, _), _]) -> Ident.text_of_id name
+      | Tycon(_, _, [TyconAbbrev(name, _, _, _), _]) -> Ident.text_of_id name
       | _ -> failwith "Malformed effect member declaration."
     in
 
@@ -2177,7 +2245,7 @@ let rec desugar_effect env d (quals: qualifiers) eff_name eff_binders eff_typ ef
     let binders = Subst.close_binders binders in
     let actions_docs = actions |> List.map (fun d ->
         match d.d with
-        | Tycon(_, [TyconAbbrev(name, action_params, _, { tm = Construct (_, [ def, _; cps_type, _ ])}), doc]) when not for_free ->
+        | Tycon(_, _,[TyconAbbrev(name, action_params, _, { tm = Construct (_, [ def, _; cps_type, _ ])}), doc]) when not for_free ->
             // When the effect is not for free, user has to provide a pair of
             // the definition and its cps'd type.
             let env, action_params = desugar_binders env action_params in
@@ -2190,7 +2258,7 @@ let rec desugar_effect env d (quals: qualifiers) eff_name eff_binders eff_typ ef
               action_defn=Subst.close (binders @ action_params) (desugar_term env def);
               action_typ=Subst.close (binders @ action_params) (desugar_typ env cps_type)
             }, doc
-        | Tycon(_, [TyconAbbrev(name, action_params, _, defn), doc]) when for_free ->
+        | Tycon(_, _, [TyconAbbrev(name, action_params, _, defn), doc]) when for_free ->
             // When for free, the user just provides the definition and the rest
             // is elaborated
             let env, action_params = desugar_binders env action_params in
@@ -2433,13 +2501,13 @@ and desugar_decl_noattrs env (d:decl) : (env_t * sigelts) =
   let trans_qual = trans_qual d.drange in
   match d.d with
   | Pragma p ->
-    let se = { sigel = Sig_pragma(trans_pragma p);
+    let p = trans_pragma p in
+    U.process_pragma p d.drange;
+    let se = { sigel = Sig_pragma p;
                sigquals = [];
                sigrng = d.drange;
                sigmeta = default_sigmeta  ;
                sigattrs = [] } in
-    if p = LightOff
-    then Options.set_ml_ish();
     env, [se]
 
   | Fsdoc _ -> env, []
@@ -2450,6 +2518,21 @@ and desugar_decl_noattrs env (d:decl) : (env_t * sigelts) =
     let env = Env.push_namespace env lid in
     env, []
 
+  | Friend lid ->
+    if Env.iface env
+    then raise_error (Errors.Fatal_FriendInterface,
+                      "'friend' declarations are not allowed in interfaces") d.drange
+    else if not (FStar.Parser.Dep.module_has_interface (Env.dep_graph env) (Env.current_module env))
+    then raise_error (Errors.Fatal_FriendInterface,
+                      "'friend' declarations are not allowed in modules that lack interfaces") d.drange
+    else if not (FStar.Parser.Dep.module_has_interface (Env.dep_graph env) lid)
+    then raise_error (Errors.Fatal_FriendInterface,
+                      "'friend' declarations cannot refer to modules that lack interfaces") d.drange
+    else if not (FStar.Parser.Dep.deps_has_implementation (Env.dep_graph env) lid)
+    then raise_error (Errors.Fatal_FriendInterface,
+                      "'friend' module has not been loaded; recompute dependences (C-c C-r) if in interactive mode") d.drange
+    else env, []
+
   | Include lid ->
     let env = Env.push_include env lid in
     env, []
@@ -2457,10 +2540,56 @@ and desugar_decl_noattrs env (d:decl) : (env_t * sigelts) =
   | ModuleAbbrev(x, l) ->
     Env.push_module_abbrev env x l, []
 
-  | Tycon(is_effect, tcs) ->
-    let quals = if is_effect then Effect_qual :: d.quals else d.quals in
+  | Tycon(is_effect, typeclass, tcs) ->
+    let quals = d.quals in
+    let quals = if is_effect then Effect_qual :: quals else quals in
+    let quals = if typeclass then Noeq        :: quals else quals in
     let tcs = List.map (fun (x,_) -> x) tcs in
-    desugar_tycon env d (List.map (trans_qual None) quals) tcs
+    let env, ses = desugar_tycon env d (List.map (trans_qual None) quals) tcs in
+
+    (* Handling typeclasses: we typecheck the tcs as usual, and then need to add
+     * %splice[new_meth_lids] (mk_class type_lid)
+     * where the tricky bit is getting the new_meth_lids. To do so,
+     * we traverse the new declarations marked with "Projector", and get
+     * the field names. This is pretty ugly. *)
+    let mkclass lid =
+        U.abs [S.mk_binder (S.new_bv None S.tun)]
+              (U.mk_app (S.tabbrev C.mk_class_lid)
+                        [S.as_arg (U.exp_string (string_of_lid lid))])
+              None
+    in
+    let get_meths se =
+        let rec get_fname quals =
+            match quals with
+            | S.Projector (_, id) :: _ -> Some id
+            | _ :: quals -> get_fname quals
+            | [] -> None
+        in
+        match get_fname se.sigquals with
+        | None -> []
+        | Some id ->
+            let id = U.unmangle_field_name id in
+            [qualify env id]
+    in
+    let rec splice_decl meths se =
+        match se.sigel with
+        | Sig_bundle (ses, _) -> List.concatMap (splice_decl meths) ses
+        | Sig_inductive_typ (lid, _, _, _, _, _) ->
+           [{ sigel = Sig_splice(meths , mkclass lid);
+              sigquals = [];
+              sigrng = d.drange;
+              sigmeta = default_sigmeta;
+              sigattrs = [] }]
+        | _ -> []
+    in
+    let extra =
+        if typeclass
+        then let meths = List.concatMap get_meths ses in
+             List.concatMap (splice_decl meths) ses
+        else []
+    in
+    let env = List.fold_left push_sigelt env extra in
+    env, ses @ extra
 
   | TopLevelLet(isrec, lets) ->
     let quals = d.quals in
@@ -2762,22 +2891,35 @@ let desugar_modul env (m:AST.modul) : env_t * Syntax.modul =
 /////////////////////////////////////////////////////////////////////////////////////////
 //External API for modules
 /////////////////////////////////////////////////////////////////////////////////////////
+let with_options (f:unit -> 'a) : 'a =
+    FStar.Options.push();
+    let res = f () in
+    let light = FStar.Options.ml_ish() in
+    FStar.Options.pop();
+    if light then FStar.Options.set_ml_ish();
+    res
+
 let ast_modul_to_modul modul : withenv<S.modul> =
     fun env ->
-        let env, modul = desugar_modul env modul in
-         modul,env
+        with_options (fun () ->
+        let e, m = desugar_modul env modul in
+        m, e)
 
 let decls_to_sigelts decls : withenv<S.sigelts> =
     fun env ->
+        with_options (fun () ->
         let env, sigelts = desugar_decls env decls in
-        sigelts, env
+        sigelts, env)
 
 let partial_ast_modul_to_modul modul a_modul : withenv<S.modul> =
     fun env ->
+        with_options (fun () ->
         let env, modul = desugar_partial_modul modul env a_modul in
-        modul, env
+        modul, env)
 
-let add_modul_to_env (m:Syntax.modul) (mii:module_inclusion_info) (erase_univs:S.term -> S.term) : withenv<unit> =
+let add_modul_to_env (m:Syntax.modul)
+                     (mii:module_inclusion_info)
+                     (erase_univs:S.term -> S.term) : withenv<unit> =
   fun en ->
       let erase_univs_ed ed =
           let erase_binders bs =

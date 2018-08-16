@@ -50,9 +50,10 @@ type token =
   | PRIVATE
   | PRAGMA_SET_OPTIONS
   | PRAGMA_RESET_OPTIONS
+  | PRAGMA_PUSH_OPTIONS
+  | PRAGMA_POP_OPTIONS
   | PRAGMALIGHT
   | PIPE_RIGHT
-  | PERC_BACKTICK
   | PERCENT_LBRACK
   | OP_MIXFIX_ASSIGNMENT of (string)
   | OP_MIXFIX_ACCESS of (string)
@@ -110,6 +111,7 @@ type token =
   | FUN
   | FSDOC_STANDALONE of (fsdoc)
   | FSDOC of (fsdoc)
+  | FRIEND
   | FORALL
   | FALSE
   | EXISTS
@@ -133,6 +135,7 @@ type token =
   | COLON_EQUALS
   | COLON_COLON
   | COLON
+  | CLASS
   | CHAR of (char)
   | BYTEARRAY of (bytes)
   | BY
@@ -140,6 +143,7 @@ type token =
   | BAR_RBRACK
   | BAR
   | BANG_LBRACE
+  | BACKTICK_PERC
   | BACKTICK_HASH
   | BACKTICK_AT
   | BACKTICK
@@ -198,9 +202,10 @@ type tokenId =
     | TOKEN_PRIVATE
     | TOKEN_PRAGMA_SET_OPTIONS
     | TOKEN_PRAGMA_RESET_OPTIONS
+    | TOKEN_PRAGMA_PUSH_OPTIONS
+    | TOKEN_PRAGMA_POP_OPTIONS
     | TOKEN_PRAGMALIGHT
     | TOKEN_PIPE_RIGHT
-    | TOKEN_PERC_BACKTICK
     | TOKEN_PERCENT_LBRACK
     | TOKEN_OP_MIXFIX_ASSIGNMENT
     | TOKEN_OP_MIXFIX_ACCESS
@@ -258,6 +263,7 @@ type tokenId =
     | TOKEN_FUN
     | TOKEN_FSDOC_STANDALONE
     | TOKEN_FSDOC
+    | TOKEN_FRIEND
     | TOKEN_FORALL
     | TOKEN_FALSE
     | TOKEN_EXISTS
@@ -281,6 +287,7 @@ type tokenId =
     | TOKEN_COLON_EQUALS
     | TOKEN_COLON_COLON
     | TOKEN_COLON
+    | TOKEN_CLASS
     | TOKEN_CHAR
     | TOKEN_BYTEARRAY
     | TOKEN_BY
@@ -288,6 +295,7 @@ type tokenId =
     | TOKEN_BAR_RBRACK
     | TOKEN_BAR
     | TOKEN_BANG_LBRACE
+    | TOKEN_BACKTICK_PERC
     | TOKEN_BACKTICK_HASH
     | TOKEN_BACKTICK_AT
     | TOKEN_BACKTICK
@@ -395,6 +403,9 @@ type nonTerminalId =
     | NONTERM_lident
     | NONTERM_uident
     | NONTERM_tvar
+    | NONTERM_thunk_atomicTerm_
+    | NONTERM_thunk_tmNoEq_
+    | NONTERM_thunk_typ_
     | NONTERM_ascribeTyp
     | NONTERM_ascribeKind
     | NONTERM_kind

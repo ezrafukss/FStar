@@ -52,8 +52,13 @@ val restore_cmd_line_options    : bool    -> parse_cmdline_res //inits or clears
 
 type optionstate = Util.smap<option_val>
 (* Control the option stack *)
+(* Briefly, push/pop are used by the interactive mode and internal_*
+ * by #push-options/#pop-options. Read the comment in the .fs for more
+ * details. *)
 val push                        : unit -> unit
 val pop                         : unit -> unit
+val internal_push               : unit -> unit
+val internal_pop                : unit -> bool (* returns whether it worked or not, false should be taken as a hard error *)
 val snapshot                    : unit -> (int * unit)
 val rollback                    : option<int> -> unit
 val peek                        : unit -> optionstate
@@ -94,6 +99,8 @@ val desc_of_opt_type            : opt_type -> option<string>
 val all_specs_with_types        : list<(char * string * opt_type * string)>
 val settable                    : string -> bool
 val resettable                  : string -> bool
+
+val abort_counter : ref<int>
 
 val __temp_no_proj              : string  -> bool
 val __temp_fast_implicits       : unit    -> bool
@@ -148,6 +155,7 @@ val n_cores                     : unit    -> int
 val no_default_includes         : unit    -> bool
 val no_extract                  : string  -> bool
 val no_location_info            : unit    -> bool
+val no_plugins                  : unit    -> bool
 val no_smt                      : unit    -> bool
 val normalize_pure_terms_for_extraction
                                 : unit    -> bool
@@ -182,8 +190,12 @@ val smtencoding_nl_arith_native : unit    -> bool
 val smtencoding_l_arith_default : unit    -> bool
 val smtencoding_l_arith_native  : unit    -> bool
 val tactic_raw_binders          : unit    -> bool
+val tactics_failhard            : unit    -> bool
+val tactics_info                : unit    -> bool
 val tactic_trace                : unit    -> bool
 val tactic_trace_d              : unit    -> int
+val tactics_nbe                 : unit    -> bool
+val tcnorm                      : unit    -> bool
 val timing                      : unit    -> bool
 val trace_error                 : unit    -> bool
 val ugly                        : unit    -> bool
@@ -219,3 +231,6 @@ val _platform: ref<string>
 val _compiler: ref<string>
 val _date: ref<string>
 val _commit: ref<string>
+
+val debug_embedding: ref<bool>
+val eager_embedding: ref<bool>

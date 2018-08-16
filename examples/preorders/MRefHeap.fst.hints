@@ -1,5 +1,5 @@
 [
-  "ù2W◊¥5àÁ]î™T3¸Má",
+  "5Í\u001e\u0012)\u0013úˇJâJ£%≥\u007f‘",
   [
     [
       "MRefHeap.contains",
@@ -8,7 +8,45 @@
       1,
       [ "@query", "equation_FStar.Pervasives.dfst" ],
       0,
-      "2e1261ebdf305e523a56eb080b838bba"
+      "363db3d3fdbc78ee5398b6fc4fb4a7b3"
+    ],
+    [
+      "MRefHeap.contains_same_addr_lemma",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "assumption_Prims.HasEq_int", "equation_MRefHeap.addr_of",
+        "equation_MRefHeap.contains", "equation_MRefHeap.heap",
+        "equation_MRefHeap.heap_cell", "equation_MRefHeap.mref",
+        "equation_Prims.nat",
+        "fuel_guarded_inversion_FStar.Pervasives.Native.tuple2",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d",
+        "int_inversion", "projection_inverse_FStar.Pervasives.Native.Some_v",
+        "refinement_interpretation_MRefHeap_Tm_refine_ae7928a4b4a4c805d35f0abc425c2c90",
+        "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "bb7c2303a67804f0086da3f14e254f21"
+    ],
+    [
+      "MRefHeap.contains_diff_addr_lemma",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query",
+        "Prims_pretyping_ae567c2fb75be05905677af440075565",
+        "assumption_Prims.HasEq_int", "equation_MRefHeap.addr_of",
+        "equation_MRefHeap.mref", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d",
+        "int_inversion",
+        "refinement_interpretation_Prims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "1a9a63155a4cc933990d38a1d34781d3"
     ],
     [
       "MRefHeap.sel",
@@ -29,7 +67,7 @@
         "refinement_interpretation_MRefHeap_Tm_refine_36453e3eb6145226f640e16ed9612466"
       ],
       0,
-      "a784ec46580eb5ee237c6c692e4786d5"
+      "d611449b463dd80effbc84bfcc9bcc05"
     ],
     [
       "MRefHeap.alloc_ref",
@@ -41,7 +79,7 @@
         "refinement_interpretation_MRefHeap_Tm_refine_36453e3eb6145226f640e16ed9612466"
       ],
       0,
-      "5ccd2550e5effaf87db95565833a5196"
+      "eb75b089de8ef8f41ce3a107daedcc12"
     ],
     [
       "MRefHeap.alloc_ref",
@@ -94,7 +132,7 @@
         "typing_FStar.Pervasives.Native.snd"
       ],
       0,
-      "5cdeddc8825089475e34f050c32228de"
+      "bfdc9299a1b49a1d7a03f3e25608a373"
     ],
     [
       "MRefHeap.upd",
@@ -106,7 +144,7 @@
         "refinement_interpretation_MRefHeap_Tm_refine_36453e3eb6145226f640e16ed9612466"
       ],
       0,
-      "363bcd365a9ac99fc4e38ac6a14a68f7"
+      "fae0fb4bfe5d90e56eeb568e7fd785fa"
     ],
     [
       "MRefHeap.upd",
@@ -154,7 +192,7 @@
         "token_correspondence_FStar.Pervasives.Native.snd"
       ],
       0,
-      "2a35dfd6e8e2a63c92ed8994c2078cf1"
+      "d923f791e5b55c67aaa39c936d22ec40"
     ],
     [
       "MRefHeap.emp",
@@ -175,7 +213,31 @@
         "token_correspondence_FStar.Pervasives.Native.snd"
       ],
       0,
-      "71f0b204ffa0591fddbc39760d45fa2e"
+      "23f26423d8355dc9a45088d35671c966"
+    ],
+    [
+      "MRefHeap.contains_same_addr_lemma",
+      2,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "cf1993d3aaa3dbaea0a0eda8d3c8865c"
+    ],
+    [
+      "MRefHeap.contains_diff_addr_lemma",
+      2,
+      2,
+      1,
+      [
+        "@query", "assumption_Prims.HasEq_int", "equation_Prims.nat",
+        "haseqPrims_Tm_refine_ba523126f67e00e7cd55f0b92f16681d"
+      ],
+      0,
+      "5446ba82fc86aab4ba5cfafd36f52113"
     ],
     [
       "MRefHeap.alloc_ref",
@@ -187,7 +249,7 @@
         "refinement_interpretation_MRefHeap_Tm_refine_36453e3eb6145226f640e16ed9612466"
       ],
       0,
-      "16110808a1d5f6e1b3434362f1aa4f98"
+      "42d444648c3166aa708e2f67d791be1e"
     ],
     [
       "MRefHeap.upd",
@@ -199,7 +261,7 @@
         "refinement_interpretation_MRefHeap_Tm_refine_36453e3eb6145226f640e16ed9612466"
       ],
       0,
-      "9f93d8d116cf78df3ce3e5b63b141682"
+      "fc96e97ed2e9552b49e783c6d420d903"
     ]
   ]
 ]
