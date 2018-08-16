@@ -1,5 +1,5 @@
 [
-  "\u000e\u000b³G!ÖÔj0¤?\u0010˜ÒýM",
+  "oD²4ØéÿXYŸ\\èÂÉù ",
   [
     [
       "Ex03c.fibonacci",
@@ -17,7 +17,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "93d1042723317157c04f79b75a5762fe"
+      "0d6205235a4fef7471418f96f15b4d01"
     ],
     [
       "Ex03c.fibonacci_greater_than_arg",
@@ -43,7 +43,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "52bde5fcb188af38556685348c9ef595"
+      "08c4e70c8b829354d5accd5a6271d8e1"
     ],
     [
       "Ex03c.fibonacci",
@@ -61,7 +61,7 @@
         "well-founded-ordering-on-nat"
       ],
       0,
-      "889590849edade194739e898268bba74"
+      "9f2decf7cfd1d724deadd3014aa7ee1d"
     ]
   ]
 ]

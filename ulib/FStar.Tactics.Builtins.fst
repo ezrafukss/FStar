@@ -1,18 +1,3 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 (**
 Every tactic primitive, i.e., those built into the compiler
 @summary Tactic primitives
@@ -24,6 +9,17 @@ open FStar.Reflection.Types
 open FStar.Reflection.Data
 open FStar.Tactics.Types
 open FStar.Tactics.Result
+
+(** Simply fail. The specs ensures that it fails *without changing the
+proofstate*, but hides the message. *)
+assume val fail : #a:Type -> m:string -> TacH a (requires (fun _ -> True)) (ensures (fun ps r -> Failed? r /\ Failed?.ps r == ps))
+
+// NOTE: The only reason `fail` is assumed as a primitive is to enable
+// the TacFail debugging flag. We could instead define it like this,
+// with the exact same spec and runtime behaviour (minus the
+// debugging aspect).
+(* val fail : #a:Type -> m:string -> TacH a (requires (fun _ -> True)) (ensures (fun ps r -> Failed? r /\ Failed?.ps r == ps)) *)
+(* let fail = fail_act *)
 
 (** [top_env] returns the environment where the tactic started running.
  * This works even if no goals are present. *)
@@ -65,9 +61,7 @@ assume val unquote : #a:Type -> term -> Tac a
 If [t] succeeds with return value [a], [catch t] returns [Inr a].
 On failure, it returns [Inl msg], where [msg] is the error [t]
 raised. See also [or_else].  *)
-assume val catch : #a:Type -> (unit -> Tac a) -> TacS (either exn a)
-
-assume val recover : #a:Type -> (unit -> Tac a) -> TacS (either exn a)
+assume val catch : #a:Type -> (unit -> Tac a) -> TacS (either string a)
 
 (** [trivial] will discharge the goal if it's exactly [True] after
 doing normalization and simplification of it. *)
@@ -171,12 +165,15 @@ of printing [str] on the compiler's standard output. *)
 assume val print : string -> Tac unit
 
 (** [debugging ()] returns true if the current module has the debug flag
-on, i.e. when [--debug MyModule --debug_level Tac] was passed in. *)
+on, i.e. when [--debug MyModule] was passed in. *)
 assume val debugging : unit -> Tac bool
 
 (** Similar to [print], but will dump a text representation of the proofstate
 along with the message. *)
 assume val dump : string -> Tac unit
+
+(** Similar to [dump], but only dumping the current goal. *)
+assume val dump1 : string -> Tac unit
 
 (** Solves a goal [Gamma |= squash (l == r)] by attempting to unify
 [l] with [r]. This currently only exists because of some universe problems

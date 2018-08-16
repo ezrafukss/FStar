@@ -1,5 +1,5 @@
 [
-  "\u001a,ú…iÄ´5ƒw\b+bVäÚ",
+  "`±¨ÑJÊ\\£D\u0000‚\u0019­wP-",
   [
     [
       "Goals.intro_sq",
@@ -8,7 +8,7 @@
       1,
       [ "@query" ],
       0,
-      "c1d336eb11ae7f6a07986a8f44b8d4ca"
+      "24925d414542f8dbd8d0655805a32876"
     ],
     [
       "Goals.elim",
@@ -20,7 +20,7 @@
         "refinement_interpretation_Goals_Tm_refine_bb26061a0b65cfdbbd4fbb3aba2011c7"
       ],
       0,
-      "ee8a30b5ee1851260234ef080a175046"
+      "ee8a00525dd13086b1a44897a8f11650"
     ],
     [
       "Goals.intro_sq",
@@ -29,7 +29,7 @@
       1,
       [ "@query" ],
       0,
-      "9e2617f030628eb837ef8baeabcd275b"
+      "381b8c699d39edcc3720e3f2cfb62dbe"
     ],
     [
       "Goals.elim",
@@ -41,7 +41,7 @@
         "refinement_interpretation_Goals_Tm_refine_bb26061a0b65cfdbbd4fbb3aba2011c7"
       ],
       0,
-      "8d3e71ba7063bd8ff3fb07b4ab135771"
+      "357fd0dadcf68b0aaf1c957afda13238"
     ]
   ]
 ]

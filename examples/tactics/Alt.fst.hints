@@ -1,1 +1,17 @@
-[ "yÅ\u0002{|\u001b‰PèCè¥«Bd\u001c", [] ]
+[
+  "?B‹Óké2YÎQ\u00035Ym\u0006s",
+  [
+    [
+      "Alt.uu___62",
+      1,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "assumption_Prims.HasEq_int",
+        "fuel_guarded_inversion_FStar.Tactics.Result.__result", "true_interp"
+      ],
+      0,
+      "c70b5ede7805bd0c51a407aa763d48df"
+    ]
+  ]
+]

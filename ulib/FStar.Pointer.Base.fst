@@ -1,18 +1,3 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 module FStar.Pointer.Base
 
 module DM = FStar.DependentMap
@@ -179,7 +164,7 @@ let buffer (t: typ): Tot Type0 = _buffer t
 *)
 
 let gtdata (* ghostly-tagged data *)
-  (key: eqtype)
+  (key: eqtype u#0)
   (value: (key -> Tot Type0))
 : Tot Type0
 = ( k: key & value k )
@@ -271,7 +256,7 @@ let _union_get_key (#l: union_typ) (v: union l) : Tot (struct_field l) = _gtdata
 
 let struct_sel (#l: struct_typ) (s: struct l) (f: struct_field l) : Tot (type_of_struct_field l f) =
   DM.sel s f
-
+ 
 let struct_upd (#l: struct_typ) (s: struct l) (f: struct_field l) (v: type_of_struct_field l f) : Tot (struct l) =
   DM.upd s f v
 
@@ -1313,7 +1298,7 @@ let path_includes_exists_concat
   (ensures (exists (r: path through to) . q == path_concat p r))
 = path_includes_ind
     (fun #to1_ #to2_ p1_ p2_ -> exists r . p2_ == path_concat p1_ r)
-    (fun #through #to_ p s ->
+    (fun #through #to_ p s -> 
       let r = PathStep through to_ PathBase s in
       assert_norm (PathStep through to_ p s == path_concat p r)
     )
@@ -2633,7 +2618,7 @@ let _singleton_buffer_of_pointer
   match pth with
   | PathStep _ _ pth' (StepCell ln ty i) ->
     (* reconstruct the buffer to the enclosing array *)
-    Buffer (BufferRootArray #ty #ln (Pointer from contents pth')) i 1ul
+    Buffer (BufferRootArray #ty #ln (Pointer from contents pth')) i 1ul 
   | _ ->
     Buffer (BufferRootSingleton p) 0ul 1ul
 
@@ -3293,7 +3278,7 @@ let loc_aux_includes_pointer
   (p: pointer t)
 : GTot Type0
 = match s with
-  | LocPointer p' ->
+  | LocPointer p' -> 
     p' `includes` p
   | LocBuffer b ->
     buffer_includes_pointer b p
@@ -3696,7 +3681,7 @@ let loc_includes_addresses_pointer #t r s p =
   MG.loc_includes_addresses_aloc #_ #cls false r s #(as_addr p) (LocPointer p)
 
 let loc_includes_addresses_buffer #t r s p =
-  MG.loc_includes_addresses_aloc #_ #cls false r s #(buffer_as_addr p) (LocBuffer p)
+  MG.loc_includes_addresses_aloc #_ #cls false r s #(buffer_as_addr p) (LocBuffer p)  
 
 let loc_includes_region_pointer #t s p =
   MG.loc_includes_region_aloc #_ #cls false s #(frameOf p) #(as_addr p) (LocPointer p)
@@ -3963,7 +3948,7 @@ let reference_of
   (p: pointer value)
 : Pure (HS.reference pointer_ref_contents)
   (requires (live h p))
-  (ensures (fun x ->
+  (ensures (fun x -> 
     live h p /\
     x == HS.reference_of h (Pointer?.contents p) pointer_ref_contents (Heap.trivial_preorder pointer_ref_contents) /\
     HS.frameOf x == HS.frameOf (greference_of p) /\
@@ -4050,49 +4035,39 @@ let owrite
     HS.lemma_sel_same_addr h1 r gref
   in
   e ();
-  let prf_alocs
-    (r': HS.rid)
-    (a': nat)
-    (b' : aloc r' a')
+  let f
+    (t: typ)
+    (p: pointer t)
   : Lemma
-    (requires (MG.loc_disjoint (MG.loc_of_aloc b') (loc_pointer b)))
-    (ensures (cls.MG.aloc_preserved b' h0 h1))
-  =
-    let f
-      (t: typ)
-      (p: pointer t)
-    : Lemma
-      (requires (
-        live h0 p /\
-        disjoint b p
-      ))
-      (ensures (
-        equal_values h0 p h1 p
-      ))
-    = let grefp = greference_of p in
-      if frameOf p = frameOf b && as_addr p = as_addr b
-      then begin
-        HS.lemma_sel_same_addr h0 r grefp;
-        HS.lemma_sel_same_addr h1 r grefp;
-        path_sel_upd_other' (Pointer?.p b) c0 z (Pointer?.p p)
-      end
-      else ()
-    in
-    let f'
-      (t: typ)
-      (p: pointer t)
-    : Lemma
-      ( (
-        live h0 p /\
-        disjoint b p
-      ) ==> (
-        equal_values h0 p h1 p
-      ))
-    = Classical.move_requires (f t) p
-    in
-    MG.loc_disjoint_aloc_elim #_ #cls #r' #a' #(frameOf b) #(as_addr b) b' (LocPointer b);
-    Classical.forall_intro_2 f'
+    (requires (
+      frameOf p == frameOf b /\
+      as_addr p == as_addr b /\
+      live h0 p /\
+      disjoint b p
+    ))
+    (ensures (
+      equal_values h0 p h1 p
+    ))
+  = let grefp = greference_of p in
+    HS.lemma_sel_same_addr h0 r grefp;
+    HS.lemma_sel_same_addr h1 r grefp;
+    path_sel_upd_other' (Pointer?.p b) c0 z (Pointer?.p p)
   in
+  let f'
+    (t: typ)
+    (p: pointer t)
+  : Lemma
+    ( (
+      frameOf p == frameOf b /\
+      as_addr p == as_addr b /\
+      live h0 p /\
+      disjoint b p
+    ) ==> (
+      equal_values h0 p h1 p
+    ))
+  = Classical.move_requires (f t) p
+  in
+  Classical.forall_intro_2 f';
   MG.modifies_intro (loc_pointer b) h0 h1
     (fun _ -> ())
     (fun t' pre' p' ->
@@ -4101,7 +4076,9 @@ let owrite
     )
     (fun _ _ _ -> ())
     (fun _ _ -> ())
-    prf_alocs
+    (fun r' a' b' ->
+      MG.loc_disjoint_aloc_elim #_ #cls #r' #a' #(frameOf b) #(as_addr b) b' (LocPointer b)
+    )
 
 let write #a b z =
   owrite b (ovalue_of_value a z)
@@ -4150,18 +4127,18 @@ let modifies_1_readable_array #t #len i p h h' =
   readable_array h' p
 
 (* buffer read: can be defined as a derived operation: pointer_of_buffer_cell ; read *)
-
-let read_buffer
-  (#t: typ)
-  (b: buffer t)
-  i
-= read (pointer_of_buffer_cell b i)
-
-let write_buffer
-  (#t: typ)
-  (b: buffer t)
-  i v
-= write (pointer_of_buffer_cell b i) v
+		
+let read_buffer		
+  (#t: typ)		
+  (b: buffer t)		
+  i		
+= read (pointer_of_buffer_cell b i)		
+		
+let write_buffer		
+  (#t: typ)		
+  (b: buffer t)		
+  i v		
+= write (pointer_of_buffer_cell b i) v		
 
 (* unused_in, cont'd *)
 
@@ -4193,7 +4170,7 @@ let buffer_live_reference_unused_in_disjoint #t1 #t2 h b1 b2 =
 (* Buffer inclusion without existential quantifiers: remnants of the legacy buffer interface *)
 
 let root_buffer #t b =
-  let root = Buffer?.broot b in
+  let root = Buffer?.broot b in 
   match root with
   | BufferRootSingleton p -> Buffer root 0ul 1ul
   | BufferRootArray #_ #len _ -> Buffer root 0ul len

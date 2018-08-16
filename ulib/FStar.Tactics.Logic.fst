@@ -1,24 +1,8 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 module FStar.Tactics.Logic
 
 open FStar.Tactics.Effect
 open FStar.Tactics.Builtins
 open FStar.Tactics.Derived
-open FStar.Tactics.Util
 open FStar.Reflection
 open FStar.Reflection.Formula
 
@@ -42,12 +26,16 @@ private val fa_intro_lem : (#a:Type) -> (#p : (a -> Type)) ->
 let fa_intro_lem #a #p f = FStar.Classical.lemma_forall_intro_gtot f
 
 let forall_intro () : Tac binder =
-    apply_lemma (`fa_intro_lem);
-    intro ()
+    let g = cur_goal () in
+    match term_as_formula g with
+    | Forall _ _ -> begin apply_lemma (`fa_intro_lem); intro () end
+    | _          -> fail "not a forall"
 
 let forall_intro_as (s:string) : Tac binder =
-    apply_lemma (`fa_intro_lem);
-    intro_as s
+    let g = cur_goal () in
+    match term_as_formula g with
+    | Forall _ _ -> begin apply_lemma (`fa_intro_lem); intro_as s end
+    | _          -> fail "not a forall"
 
 let forall_intros () : Tac binders = repeat1 forall_intro
 
@@ -68,18 +56,15 @@ let imp_intro_lem #a #b f =
   FStar.Classical.give_witness (FStar.Classical.arrow_to_impl (fun (x:squash a) -> FStar.Squash.bind_squash x f))
 
 let implies_intro () : Tac binder =
-    apply_lemma (`imp_intro_lem);
-    intro ()
+    let g = cur_goal () in
+    match term_as_formula g with
+    | Implies _ _ -> begin apply_lemma (`imp_intro_lem); intro () end
+    | _           -> fail "not an implication"
 
 let implies_intros () : Tac binders = repeat1 implies_intro
 
 let l_intro () = forall_intro `or_else` implies_intro
 let l_intros () = repeat l_intro
-
-let explode () : Tac unit =
-    ignore (
-    repeatseq (fun () -> first [(fun () -> ignore (l_intro ()));
-                               (fun () -> ignore (split ()))]))
 
 let rec visit (callback:unit -> Tac unit) : Tac unit =
     focus (fun () ->
@@ -187,30 +172,3 @@ let __and_elim #p #q #phi p_and_q f = ()
 let and_elim (t : term) : Tac unit =
     let ae = `__and_elim in
     apply_lemma (mk_e_app ae [t])
-
-private
-let sklem0 (#a:Type) (#p : a -> Type0) ($v : (exists (x:a). p x)) (phi:Type0) :
-  Lemma (requires (forall x. p x ==> phi))
-        (ensures phi) = ()
-
-private
-let rec sk_binder' (acc:binders) (b:binder) : Tac (binders * binder) =
-  focus (fun () ->
-    or_else (fun () ->
-      apply_lemma (`(sklem0 (`#(binder_to_term b))));
-      if ngoals () <> 1 then fail "no";
-      clear b;
-      let bx = forall_intro () in
-      let b' = implies_intro () in
-      sk_binder' (bx::acc) b' (* We might have introduced a new existential, so possibly recurse *)
-    )
-    (fun () -> (acc, b)) (* If the above failed, just return *)
-  )
-
-(* Skolemizes a given binder for an existential, returning the introduced new binders
- * and the skolemizes formula. *)
-let sk_binder b = sk_binder' [] b
-
-let skolem () =
-  let bs = binders_of_env (cur_env ()) in
-  map sk_binder bs

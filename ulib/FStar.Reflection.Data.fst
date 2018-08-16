@@ -1,32 +1,15 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 module FStar.Reflection.Data
 
 open FStar.Reflection.Types
 
 noeq
 type vconst =
-  | C_Unit      : vconst
-  | C_Int       : int -> vconst // Not exposing the full details of our integer repr.
-  | C_True      : vconst
-  | C_False     : vconst
-  | C_String    : string -> vconst
-  | C_Range     : range -> vconst
-  | C_Reify     : vconst
-  | C_Reflect   : name -> vconst
+  | C_Unit   : vconst
+  | C_Int    : int -> vconst // Not exposing the full details of our integer repr.
+  | C_True   : vconst
+  | C_False  : vconst
+  | C_String : string -> vconst
+  | C_Range  : range -> vconst
   (* TODO: complete *)
 
 // This is shadowing `pattern` from Prims (for smt_pats)
@@ -85,7 +68,8 @@ type sigelt_view =
   | Sg_Let :
       (r:bool) ->
       (fv:fv) ->
-      (us:list univ_name) ->
+      // TODO: range * string should be univ_name, but that's failing due to a bad delta-depth
+      (us:list (range * string)) ->
       (typ:typ) ->
       (def:term) ->
       sigelt_view
@@ -96,7 +80,8 @@ type sigelt_view =
   // (no mutually defined types for now)
   | Sg_Inductive :
       (nm:name) ->              // name of the inductive type being defined
-      (univs:list univ_name) -> // universe variables
+      // TODO: range * string should be univ_name, but that's failing due to a bad delta-depth
+      (univs:list (range * string)) -> // universe variables
       (params:binders) ->       // parameters
       (typ:typ) ->              // the type annotation for the inductive, i.e., indices -> Type #u
       (cts:list name) ->        // constructor names

@@ -1,5 +1,5 @@
 [
-  "æõ\u007f\u001bh\u0017õÔk!\u001d\u0013Ö6R\u0004",
+  "øjfF\f$\u0018\u001a¨z²À™ä»Ž",
   [
     [
       "Ex12a2.Cap.capRead",
@@ -8,7 +8,7 @@
       1,
       [ "@query", "assumption_Platform.Bytes.HasEq_bytes" ],
       0,
-      "8900c73d020fcfbc3b22f62a0af6ca5d"
+      "79be97cecf47c14cbfad04287515cd29"
     ],
     [
       "Ex12a2.Cap.issue_read",
@@ -26,20 +26,20 @@
         "equation_Platform.Bytes.bytes", "equation_Prims.logical",
         "function_token_typing_Ex12a2.Cap.capRead",
         "function_token_typing_Ex12a2.Cap.k_read",
-        "interpretation_Ex12.MAC_Tm_abs_afe755f9060dc96961b1532eae342f87",
+        "interpretation_Ex12.MAC_Tm_abs_97c0e073b8cc174491198c8e97c1e166",
         "primitive_Prims.op_Equality", "projection_inverse_BoxBool_proj_0",
         "refinement_interpretation_Ex12.MAC_Tm_refine_572b7c2b1bdf079fa791115963523fc8",
         "refinement_interpretation_Ex12a2.Cap_Tm_refine_47fc00d9af5452fdc3a5434abc5c3970",
         "refinement_interpretation_FStar.StrongExcludedMiddle_Tm_refine_94f72bfda5e23ac3960136c8bc3f958c",
         "refinement_interpretation_Platform.Bytes_Tm_refine_ad9cde64c932cdae765806f65e24e93b",
         "string_inversion",
-        "typing_Ex12.MAC_Tm_abs_afe755f9060dc96961b1532eae342f87",
+        "typing_Ex12.MAC_Tm_abs_97c0e073b8cc174491198c8e97c1e166",
         "typing_Ex12a.ACLs.canRead", "typing_Ex12a2.Cap.capRead",
         "typing_FStar.StrongExcludedMiddle.strong_excluded_middle",
         "typing_Platform.Bytes.equalBytes", "typing_Platform.Bytes.utf8"
       ],
       0,
-      "56073a276a67808711414a2e9c919fa4"
+      "48dd68282352a9720854b439f96174db"
     ],
     [
       "Ex12a2.Cap.redeem_read",
@@ -53,7 +53,7 @@
         "string_inversion"
       ],
       0,
-      "d3e9db9026209827429ebd44bc4a8b6f"
+      "0a8c65e64982ae6644af76d36ae4cd6a"
     ],
     [
       "Ex12a2.Cap.capWrite",
@@ -62,7 +62,7 @@
       1,
       [ "@query", "assumption_Platform.Bytes.HasEq_bytes" ],
       0,
-      "a579cba68549db65e57672c2a9e8c6fe"
+      "cd235d8e7179bf9d09f5b295454e3f96"
     ],
     [
       "Ex12a2.Cap.issue_write",
@@ -82,19 +82,19 @@
         "equation_Prims.logical", "function_token_typing_Ex12a.ACLs.tmp",
         "function_token_typing_Ex12a2.Cap.capWrite",
         "function_token_typing_Ex12a2.Cap.k_write",
-        "interpretation_Ex12.MAC_Tm_abs_afe755f9060dc96961b1532eae342f87",
+        "interpretation_Ex12.MAC_Tm_abs_97c0e073b8cc174491198c8e97c1e166",
         "primitive_Prims.op_Equality", "projection_inverse_BoxBool_proj_0",
         "refinement_interpretation_Ex12.MAC_Tm_refine_572b7c2b1bdf079fa791115963523fc8",
         "refinement_interpretation_Ex12a2.Cap_Tm_refine_0ba285f5db2ebbbd14f4a10a0e23206e",
         "refinement_interpretation_FStar.StrongExcludedMiddle_Tm_refine_94f72bfda5e23ac3960136c8bc3f958c",
         "refinement_interpretation_Platform.Bytes_Tm_refine_ad9cde64c932cdae765806f65e24e93b",
-        "typing_Ex12.MAC_Tm_abs_afe755f9060dc96961b1532eae342f87",
+        "typing_Ex12.MAC_Tm_abs_97c0e073b8cc174491198c8e97c1e166",
         "typing_Ex12a.ACLs.canWrite", "typing_Ex12a2.Cap.capWrite",
         "typing_FStar.StrongExcludedMiddle.strong_excluded_middle",
         "typing_Platform.Bytes.equalBytes", "typing_Platform.Bytes.utf8"
       ],
       0,
-      "be7072021587493e76ec1415ed7ca00e"
+      "2667711900ceb122f9e94ffd26b1ec8e"
     ],
     [
       "Ex12a2.Cap.redeem_write",
@@ -108,7 +108,7 @@
         "string_inversion"
       ],
       0,
-      "035b1acca4a2f9986ffdb4e790d2cfc8"
+      "4f6d2d4202c0343675bd9721ece4905d"
     ],
     [
       "Ex12a2.Cap.capRead",
@@ -117,7 +117,7 @@
       1,
       [ "@query", "assumption_Platform.Bytes.HasEq_bytes" ],
       0,
-      "b1ea68ad9f64ed605a977725f7e48f82"
+      "f048d5d4eacc3349d7df030ad3ea1bf5"
     ],
     [
       "Ex12a2.Cap.capWrite",
@@ -126,7 +126,7 @@
       1,
       [ "@query", "assumption_Platform.Bytes.HasEq_bytes" ],
       0,
-      "db77273de0c65f0bb64396a1b0eff470"
+      "0e09f9b1ee336e60d3b4dd9e2d55bfc4"
     ]
   ]
 ]

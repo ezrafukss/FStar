@@ -1,18 +1,3 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 module LowStar.BufferView
 
 (**
@@ -28,10 +13,9 @@ module LowStar.BufferView
  * to elements of `b`.
  *
  **)
-open LowStar.Monotonic.Buffer
-
+open LowStar.Buffer
 module HS=FStar.HyperStack
-module B=LowStar.Monotonic.Buffer
+module B=LowStar.Buffer
 
 (** Definition of a view **)
 
@@ -64,7 +48,7 @@ type view (a:Type) (b:Type) =
 ///
 /// Being indexed by both the `src` and `dest` allows `buffer_view` to
 /// remain in universe 0.
-val buffer_view (src:Type0) (rrel rel:B.srel src) (dest:Type u#a) : Type0
+val buffer_view (src:Type0) (dest:Type) : Type0
 
 /// `buffer b`: In contrast to `buffer_view`, `buffer b` hides the
 /// source type of the view. As such, it is likely more convenient to
@@ -80,13 +64,12 @@ val buffer_view (src:Type0) (rrel rel:B.srel src) (dest:Type u#a) : Type0
 /// We leave its defnition transparent in case clients wish to
 /// manipulate both the `src` and `dest` types explicitly (e.g., to
 /// stay in a lower universe)
-let buffer (dest:Type u#a) : Type u#1 = (src:Type0 & rrel:B.srel src & rel:B.srel src & buffer_view src rrel rel dest)
+let buffer (dest:Type) : Type u#1 = (src:Type0 & buffer_view src dest)
 
-let as_buffer_t (#dest:Type) (b:buffer dest) = B.mbuffer (Mkdtuple4?._1 b) (Mkdtuple4?._2 b) (Mkdtuple4?._3 b)
 
 /// `mk_buffer_view`: The main constructor
-val mk_buffer_view (#src:Type0) (#rrel #rel:B.srel src) (#dest:Type)
-                   (b:B.mbuffer src rrel rel)
+val mk_buffer_view (#src #dest:Type)
+                   (b:B.buffer src)
                    (v:view src dest{
                      length b % View?.n v == 0
                    })
@@ -94,39 +77,38 @@ val mk_buffer_view (#src:Type0) (#rrel #rel:B.srel src) (#dest:Type)
 
 
 /// `as_buffer`: Projecting the underlying B.buffer from its view
-val as_buffer (#b:Type) (v:buffer b) : as_buffer_t v
+val as_buffer (#b : Type) (v:buffer b) : B.buffer (dfst v)
 
 /// A lemma-relating projector to constructor
-val as_buffer_mk_buffer_view (#src:Type0) (#rrel #rel:B.srel src) (#dest:Type)
-                             (b:B.mbuffer src rrel rel)
+val as_buffer_mk_buffer_view (#src #dest:Type)
+                             (b:B.buffer src)
                              (v:view src dest{
                                length b % View?.n v == 0
                               })
     : Lemma (let bv = mk_buffer_view b v in
-             Mkdtuple4?._1 bv == src  /\
-	     Mkdtuple4?._2 bv == rrel /\
-	     Mkdtuple4?._3 bv == rel  /\
+             dfst bv == src /\
              as_buffer bv == b)
-            [SMTPat (as_buffer (mk_buffer_view b v))]
+            [SMTPat (as_buffer (mk_buffer_view b v) == b)]
 
 /// `get_view`: Projecting the view functions itself
-val get_view  (#b : Type) (v:buffer b) : view (Mkdtuple4?._1 v) b
+val get_view  (#b : Type) (v:buffer b) : view (dfst v) b
 
 /// A lemma-relating projector to constructor
-val get_view_mk_buffer_view (#src:Type0) (#rrel #rel:B.srel src) (#dest:Type)
-                            (b:B.mbuffer src rrel rel)
+val get_view_mk_buffer_view (#src #dest:Type)
+                            (b:B.buffer src)
                             (v:view src dest{
                                length b % View?.n v == 0
                              })
     : Lemma (let bv = mk_buffer_view b v in
-             Mkdtuple4?._1 bv == src /\
+             dfst bv == src /\
              get_view bv == v)
-            [SMTPat (get_view (mk_buffer_view b v))]
+            [SMTPat (get_view (mk_buffer_view b v) == v)]
 
 /// `live h vb`: liveness of a buffer view corresponds to liveness of
 /// the underlying buffer
 unfold
-let live #b h (vb:buffer b) = live h (as_buffer vb)
+let live #b h (vb:buffer b) =
+    live h (as_buffer vb)
 
 /// `length vb`: is defined in terms of the underlying buffer
 ///
@@ -181,12 +163,6 @@ val sel_upd (#b:_)
            then sel (upd h vb i x) vb j == x
            else sel (upd h vb i x) vb j == sel h vb j)
           [SMTPat (sel (upd h vb i x) vb j)]
-
-val lemma_upd_with_sel (#b:_)
-                       (vb:buffer b)
-                       (i:nat{i < length vb})
-                       (h:HS.mem{live h vb})
-  :Lemma (upd h vb i (sel h vb i) == h)
 
 /// `modifies` on views is just defined in terms of the underlying buffer
 unfold

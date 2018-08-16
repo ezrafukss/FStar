@@ -1,17 +1,38 @@
 [
-  "ãu$s)\u0000¡¾Ú0¥)\u0018Ý' ",
+  "\u000f\u000e¦îÍôv\r\u001cn\u0016‹µº\u007f˜",
   [
     [
       "Bug293.test",
       1,
       2,
       1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "f36afe14e2c287087c21fa2cc9205f91"
+    ],
+    [
+      "Bug293.test",
+      2,
+      2,
+      1,
       [
-        "@MaxIFuel_assumption", "@query",
+        "@MaxIFuel_assumption", "@query", "assumption_Prims.HasEq_int",
         "refinement_interpretation_Bug293_Tm_refine_24a102650c3561bc6be37068de08feda"
       ],
       0,
-      "ee5d7be20fba044905615f2537786870"
+      "ec58d0efe93a95c9c1970330ad059290"
+    ],
+    [
+      "Bug293.test",
+      3,
+      2,
+      1,
+      [
+        "@MaxIFuel_assumption", "@query", "assumption_Prims.HasEq_int",
+        "refinement_interpretation_Bug293_Tm_refine_24a102650c3561bc6be37068de08feda"
+      ],
+      0,
+      "4ce9ecdf66da4b6e3c04c4c19e519f5f"
     ]
   ]
 ]

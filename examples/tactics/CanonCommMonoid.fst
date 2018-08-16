@@ -1,18 +1,3 @@
-(*
-   Copyright 2008-2018 Microsoft Research
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*)
 module CanonCommMonoid
 
 open FStar.Algebra.CommMonoid
@@ -170,7 +155,7 @@ let rec permute_via_swaps_correct_aux
 
 let permute_via_swaps_correct
   (#b:Type) (p:permute b) (pvs:permute_via_swaps p) : permute_correct p =
-     permute_via_swaps_correct_aux p pvs
+     fun #a -> permute_via_swaps_correct_aux p pvs #a
 
 (***** Sorting variables is a correct permutation
        (since it can be done by swaps) *)
@@ -199,13 +184,13 @@ let sortWith_via_swaps (#a #b:Type) (f:nat -> nat -> int)
 
 let rec sort_correct_aux (#a:Type) (m:cm a) (vm:vmap a unit) (xs:list var) :
     Lemma (xsdenote m vm xs == xsdenote m vm (sort a vm xs)) =
-  permute_via_swaps_correct #unit sort sort_via_swaps m vm xs
+  permute_via_swaps_correct #unit (fun a -> sort a) (fun #a -> sort_via_swaps) m vm xs
 
 let rec sortWith_correct_aux (#a #b:Type) (f:nat -> nat -> int) (m:cm a) (vm:vmap a b) (xs:list var) :
     Lemma (xsdenote m vm xs == xsdenote m vm (sortWith #b f a vm xs)) =
-  permute_via_swaps_correct (sortWith f) (fun #a -> sortWith_via_swaps f) m vm xs
+  permute_via_swaps_correct #b (fun a -> sortWith #b f a) (fun #a -> sortWith_via_swaps f) m vm xs
 
-let sort_correct : permute_correct #unit sort = sort_correct_aux
+let sort_correct : permute_correct #unit sort = (fun #a -> sort_correct_aux #a)
 
 let sortWith_correct (#b:Type) (f:nat -> nat -> int) :
   permute_correct #b (sortWith #b f) =
@@ -389,10 +374,6 @@ let canon_monoid_aux
                             "FStar.List.Tot.Base.op_At";
                             "FStar.List.Tot.Base.append";
             (* TODO: the rest is a super brittle stop-gap, know thy instances *)
-                            "SL.AutoTactic.compare_b";
-                            "SL.AutoTactic.compare_v";
-                            "FStar.Order.int_of_order";
-                            "FStar.Reflection.Derived.compare_term";
                             "FStar.List.Tot.Base.sortWith";
                             "FStar.List.Tot.Base.partition";
                             "FStar.List.Tot.Base.bool_of_compare";
@@ -416,7 +397,7 @@ let canon_monoid_with
 
 let canon_monoid (#a:Type) (cm:cm a) : Tac unit =
   canon_monoid_with unit (fun _ -> ()) ()
-    sort sort_correct cm
+    (fun a -> sort a) (fun #a -> sort_correct #a) #a cm
 
 (***** Examples *)
 
@@ -444,6 +425,7 @@ let const_last (a:Type) (vm:vmap a bool) (xs:list var) : list var =
 
 let canon_monoid_const #a cm = canon_monoid_with bool is_const false
   (fun a -> const_last a)
+//  (fun #a m vm xs -> admit ()) #a cm
   (fun #a m vm xs -> sortWith_correct #bool (const_compare vm) #a m vm xs) #a cm
 
 let lem1 (a b c d : int) =
@@ -473,8 +455,9 @@ let special_first_correct : permute_correct special_first =
 
 let canon_monoid_special (ts:list term) =
   canon_monoid_with bool (is_special ts) false
-    special_first
-    special_first_correct
+    (fun x -> special_first x)
+    (fun #a -> special_first_correct #a) // eta the implicit due to an inference bug
+//    (fun #a m vm xs -> admit ())
 
 (* let lem2 (a b c d : int) = *)
 (*   assert_by_tactic (0 + 1 + a + b + c + d + 2 == (b + 0) + 2 + d + (c + a + 0) + 1) *)

@@ -1,4 +1,5 @@
-DIRS=1 2 3
+FSTAR=fstar
+DIRS=1 2
 
 all: verify-all
 

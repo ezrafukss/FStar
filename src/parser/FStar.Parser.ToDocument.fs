@@ -1055,7 +1055,7 @@ and p_noSeqTerm' ps pb e = match e.tm with
       group (str "ensures" ^/^ p_typ ps pb e)
   | Attributes es ->
       group (str "attributes" ^/^ separate_map break1 p_atomicTerm es)
-  
+
   | IfBind (e1, e2, e3) ->
       let e2_doc =
           match (unparen e2).tm with

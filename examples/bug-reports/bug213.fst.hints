@@ -1,6 +1,15 @@
 [
-  "H\u001a\\YŽØ\u0019kã/é/²*¯˜",
+  "Aî\u0016‰[²òžs’¿`‰Ð.£",
   [
+    [
+      "Bug213.intPair",
+      1,
+      2,
+      1,
+      [ "@query", "assumption_Prims.HasEq_int" ],
+      0,
+      "90f1a856a56a81944d7a48b601c02eb4"
+    ],
     [
       "Bug213.__proj__ExIntro__item___1",
       1,
@@ -11,7 +20,7 @@
         "projection_inverse_Bug213.ExIntro_x"
       ],
       0,
-      "c24d0e2e6eebf451f6e5aafb3d4f9ee2"
+      "630b6873bf04965e7b6fead3f1fc1d0b"
     ],
     [
       "Bug213.__proj__ExIntro'__item__p",
@@ -23,7 +32,7 @@
         "projection_inverse_Bug213.ExIntro__a"
       ],
       0,
-      "08a45a6d2401d75d7f73eda2a7cb431d"
+      "6cf3450b7f575a23ea4f769e896c12f4"
     ],
     [
       "Bug213.__proj__ExIntro'__item__x",
@@ -35,7 +44,7 @@
         "projection_inverse_Bug213.ExIntro__a"
       ],
       0,
-      "e89c8828a19d685bc1249b2ff751dd50"
+      "0d651f29f382f5830c6689599a7329b1"
     ],
     [
       "Bug213.__proj__ExIntro'__item___3",
@@ -50,7 +59,7 @@
         "token_correspondence_Bug213.__proj__ExIntro___item__p"
       ],
       0,
-      "f18524aef364eb377c9ce7ba20860602"
+      "3d26c54a2f3bc7cbc73564b782e54eed"
     ]
   ]
 ]

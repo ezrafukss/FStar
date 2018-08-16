@@ -578,7 +578,7 @@ term:
 (* ... which is actually be benign, since the same conflict already *)
 (*     exists for the previous production *)
   | e1=noSeqTerm SEMICOLON_SEMICOLON e2=term
-      { mk_term (Bind(mk_pattern PatWild (rhs parseState 2), e1, e2)) (rhs2 parseState 1 3) Expr }
+      { mk_term (Bind(mk_pattern (PatWild None) (rhs parseState 2), e1, e2)) (rhs2 parseState 1 3) Expr }
   | LET_BANG x=tuplePattern EQUALS e1=noSeqTerm IN e2=term
       { mk_term (Bind(x, e1, e2)) (rhs2 parseState 1 6) Expr }
 noSeqTerm:

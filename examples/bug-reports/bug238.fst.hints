@@ -1,5 +1,5 @@
 [
-  "„©ÂHžß»¼ê;Î‰) …\u0012",
+  "\\ì:E”ÐL\nÙ}áÄ\u0002*|á",
   [
     [
       "Bug238.box",
@@ -7,14 +7,12 @@
       2,
       1,
       [
-        "@MaxIFuel_assumption", "@query", "equation_Prims.eqtype",
-        "equation_Prims.l_False", "equation_Prims.squash",
-        "function_token_typing_Prims.unit",
-        "haseqPrims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5",
-        "refinement_interpretation_Prims_Tm_refine_414d0a9f578ab0048252f8c8f552b99f"
+        "@query", "assumption_Prims.HasEq_unit", "equation_Prims.l_False",
+        "equation_Prims.squash",
+        "haseqPrims_Tm_refine_8d65e998a07dd53ec478e27017d9dba5"
       ],
       0,
-      "213a279c308d8bea55f0374bd33143f5"
+      "3cb061976299fb4f76107b06e8a4549b"
     ]
   ]
 ]
