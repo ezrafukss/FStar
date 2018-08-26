@@ -75,18 +75,12 @@ let tc_tycon (env:env_t)     (* environment that contains all mutually defined t
 
          let k = U.arrow indices (S.mk_Total t) in
          let t_type, u = U.type_u() in
-<<<<<<< HEAD
-         if not (subtype_nosmt_force env t t_type) then
-             raise_error (Errors.Error_InductiveAnnotNotAType,
-                          (BU.format2 "Type annotation %s for inductive %s is not a subtype of Type"
-=======
          //AR: allow only Type and eqtype, nothing else
          let valid_type = (U.is_eqtype_no_unrefine t && not (s.sigquals |> List.contains Unopteq)) ||
                           (teq_nosmt_force env t t_type) in
          if not valid_type then
              raise_error (Errors.Error_InductiveAnnotNotAType,
                           (BU.format2 "Type annotation %s for inductive %s is not Type or eqtype, or it is eqtype but contains unopteq qualifier"
->>>>>>> upstream/master
                                                 (Print.term_to_string t)
                                                 (Ident.string_of_lid tc))) s.sigrng;
 
@@ -173,13 +167,9 @@ let tc_data (env:env_t) (tcs : list<(sigelt * universe)>)
                   //unify the two
                   Env.conj_guard g (Rel.teq env' (mk (Tm_type u1) None Range.dummyRange) (mk (Tm_type (U_name u2)) None Range.dummyRange))
                 ) Env.trivial_guard tuvs _uvs
-<<<<<<< HEAD
-              else failwith "Impossible: tc_datacon: length of annotated universes not same as instantiated ones"
-=======
               else Errors.raise_error (Errors.Fatal_UnexpectedConstructorType,
                                        "Length of annotated universes does not match inferred universes")
                                        se.sigrng
->>>>>>> upstream/master
             | Tm_fvar fv when S.fv_eq_lid fv tc_lid -> Env.trivial_guard
             | _ -> raise_error (Errors.Fatal_UnexpectedConstructorType, (BU.format2 "Expected a constructor of type %s; got %s"
                                         (Print.lid_to_string tc_lid)
