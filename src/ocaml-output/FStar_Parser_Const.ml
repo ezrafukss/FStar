@@ -21,6 +21,7 @@ let (bytes_lid : FStar_Ident.lident) = pconst "bytes"
 let (int_lid : FStar_Ident.lident) = pconst "int" 
 let (exn_lid : FStar_Ident.lident) = pconst "exn" 
 let (list_lid : FStar_Ident.lident) = pconst "list" 
+let (eqtype_lid : FStar_Ident.lident) = pconst "eqtype" 
 let (option_lid : FStar_Ident.lident) = psnconst "option" 
 let (either_lid : FStar_Ident.lident) = psconst "either" 
 let (pattern_lid : FStar_Ident.lident) = pconst "pattern" 
@@ -211,6 +212,8 @@ let (fail_lax_attr : FStar_Ident.lident) = psconst "expect_lax_failure"
 let (tcdecltime_attr : FStar_Ident.lident) = psconst "tcdecltime" 
 let (assume_strictly_positive_attr_lid : FStar_Ident.lident) =
   p2l ["FStar"; "Pervasives"; "assume_strictly_positive"] 
+let (unifier_hint_injective_lid : FStar_Ident.lident) =
+  p2l ["FStar"; "Pervasives"; "unifier_hint_injective"] 
 let (gen_reset :
   (unit -> Prims.int,unit -> unit) FStar_Pervasives_Native.tuple2) =
   let x = FStar_Util.mk_ref (Prims.parse_int "0")  in

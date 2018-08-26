@@ -75,9 +75,18 @@ let tc_tycon (env:env_t)     (* environment that contains all mutually defined t
 
          let k = U.arrow indices (S.mk_Total t) in
          let t_type, u = U.type_u() in
+<<<<<<< HEAD
          if not (subtype_nosmt_force env t t_type) then
              raise_error (Errors.Error_InductiveAnnotNotAType,
                           (BU.format2 "Type annotation %s for inductive %s is not a subtype of Type"
+=======
+         //AR: allow only Type and eqtype, nothing else
+         let valid_type = (U.is_eqtype_no_unrefine t && not (s.sigquals |> List.contains Unopteq)) ||
+                          (teq_nosmt_force env t t_type) in
+         if not valid_type then
+             raise_error (Errors.Error_InductiveAnnotNotAType,
+                          (BU.format2 "Type annotation %s for inductive %s is not Type or eqtype, or it is eqtype but contains unopteq qualifier"
+>>>>>>> upstream/master
                                                 (Print.term_to_string t)
                                                 (Ident.string_of_lid tc))) s.sigrng;
 
@@ -158,13 +167,19 @@ let tc_data (env:env_t) (tcs : list<(sigelt * universe)>)
           *     the following code unifies them with the annotated universes
           *)
          let g_uvs = match (SS.compress head).n with
-            | Tm_uinst ( { n = Tm_fvar fv }, tuvs) ->  //AR: in the second phase of 2-phases, this can be a Tm_uninst too
+            | Tm_uinst ( { n = Tm_fvar fv }, tuvs)  when S.fv_eq_lid fv tc_lid ->  //AR: in the second phase of 2-phases, this can be a Tm_uninst too
               if List.length _uvs = List.length tuvs then
                 List.fold_left2 (fun g u1 u2 ->
                   //unify the two
                   Env.conj_guard g (Rel.teq env' (mk (Tm_type u1) None Range.dummyRange) (mk (Tm_type (U_name u2)) None Range.dummyRange))
                 ) Env.trivial_guard tuvs _uvs
+<<<<<<< HEAD
               else failwith "Impossible: tc_datacon: length of annotated universes not same as instantiated ones"
+=======
+              else Errors.raise_error (Errors.Fatal_UnexpectedConstructorType,
+                                       "Length of annotated universes does not match inferred universes")
+                                       se.sigrng
+>>>>>>> upstream/master
             | Tm_fvar fv when S.fv_eq_lid fv tc_lid -> Env.trivial_guard
             | _ -> raise_error (Errors.Fatal_UnexpectedConstructorType, (BU.format2 "Expected a constructor of type %s; got %s"
                                         (Print.lid_to_string tc_lid)
@@ -355,22 +370,15 @@ and ty_nested_positive_in_inductive (ty_lid:lident) (ilid:lident) (us:universes)
   let b, idatas = datacons_of_typ env ilid in
   //if ilid is not an inductive, return false
   if not b then begin
-    match Env.lookup_attrs_of_lid env ilid with
-    | None
-    | Some [] ->
-      debug_log env ("Checking nested positivity, not an inductive, return false");
-      false
-    | Some attrs ->
-      if attrs |> BU.for_some (fun tm ->
-         match (SS.compress tm).n with
-         | Tm_fvar fv ->
-           S.fv_eq_lid fv FStar.Parser.Const.assume_strictly_positive_attr_lid
-         | _ -> false)
-      then (debug_log env (BU.format1 "Checking nested positivity, special case decorated with `assume_strictly_positive` %s; return true"
+    if Env.fv_has_attr
+              env
+              (S.lid_as_fv ilid delta_constant None)
+              FStar.Parser.Const.assume_strictly_positive_attr_lid
+    then (debug_log env (BU.format1 "Checking nested positivity, special case decorated with `assume_strictly_positive` %s; return true"
                                     (Ident.string_of_lid ilid));
-            true)
-      else (debug_log env ("Checking nested positivity, not an inductive, return false");
-           false)
+          true)
+    else (debug_log env ("Checking nested positivity, not an inductive, return false");
+          false)
   end
   //if ilid has already been unfolded with same arguments, return true
   else
@@ -665,10 +673,10 @@ let optimized_haseq_ty (all_datas_in_the_bundle:sigelts) (usubst:list<subst_elt>
 
 
 let optimized_haseq_scheme (sig_bndle:sigelt) (tcs:list<sigelt>) (datas:list<sigelt>) (env0:env_t) :list<sigelt> =
-  let us =
+  let us, t =
     let ty = List.hd tcs in
     match ty.sigel with
-    | Sig_inductive_typ (_, us, _, _, _, _) -> us
+    | Sig_inductive_typ (_, us, _, t, _, _) -> us, t
     | _                                     -> failwith "Impossible!"
   in
   let usubst, us = SS.univ_var_opening us in
@@ -681,7 +689,10 @@ let optimized_haseq_scheme (sig_bndle:sigelt) (tcs:list<sigelt>) (datas:list<sig
 
   let axioms, env, guard, cond = List.fold_left (optimized_haseq_ty datas usubst us) ([], env, U.t_true, U.t_true) tcs in
 
-  let phi = U.mk_imp guard cond in
+  let phi =
+    let _, t = U.arrow_formals t in
+    if U.is_eqtype_no_unrefine t then cond  //AR: if the type is marked as eqtype, you don't get to assume equality of type parameters
+    else U.mk_imp guard cond in
   let phi, _ = tc_trivial_guard env phi in
   let _ =
     //is this inline with verify_module ?

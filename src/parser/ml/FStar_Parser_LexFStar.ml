@@ -5,6 +5,7 @@ module String  = BatString
 module Hashtbl = BatHashtbl
 module Ulexing = FStar_Ulexing
 module L = Ulexing
+module E = FStar_Errors
 
 let ba_of_string s = Array.init (String.length s) (fun i -> Char.code (String.get s i))
 let array_trim_both a n m = Array.sub a n (Array.length a - n - m)
@@ -211,6 +212,10 @@ let () =
 let current_range lexbuf =
     FStar_Parser_Util.mksyn_range (fst (L.range lexbuf)) (snd (L.range lexbuf))
 
+let fail lexbuf (e, msg) =
+     let m = current_range lexbuf in
+     E.raise_error (e, msg) m
+
 type delimiters = { angle:int ref; paren:int ref; }
 let n_typ_apps = ref 0
 
@@ -227,7 +232,7 @@ let is_typ_app lexbuf =
       | c when c >= '0' && c <= '9' -> true
       | _ -> false in
     let balanced (contents:string) pos =
-      if contents.[pos] <> '<' then (failwith  "Unexpected position in is_typ_lapp");
+      if contents.[pos] <> '<' then (fail lexbuf (E.Fatal_SyntaxError, "Unexpected position in is_typ_lapp"));
       let d = {angle=ref 1; paren=ref 0} in
       let upd i = match contents.[i] with
         | '(' -> incr d.paren
@@ -468,7 +473,7 @@ let rec token = lexer
  | (uint8 | char8) ->
    let c = clean_number (L.lexeme lexbuf) in
    let cv = int_of_string c in
-   if cv < 0 || cv > 255 then failwith "Out-of-range character literal"
+   if cv < 0 || cv > 255 then fail lexbuf (E.Fatal_SyntaxError, "Out-of-range character literal")
    else UINT8 (c)
  | int8 -> INT8 (clean_number (L.lexeme lexbuf), false)
  | uint16 -> UINT16 (clean_number (L.lexeme lexbuf))
@@ -481,7 +486,7 @@ let rec token = lexer
  | (ieee64 | xieee64) -> IEEE64 (float_of_string (L.lexeme lexbuf))
 
  | (integer | xinteger | ieee64 | xieee64) ident_char+ ->
-   failwith ("This is not a valid numeric literal: " ^ L.lexeme lexbuf)
+   fail lexbuf (E.Fatal_SyntaxError, "This is not a valid numeric literal: " ^ L.lexeme lexbuf)
 
  | "(*" '*'* "*)" -> token lexbuf (* avoid confusion with fsdoc *)
  | "(**" -> fsdoc (1,"",[]) lexbuf
@@ -513,7 +518,7 @@ let rec token = lexer
  | op_infix0d symbolchar* -> OPINFIX0d (L.lexeme lexbuf)
  | op_infix1  symbolchar* -> OPINFIX1 (L.lexeme lexbuf)
  | op_infix2  symbolchar* -> OPINFIX2 (L.lexeme lexbuf)
- | op_infix3  symbolchar* -> 
+ | op_infix3  symbolchar* ->
      let l = L.lexeme lexbuf in
      if String.length l >= 2 && String.sub l 0 2 = "//" then
        one_line_comment l lexbuf
@@ -534,7 +539,7 @@ let rec token = lexer
    Hashtbl.find_option operators id |> Option.default (OPINFIX4 id)
 
  | eof -> EOF
- | _ -> failwith "unexpected char"
+ | _ -> fail lexbuf (E.Fatal_SyntaxError, "unexpected char")
 
 and one_line_comment pre = lexer
  | [^ 10 13 0x2028 0x2029]* -> push_one_line_comment pre lexbuf; token lexbuf
@@ -555,7 +560,7 @@ and string buffer = lexer
  | _ ->
    Buffer.add_string buffer (L.lexeme lexbuf);
    string buffer lexbuf
- | eof -> failwith "unterminated string"
+ | eof -> fail lexbuf (E.Fatal_SyntaxError, "unterminated string")
 
 and comment inner buffer startpos = lexer
  | "(*" ->
