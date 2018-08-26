@@ -965,9 +965,7 @@ let tc_assume (env:env) (ts:tscheme) (r:Range.range) :tscheme =
   //AR: this might seem same as tc_declare_typ but come prop, this will change
   tc_type_common env ts (U.type_u () |> fst) r
 
-let tc_inductive env ses quals lids =
-    let env = Env.push env "tc_inductive" in
-
+let tc_inductive' env ses quals lids =
     if Env.debug env Options.Low then
         BU.print1 ">>>>>>>>>>>>>>tc_inductive %s\n" (FStar.Common.string_of_list Print.sigelt_to_string ses);
 
@@ -1022,15 +1020,19 @@ let tc_inductive env ses quals lids =
               else TcInductive.optimized_haseq_scheme sig_bndle tcs datas env
             in
             sig_bndle, ses@data_ops_ses in  //append hasEq axiom lids and data projectors and discriminators lids
-    ignore (Env.pop env "tc_inductive"); // OK to ignore: caller will reuse original env
     res
+
+let tc_inductive env ses quals lids =
+  let env = Env.push env "tc_inductive" in
+  let pop () = ignore (Env.pop env "tc_inductive") in  //OK to ignore: caller will reuse original env
+  try tc_inductive' env ses quals lids |> (fun r -> pop (); r)
+  with e -> pop (); raise e 
 
 //when we process a reset-options pragma, we need to restart z3 etc.
 let z3_reset_options (en:env) :env =
   let env = Env.set_proof_ns (Options.using_facts_from ()) en in
   env.solver.refresh ();
   env
-
 
 let get_fail_se (se:sigelt) : option<(list<int> * bool)> =
     let comb f1 f2 =
@@ -1534,13 +1536,14 @@ let tc_decl env se: list<sigelt> * list<sigelt> * Env.env =
     begin match errs, check_multi_contained errnos (List.concatMap (fun i -> list_of_option i.issue_number) errs) with
     | [], _ ->
         List.iter Errors.print_issue errs;
-        raise_error (Errors.Error_DidNotFail, "This top-level definition was expected to fail, but it succeeded") se.sigrng
+        Errors.log_issue se.sigrng (Errors.Error_DidNotFail, "This top-level definition was expected to fail, but it succeeded")
     | _, Some (e, n1, n2) ->
         List.iter Errors.print_issue errs;
-        raise_error (Errors.Error_DidNotFail, BU.format3 "This top-level definition was expected to raise Error #%s %s times, but it raised it %s times"
-                                                (string_of_int e) (string_of_int n1) (string_of_int n2)) se.sigrng
-    | _, None -> [], [], env
-    end
+        Errors.log_issue se.sigrng (Errors.Error_DidNotFail, BU.format3 "This top-level definition was expected to raise Error #%s %s times, but it raised it %s times"
+                                                (string_of_int e) (string_of_int n1) (string_of_int n2))
+    | _, None -> ()
+    end;
+    [], [], env
 
   | None ->
     tc_decl' env se

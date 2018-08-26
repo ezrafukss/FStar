@@ -44,6 +44,7 @@ let bytes_lid       = pconst "bytes"
 let int_lid         = pconst "int"
 let exn_lid         = pconst "exn"
 let list_lid        = pconst "list"
+let eqtype_lid      = pconst "eqtype"
 let option_lid      = psnconst "option"
 let either_lid      = psconst "either"
 let pattern_lid     = pconst "pattern"
@@ -263,6 +264,7 @@ let fail_attr      = psconst "expect_failure"
 let fail_lax_attr  = psconst "expect_lax_failure"
 let tcdecltime_attr = psconst "tcdecltime"
 let assume_strictly_positive_attr_lid = p2l ["FStar"; "Pervasives"; "assume_strictly_positive"]
+let unifier_hint_injective_lid = p2l ["FStar"; "Pervasives"; "unifier_hint_injective"]
 
 let gen_reset =
     let x = U.mk_ref 0 in
