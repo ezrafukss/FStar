@@ -49,9 +49,9 @@ let fsharpkeywords = [
   "abstract"; "and"; "as"; "assert"; "base"; "begin"; "class";
   "default"; "delegate"; "do"; "done"; "downcast"; "downto";
   "elif"; "else"; "end"; "exception"; "extern"; "false";
-  "finally"; "fixed"; "for"; "fun"; "function"; "global"; "if";
+  "finally"; "fixed"; "for"; "fun"; "function"; "global"; "if"; "if!";
   "in"; "inherit"; "inline"; "interface"; "internal"; "lazy";
-  "let"; "let!"; "match"; "member"; "module"; "mutable";
+  "let"; "let!"; "match"; "match!"; "member"; "module"; "mutable";
   "namespace"; "new"; "not"; "null"; "of"; "open"; "or";
   "override"; "private"; "public"; "rec"; "return"; "return!";
   "select"; "static"; "struct"; "then"; "to"; "true"; "try";

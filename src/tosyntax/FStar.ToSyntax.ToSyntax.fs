@@ -257,6 +257,7 @@ and free_type_vars env t = match (unparen t).tm with
   | QForall _
   | QExists _
   | Record _
+  | MatchBind _
   | Match _
   | TryWith _
   | Bind _
@@ -1194,7 +1195,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
 
     | Bind(x, t1, t2) ->
       let k = AST.mk_term (Abs([x], t2)) t2.range t2.level in
-      let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen"; "Cost"; "letBang"] x.prange)) x.prange AST.Expr in
+      let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["letBang"] x.prange)) x.prange AST.Expr in
       desugar_term_aq env (AST.mkExplicitApp bind [t1; k] top.range)
 
     | IfBind(i, t, e) ->
@@ -1206,8 +1207,20 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       let lambda_var = AST.mk_term lambda_var' i.range e.level in
       let ite = AST.mk_term (If(lambda_var, t, e)) i.range e.level in
       let lambda = AST.mk_term (Abs([lambda_pat], ite)) t.range e.level in
-      let ifBind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen"; "Cost"; "ifBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
+      let ifBind = AST.mk_term (AST.Var(Ident.lid_of_path ["ifBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
       desugar_term_aq env (AST.mkExplicitApp ifBind [i; lambda] top.range)
+  
+    | MatchBind(e, branches) ->
+      let lambda_pat_id = Ident.gen Range.dummyRange in
+      let lambda_pat_lid = Ident.lid_of_ids [lambda_pat_id] in
+      let lambda_pat' = PatVar(lambda_pat_id, None) in
+      let lambda_pat = mk_pattern lambda_pat' e.range in
+      let lambda_var' = Var lambda_pat_lid in
+      let lambda_var = AST.mk_term lambda_var' e.range e.level in
+      let mtc = AST.mk_term (Match(lambda_var, branches)) e.range e.level in
+      let lambda = AST.mk_term (Abs([lambda_pat], mtc)) e.range e.level in
+      let mtcBind = AST.mk_term (AST.Var(Ident.lid_of_path ["matchBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
+      desugar_term_aq env (AST.mkExplicitApp mtcBind [e; lambda] top.range)
 
     | Seq(t1, t2) ->
       (* Convert it to a letbinding, desugar it, and then slap a Meta_desugared sequence on it to keep track of this *)

@@ -1087,11 +1087,16 @@ and p_noSeqTerm' ps pb e = match e.tm with
       paren_if (ps || pb) (
         group (prefix2 (str "try") (p_noSeqTerm false false e) ^/^ str "with" ^/^
               separate_map_last hardline p_patternBranch branches))
-  | Match (e, branches) ->
+  | MatchBind (e, branches) ->
       paren_if (ps || pb) (
-        group (surround 2 1 (str "match") (p_noSeqTerm false false e) (str "with") ^/^
+        group (surround 2 1 (str "match!") (p_noSeqTerm false false e) (str "with") ^/^
         separate_map_last hardline p_patternBranch branches)
       )
+  | Match (e, branches) ->
+        paren_if (ps || pb) (
+          group (surround 2 1 (str "match") (p_noSeqTerm false false e) (str "with") ^/^
+          separate_map_last hardline p_patternBranch branches)
+        )
   | LetOpen (uid, e) ->
       paren_if ps (
         group (surround 2 1 (str "let open") (p_quident uid) (str "in") ^/^ p_term false pb e)
@@ -1512,6 +1517,7 @@ and p_projectionLHS e = match e.tm with
   | Bind _      (* p_term *)
   | IfBind _    (* p_noSeqTerm *)
   | If _        (* p_noSeqTerm *)
+  | MatchBind _ (* p_noSeqTerm *)
   | Match _     (* p_noSeqTerm *)
   | TryWith _   (* p_noSeqTerm *)
   | Ascribed _  (* p_noSeqTerm *)

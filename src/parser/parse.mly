@@ -58,7 +58,7 @@ let logic_qualifier_deprecation_warning =
 %token TYP_APP_LESS TYP_APP_GREATER SUBTYPE SUBKIND BY
 %token AND ASSERT SYNTH BEGIN ELSE END
 %token EXCEPTION FALSE FUN FUNCTION IF IF_BANG IN MODULE DEFAULT
-%token MATCH OF LET_BANG
+%token MATCH_BANG MATCH OF LET_BANG
 %token FRIEND OPEN REC MUTABLE THEN TRUE TRY TYPE CLASS EFFECT VAL
 %token INCLUDE
 %token WHEN WITH HASH AMP LPAREN RPAREN LPAREN_RPAREN COMMA LONG_LEFT_ARROW LARROW RARROW
@@ -565,6 +565,11 @@ noSeqTerm:
       {
          let branches = focusBranches (pbs) (rhs2 parseState 1 4) in
          mk_term (TryWith(e1, branches)) (rhs2 parseState 1 4) Expr
+      }
+  | MATCH_BANG e=term WITH pbs=left_flexible_list(BAR, pb=patternBranch {pb})
+      {
+        let branches = focusBranches pbs (rhs2 parseState 1 4) in
+        mk_term (MatchBind(e, branches)) (rhs2 parseState 1 4) Expr
       }
   | MATCH e=term WITH pbs=left_flexible_list(BAR, pb=patternBranch {pb})
       {

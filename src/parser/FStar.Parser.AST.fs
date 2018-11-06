@@ -61,8 +61,9 @@ type term' =
   | LetOpen   of lid * term
   | Seq       of term * term
   | Bind      of pattern * term * term
-  | IfBind   of term * term * term
+  | IfBind    of term * term * term
   | If        of term * term * term
+  | MatchBind of term * list<branch>
   | Match     of term * list<branch>
   | TryWith   of term * list<branch>
   | Ascribed  of term * term * option<term>

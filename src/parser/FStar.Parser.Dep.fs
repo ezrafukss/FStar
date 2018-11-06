@@ -626,6 +626,7 @@ let collect_one
         collect_term t1;
         collect_term t2;
         collect_term t3
+    | MatchBind (t, bs)
     | Match (t, bs)
     | TryWith (t, bs) ->
         collect_term t;

@@ -150,6 +150,7 @@ let keywords =
     FSHARP, "default"    ,DEFAULT;
     ALWAYS, "let!"       ,LET_BANG;
     ALWAYS, "if!"        ,IF_BANG;
+    ALWAYS, "match!"     ,MATCH_BANG;
     ALWAYS, "effect"     ,EFFECT;
     ALWAYS, "else"       ,ELSE;
     ALWAYS, "end"        ,END;
