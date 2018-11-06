@@ -77,22 +77,22 @@ let rec extract_meta x =
   match SS.compress x with
   | { n = Tm_fvar fv } ->
       begin match string_of_lid (lid_of_fv fv) with
-      | "FStar.Pervasives.PpxDerivingShow" -> Some PpxDerivingShow
-      | "FStar.Pervasives.PpxDerivingYoJson" -> Some PpxDerivingYoJson
-      | "FStar.Pervasives.CInline" -> Some CInline
-      | "FStar.Pervasives.Substitute" -> Some Substitute
-      | "FStar.Pervasives.Gc" -> Some GCType
-      | "FStar.Pervasives.CAbstractStruct" -> Some CAbstract
+      | "Zen.Pervasives.PpxDerivingShow" -> Some PpxDerivingShow
+      | "Zen.Pervasives.PpxDerivingYoJson" -> Some PpxDerivingYoJson
+      | "Zen.Pervasives.CInline" -> Some CInline
+      | "Zen.Pervasives.Substitute" -> Some Substitute
+      | "Zen.Pervasives.Gc" -> Some GCType
+      | "Zen.Pervasives.CAbstractStruct" -> Some CAbstract
       | _ -> None
       end
   | { n = Tm_app ({ n = Tm_fvar fv }, [{ n = Tm_constant (Const_string (s, _)) }, _]) } ->
       begin match string_of_lid (lid_of_fv fv) with
-      | "FStar.Pervasives.PpxDerivingShowConstant" -> Some (PpxDerivingShowConstant s)
-      | "FStar.Pervasives.Comment" -> Some (Comment s)
-      | "FStar.Pervasives.CPrologue" -> Some (CPrologue s)
-      | "FStar.Pervasives.CEpilogue" -> Some (CEpilogue s)
-      | "FStar.Pervasives.CConst" -> Some (CConst s)
-      | "FStar.Pervasives.CCConv" -> Some (CCConv s)
+      | "Zen.Pervasives.PpxDerivingShowConstant" -> Some (PpxDerivingShowConstant s)
+      | "Zen.Pervasives.Comment" -> Some (Comment s)
+      | "Zen.Pervasives.CPrologue" -> Some (CPrologue s)
+      | "Zen.Pervasives.CEpilogue" -> Some (CEpilogue s)
+      | "Zen.Pervasives.CConst" -> Some (CConst s)
+      | "Zen.Pervasives.CCConv" -> Some (CCConv s)
       | _ -> None
       end
   | { n = Tm_constant (Const_string ("KremlinPrivate", _)) } -> Some Private // This one generated internally

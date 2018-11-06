@@ -502,19 +502,19 @@ let injectives =
     ["FStar.Int8.int_to_t";
      "FStar.Int16.int_to_t";
      "FStar.Int32.int_to_t";
-     "FStar.Int64.int_to_t";
-     "FStar.UInt8.uint_to_t";
+     "Zen.Int64.int_to_t";
+     "Zen.UInt8.uint_to_t";
      "FStar.UInt16.uint_to_t";
-     "FStar.UInt32.uint_to_t";
-     "FStar.UInt64.uint_to_t";
+     "Zen.UInt32.uint_to_t";
+     "Zen.UInt64.uint_to_t";
      "FStar.Int8.__int_to_t";
      "FStar.Int16.__int_to_t";
      "FStar.Int32.__int_to_t";
-     "FStar.Int64.__int_to_t";
-     "FStar.UInt8.__uint_to_t";
+     "Zen.Int64.__int_to_t";
+     "Zen.UInt8.__uint_to_t";
      "FStar.UInt16.__uint_to_t";
-     "FStar.UInt32.__uint_to_t";
-     "FStar.UInt64.__uint_to_t"]
+     "Zen.UInt32.__uint_to_t";
+     "Zen.UInt64.__uint_to_t"]
 
 (* Precondition: terms are well-typed in a common environment, or this can return false positives *)
 let rec eq_tm (t1:term) (t2:term) : eq_result =
@@ -1127,7 +1127,7 @@ let attr_eq a a' =
    | _ -> false
 
 let attr_substitute =
-mk (Tm_fvar (lid_as_fv (lid_of_path ["FStar"; "Pervasives"; "Substitute"] Range.dummyRange) delta_constant None)) None Range.dummyRange
+mk (Tm_fvar (lid_as_fv (lid_of_path ["Zen"; "Pervasives"; "Substitute"] Range.dummyRange) delta_constant None)) None Range.dummyRange
 
 let exp_true_bool : term = mk (Tm_constant (Const_bool true)) None dummyRange
 let exp_false_bool : term = mk (Tm_constant (Const_bool false)) None dummyRange

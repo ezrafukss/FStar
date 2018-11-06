@@ -770,7 +770,7 @@ let rec desugar_data_pat env p (is_mut:bool) : (env_t * bnd * list<annotated_pat
 
 and desugar_binding_pat_maybe_top top env p is_mut : (env_t * bnd * list<annotated_pat>) =
   // GM: I seem to need the annotation here, or F* gets confused between tuple2 and tuple3
-  let mklet x ty (tacopt : option<S.term>) : (env_t * bnd * list<annotated_pat>)=
+  let mklet x ty (tacopt : option<S.term>) : (env_t * bnd * list<annotated_pat>) =
     env, LetBinder(qualify env x, (ty, tacopt)), []
   in
   let op_to_ident x = mk_ident (compile_op 0 x.idText x.idRange, x.idRange) in
@@ -822,7 +822,7 @@ and desugar_typ env e : S.term =
     t
 
 and desugar_machine_integer env repr (signedness, width) range =
-  let tnm = "FStar." ^
+  let tnm = "Zen." ^
     (match signedness with | Unsigned -> "U" | Signed -> "") ^ "Int" ^
     (match width with | Int8 -> "8" | Int16 -> "16" | Int32 -> "32" | Int64 -> "64")
   in
@@ -2514,7 +2514,7 @@ and mk_comment_attr (d: decl) =
   let other = if other <> [] then String.concat "\n" other ^ "\n" else "" in
   let str = summary ^ pp ^ other ^ text in
   (* Building a fake term *)
-  let fv = S.fvar (lid_of_str "FStar.Pervasives.Comment") delta_constant None in //NS delta: ok
+  let fv = S.fvar (lid_of_str "Zen.Pervasives.Comment") delta_constant None in //NS delta: ok
   let arg = U.exp_string str in
   U.mk_app fv [ S.as_arg arg ]
 
@@ -2858,7 +2858,7 @@ let desugar_decls env decls =
             forward ({ se2 with sigattrs =
               List.filter (function
                 | { n = Tm_app ({ n = Tm_fvar fv }, _) }
-                  when string_of_lid (lid_of_fv fv) = "FStar.Pervasives.Comment" ->
+                  when string_of_lid (lid_of_fv fv) = "Zen.Pervasives.Comment" ->
                     true
                 | _ -> false
               ) se1.sigattrs @ se2.sigattrs

@@ -554,9 +554,9 @@ and translate_type env t: typ =
       TUnit
   | MLTY_Named ([], p) when (Syntax.string_of_mlpath p = "Prims.bool") ->
       TBool
-  | MLTY_Named ([], ([ "FStar"; m ], "t")) when is_machine_int m ->
+  | MLTY_Named ([], ([ "Zen"; m ], "t")) when is_machine_int m ->
       TInt (must (mk_width m))
-  | MLTY_Named ([], ([ "FStar"; m ], "t'")) when is_machine_int m ->
+  | MLTY_Named ([], ([ "Zen"; m ], "t'")) when is_machine_int m ->
       TInt (must (mk_width m))
   | MLTY_Named ([arg], p) when (Syntax.string_of_mlpath p = "FStar.Monotonic.HyperStack.mem") ->
       TUnit
@@ -610,7 +610,7 @@ and translate_type env t: typ =
   | MLTY_Named ([], (path, type_name)) ->
       // Generate an unbound reference... to be filled in later by glue code.
       TQualified (path, type_name)
-  | MLTY_Named (args, (ns, t)) when (ns = ["Prims"] || ns = ["FStar"; "Pervasives"; "Native"]) && BU.starts_with t "tuple" ->
+  | MLTY_Named (args, (ns, t)) when (ns = ["Prims"] || ns = ["Zen"; "Pervasives"; "Native"]) && BU.starts_with t "tuple" ->
       TTuple (List.map (translate_type env) args)
   | MLTY_Named (args, lid) ->
       if List.length args > 0 then
@@ -638,7 +638,7 @@ and translate_expr env e: expr =
       EBound (find env name)
 
   // Some of these may not appear beneath an [EApp] node because of partial applications
-  | MLE_Name ([ "FStar"; m ], op) when (is_machine_int m && is_op op) ->
+  | MLE_Name ([ "Zen"; m ], op) when (is_machine_int m && is_op op) ->
       EOp (must (mk_op op), must (mk_width m))
 
   | MLE_Name ([ "Prims" ], op) when (is_bool_op op) ->
@@ -791,15 +791,15 @@ and translate_expr env e: expr =
       ECast (translate_expr env e, TAny)
 
   // Operators from fixed-width integer modules, e.g. [FStar.Int32.addw].
-  | MLE_App ({ expr = MLE_Name ([ "FStar"; m ], op) }, args) when (is_machine_int m && is_op op) ->
+  | MLE_App ({ expr = MLE_Name ([ "Zen"; m ], op) }, args) when (is_machine_int m && is_op op) ->
       mk_op_app env (must (mk_width m)) (must (mk_op op)) args
 
   | MLE_App ({ expr = MLE_Name ([ "Prims" ], op) }, args) when (is_bool_op op) ->
       mk_op_app env Bool (must (mk_bool_op op)) args
 
   // Fixed-width literals are represented as calls to [FStar.Int32.uint_to_t]
-  | MLE_App ({ expr = MLE_Name ([ "FStar"; m ], "int_to_t") }, [ { expr = MLE_Const (MLC_Int (c, None)) }])
-  | MLE_App ({ expr = MLE_Name ([ "FStar"; m ], "uint_to_t") }, [ { expr = MLE_Const (MLC_Int (c, None)) }]) when is_machine_int m ->
+  | MLE_App ({ expr = MLE_Name ([ "Zen"; m ], "int_to_t") }, [ { expr = MLE_Const (MLC_Int (c, None)) }])
+  | MLE_App ({ expr = MLE_Name ([ "Zen"; m ], "uint_to_t") }, [ { expr = MLE_Const (MLC_Int (c, None)) }]) when is_machine_int m ->
       EConstant (must (mk_width m), c)
 
   | MLE_App ({ expr = MLE_Name ([ "C" ], "string_of_literal") }, [ { expr = e } ])
@@ -811,7 +811,7 @@ and translate_expr env e: expr =
           failwith "Cannot extract string_of_literal applied to a non-literal"
       end
 
-  | MLE_App ({ expr = MLE_Name ([ "FStar"; "Int"; "Cast" ], c) }, [ arg ]) ->
+  | MLE_App ({ expr = MLE_Name ([ "Zen"; "Int"; "Cast" ], c) }, [ arg ]) ->
       let is_known_type =
         starts_with c "uint8" || starts_with c "uint16" ||
         starts_with c "uint32" || starts_with c "uint64" ||
@@ -835,7 +835,7 @@ and translate_expr env e: expr =
       else if ends_with c "int8" && is_known_type then
         ECast (translate_expr env arg, TInt Int8)
       else
-        EApp (EQualified ([ "FStar"; "Int"; "Cast" ], c), [ translate_expr env arg ])
+        EApp (EQualified ([ "Zen"; "Int"; "Cast" ], c), [ translate_expr env arg ])
 
   | MLE_App (head, args) ->
       EApp (translate_expr env head, List.map (translate_expr env) args)
@@ -968,7 +968,7 @@ and translate_constant c: expr =
       let i = BU.int_of_char c in
       let s = BU.string_of_int i in
       let c = EConstant (UInt32, s) in
-      let char_of_int = EQualified (["FStar"; "Char"], "char_of_int") in
+      let char_of_int = EQualified (["Zen"; "Char"], "char_of_int") in
       EApp(char_of_int, [c])
   | MLC_Int (s, Some _) ->
       failwith "impossible: machine integer not desugared to a function call"

@@ -556,11 +556,11 @@ let built_in_primitive_steps : BU.psmap<primitive_step> =
              0,
              binary_string_op (fun x y -> x ^ y),
              NBETerm.binary_string_op (fun x y -> x ^ y));
-         (PC.strcat_lid',
+         (*(PC.strcat_lid',
              2,
              0,
              binary_string_op (fun x y -> x ^ y),
-             NBETerm.binary_string_op (fun x y -> x ^ y));
+             NBETerm.binary_string_op (fun x y -> x ^ y));*)
          (PC.str_make_lid,
              2,
              0,

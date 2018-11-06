@@ -1308,14 +1308,14 @@ let prims () =
 let prims_basename () = basename (prims ())
 
 let pervasives () =
-  let filename = "FStar.Pervasives.fst" in
+  let filename = "Zen.Pervasives.fst" in
   match find_file filename with
   | Some result -> result
   | None        -> failwith (Util.format1 "unable to find required file \"%s\" in the module search path.\n" filename)
 
 let pervasives_basename () = basename (pervasives ())
 let pervasives_native_basename () =
-  let filename = "FStar.Pervasives.Native.fst" in
+  let filename = "Zen.Pervasives.Native.fst" in
   match find_file filename with
   | Some result -> basename result
   | None        -> failwith (Util.format1 "unable to find required file \"%s\" in the module search path.\n" filename)

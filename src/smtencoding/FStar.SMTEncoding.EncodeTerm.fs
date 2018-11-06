@@ -296,8 +296,8 @@ let is_BitVector_primitive head args =
 let is_String_primitive head args =
     match head.n, args with
     | Tm_fvar fv, [_;_]->
-         S.fv_eq_lid fv Const.strcat_lid'
-      || S.fv_eq_lid fv Const.strat_lid
+         // S.fv_eq_lid fv Const.strcat_lid' ||
+         S.fv_eq_lid fv Const.strat_lid
     | Tm_fvar fv, [_]->
          S.fv_eq_lid fv Const.strlen_lid
 
@@ -437,7 +437,7 @@ and encode_string_term env head args_e =
     let strat  = mk_string Util.mkStrAt binary_string_int in
     let ops =
         [(Const.strlen_lid, strlen);
-         (Const.strcat_lid', strcat);
+         //(Const.strcat_lid', strcat);
          (Const.strat_lid, strat)]
     in
     let _, op =
