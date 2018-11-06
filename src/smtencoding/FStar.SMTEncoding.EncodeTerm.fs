@@ -295,6 +295,15 @@ let is_BitVector_primitive head args =
 
     | _ -> false
 
+let is_String_primitive head args =
+    match head.n, args with
+    | Tm_fvar fv, [_;_]->
+         // S.fv_eq_lid fv Const.strcat_lid' ||
+         S.fv_eq_lid fv Const.strat_lid
+    | Tm_fvar fv, [_]->
+         S.fv_eq_lid fv Const.strlen_lid
+
+    | _ -> false
 
 let rec encode_const c env =
     match c with
@@ -401,7 +410,45 @@ and encode_arith_term env head args_e =
     in
     op arg_tms, decls
 
- and encode_BitVector_term env head args_e =
+and encode_string_term env head args_e =
+    let arg_tms, decls = encode_args args_e env in
+    let head_fv =
+        match head.n with
+        | Tm_fvar fv -> fv
+        | _ -> failwith "Impossible"
+    in
+    let unary_string arg_tms =
+        Term.unboxString (List.hd arg_tms)
+    in
+    let binary_string_string arg_tms =
+        Term.unboxString (List.hd arg_tms),
+        Term.unboxString (List.hd (List.tl arg_tms))
+    in
+    let binary_string_int arg_tms =
+        Term.unboxString (List.hd arg_tms),
+        Term.unboxInt    (List.hd (List.tl arg_tms))
+    in
+    let mk_int: ('a -> term) -> (list<term> -> 'a) -> list<term> -> term =
+      fun op mk_args ts -> op (mk_args ts) |> Term.boxInt
+    in
+    let mk_string : ('a -> term) -> (list<term> -> 'a) -> list<term> -> term =
+      fun op mk_args ts -> op (mk_args ts) |> Term.boxString
+    in
+    let strlen = mk_int    Util.mkStrLen unary_string in
+    let strcat = mk_string Util.mkStrCat binary_string_string in
+    let strat  = mk_string Util.mkStrAt binary_string_int in
+    let ops =
+        [(Const.strlen_lid, strlen);
+         //(Const.strcat_lid', strcat);
+         (Const.strat_lid, strat)]
+    in
+    let _, op =
+        List.tryFind (fun (l, _) -> S.fv_eq_lid head_fv l) ops |>
+        BU.must
+    in
+    op arg_tms, decls
+
+and encode_BitVector_term env head args_e =
     (*first argument should be the implicit vector size
       we do not want to encode this*)
     let (tm_sz, _) : arg = List.hd args_e in

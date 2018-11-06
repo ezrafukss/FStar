@@ -760,9 +760,9 @@ let rec doc_of_mllib_r (MLLib mllib) =
         let target_mod_name = Util.flatten_mlpath mod_name in
         let maybe_open_pervasives =
             match mod_name with
-            | ["FStar"], "Pervasives" -> []
+            | ["Zen"], "Pervasives" -> []
             | _ ->
-              let pervasives = Util.flatten_mlpath (["FStar"], "Pervasives") in
+              let pervasives = Util.flatten_mlpath (["Zen"], "Pervasives") in
               [hardline;
                text ("open " ^ pervasives)]
         in
