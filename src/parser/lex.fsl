@@ -378,6 +378,7 @@ rule token args = parse
  | '#' { HASH }
  | "u#"{ UNIV_HASH }
  | "let!"{ LET_BANG }
+ | "match!"{ MATCH_BANG }
  | "if!"{ IF_BANG }
  | '&' { AMP }
  | "()" { LPAREN_RPAREN }
