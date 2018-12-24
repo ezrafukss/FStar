@@ -1558,23 +1558,6 @@ let module_matches_namespace_filter m filter =
     | Some (_, flag) -> flag
 
 
-let with_saved_options f =
-  // take some care to not mess up the stack on errors
-  // (unless we're trying to track down an error)
-  // TODO: This assumes `f` does not mess with the stack!
-  if not (trace_error ()) then begin
-      push ();
-      try let retv = f () in
-          pop ();
-          retv
-      with | ex -> pop (); raise ex
-  end else begin
-      push ();
-      let retv = f () in
-      pop ();
-      retv
-  end
-
 let should_extract m =
     let m = String.lowercase m in
     match get_extract() with

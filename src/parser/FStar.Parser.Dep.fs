@@ -750,7 +750,6 @@ let collect_one
     | PatName _ ->
         ()
     | PatList ps
-    | PatVector ps
     | PatOr ps
     | PatTuple (ps, _) ->
         collect_patterns ps

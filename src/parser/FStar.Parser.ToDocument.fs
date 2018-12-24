@@ -867,8 +867,6 @@ and p_atomicPattern p = match p.pat with
     end
   | PatList pats ->
     surround 2 0 lbracket (separate_break_map semi p_tuplePattern pats) rbracket
-  | PatVector pats ->
-    surround 2 0 ( str "V" ^^ lbracket) (separate_break_map semi p_tuplePattern pats) (rbracket)
   | PatRecord pats ->
     let p_recordFieldPat (lid, pat) = infix2 equals (p_qlident lid) (p_tuplePattern pat) in
     soft_braces_with_nesting (separate_break_map semi p_recordFieldPat pats)
@@ -1028,7 +1026,7 @@ and p_term (ps:bool) (pb:bool) (e:term) = match e.tm with
        * that swallows branches but not semicolons (meaning ps implies pb). *)
       group (p_noSeqTerm true false e1 ^^ semi) ^/^ p_term ps pb e2
   | Bind(x, e1, e2) ->
-      group ((str "let!" ^^ space ^^ p_tuplePattern x ^^ space ^^ str "=") ^/+^ (maybe_paren (p_noSeqTerm true false e1) ^^ space ^^ str "in")) ^/^ p_term ps pb e2
+      group ((str "let!" ^^ space ^^ p_tuplePattern x ^^ space ^^ str "=") ^/+^ (p_noSeqTerm true false e1 ^^ space ^^ str "in")) ^/^ p_term ps pb e2
   | _ ->
       group (p_noSeqTerm ps pb e)
 
@@ -1058,14 +1056,14 @@ and p_noSeqTerm' ps pb e = match e.tm with
 
   | IfBind (e1, e2, e3) ->
       let e2_doc =
-          match (unparen e2).tm with
+          match e2.tm with
               | If (_,_,e3) when is_unit e3 ->
-                  soft_parens_with_nesting (p_noSeqTerm e2)
-              | _ -> p_noSeqTerm e2
+                  soft_parens_with_nesting (p_noSeqTerm false false e2)
+              | _ -> p_noSeqTerm false false e2
       in group (
-          (str "if!" ^/+^ p_noSeqTerm e1) ^/^
+          (str "if!" ^/+^ p_noSeqTerm false false e1) ^/^
           (str "then" ^/+^ e2_doc) ^/^
-          (str "else" ^/+^ p_noSeqTerm e3))
+          (str "else" ^/+^ p_noSeqTerm ps pb e3))
 
   | If (e1, e2, e3) ->
       (* No need to wrap with parentheses here, since if e1 then e2; e3 really

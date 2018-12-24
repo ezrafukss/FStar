@@ -182,7 +182,6 @@ let logic_qualifier_deprecation_warning =
 %token UNIV_HASH
 %token UNOPTEQUALITY
 %token VAL
-%token V_LBRACK
 %token WHEN
 %token WITH
 %nonassoc THEN
@@ -207,14 +206,14 @@ let logic_qualifier_deprecation_warning =
 %%
 
 option_FSDOC_:
-
+  
     {    ( None )}
 | FSDOC
     {let x = $1 in
     ( Some x )}
 
 option___anonymous_1_:
-
+  
     {    ( None )}
 | OF typ
     {let (_10, t0) = ((), $2) in
@@ -226,7 +225,7 @@ in
     ( Some x )}
 
 option___anonymous_10_:
-
+  
     {    ( None )}
 | LBRACE noSeqTerm RBRACE
     {let (_10, e00, _30) = ((), $2, ()) in
@@ -243,7 +242,7 @@ in
     ( Some x )}
 
 option___anonymous_2_:
-
+  
     {    ( None )}
 | OF typ
     {let (_10, t0) = ((), $2) in
@@ -255,7 +254,7 @@ in
     ( Some x )}
 
 option___anonymous_5_:
-
+  
     {    ( None )}
 | BY thunk_atomicTerm_
     {let (_10, tactic0) = ((), $2) in
@@ -267,7 +266,7 @@ in
     ( Some x )}
 
 option___anonymous_6_:
-
+  
     {    ( None )}
 | BY thunk_typ_
     {let (_10, tactic0) = ((), $2) in
@@ -278,8 +277,8 @@ let x =
 in
     ( Some x )}
 
-option___anonymous_8_:
-
+option___anonymous_9_:
+  
     {    ( None )}
 | BY thunk2_typ_
     {let (_10, tactic0) = ((), $2) in
@@ -290,46 +289,29 @@ let x =
 in
     ( Some x )}
 
-option___anonymous_9_:
-
-    {    ( None )}
-| LBRACE noSeqTerm RBRACE
-    {let (_10, e00, _30) = ((), $2, ()) in
-let x =
-  let _3 = _30 in
-  let e0 = e00 in
-  let _1 = _10 in
-  let phi =
-    let e = e0 in
-                    ( {e with level=Formula} )
-  in
-                                               (phi)
-in
-    ( Some x )}
-
 option_ascribeKind_:
-
+  
     {    ( None )}
 | ascribeKind
     {let x = $1 in
     ( Some x )}
 
 option_ascribeTyp_:
-
+  
     {    ( None )}
 | ascribeTyp
     {let x = $1 in
     ( Some x )}
 
 option_fsTypeArgs_:
-
+  
     {    ( None )}
 | fsTypeArgs
     {let x = $1 in
     ( Some x )}
 
 option_pair_hasSort_simpleTerm__:
-
+  
     {    ( None )}
 | hasSort simpleTerm
     {let (x0, y0) = ($1, $2) in
@@ -341,7 +323,7 @@ in
     ( Some x )}
 
 option_string_:
-
+  
     {    ( None )}
 | STRING
     {let s0 = $1 in
@@ -352,21 +334,21 @@ in
     ( Some x )}
 
 option_term_:
-
+  
     {    ( None )}
 | term
     {let x = $1 in
     ( Some x )}
 
 boption_SQUIGGLY_RARROW_:
-
+  
     {    ( false )}
 | SQUIGGLY_RARROW
     {let _1 = () in
     ( true )}
 
 boption___anonymous_0_:
-
+  
     {    ( false )}
 | PRAGMALIGHT STRING
     {let (_10, _20) = ((), $2) in
@@ -378,28 +360,28 @@ in
     ( true )}
 
 loption_separated_nonempty_list_COMMA_appTerm__:
-
+  
     {    ( [] )}
 | separated_nonempty_list_COMMA_appTerm_
     {let x = $1 in
     ( x )}
 
 loption_separated_nonempty_list_SEMICOLON_lidentOrOperator__:
-
+  
     {    ( [] )}
 | separated_nonempty_list_SEMICOLON_lidentOrOperator_
     {let x = $1 in
     ( x )}
 
 loption_separated_nonempty_list_SEMICOLON_tuplePattern__:
-
+  
     {    ( [] )}
 | separated_nonempty_list_SEMICOLON_tuplePattern_
     {let x = $1 in
     ( x )}
 
-list___anonymous_10_:
-
+list___anonymous_11_:
+  
     {    ( [] )}
 | DOT qlident list___anonymous_11_
     {let (_10, id0, xs) = ((), $2, $3) in
@@ -411,7 +393,7 @@ in
     ( x :: xs )}
 
 list___anonymous_4_:
-
+  
     {    ( [] )}
 | binder list___anonymous_4_
     {let (b0, xs) = ($1, $2) in
@@ -429,49 +411,49 @@ in
     ( x :: xs )}
 
 list_argTerm_:
-
+  
     {    ( [] )}
 | argTerm list_argTerm_
     {let (x, xs) = ($1, $2) in
     ( x :: xs )}
 
 list_atomicTerm_:
-
+  
     {    ( [] )}
 | atomicTerm list_atomicTerm_
     {let (x, xs) = ($1, $2) in
     ( x :: xs )}
 
 list_attr_letbinding_:
-
+  
     {    ( [] )}
 | attr_letbinding list_attr_letbinding_
     {let (x, xs) = ($1, $2) in
     ( x :: xs )}
 
 list_constructorDecl_:
-
+  
     {    ( [] )}
 | constructorDecl list_constructorDecl_
     {let (x, xs) = ($1, $2) in
     ( x :: xs )}
 
 list_decl_:
-
+  
     {    ( [] )}
 | decl list_decl_
     {let (x, xs) = ($1, $2) in
     ( x :: xs )}
 
 list_decoration_:
-
+  
     {    ( [] )}
 | decoration list_decoration_
     {let (x, xs) = ($1, $2) in
     ( x :: xs )}
 
 list_multiBinder_:
-
+  
     {    ( [] )}
 | multiBinder list_multiBinder_
     {let (x, xs) = ($1, $2) in
@@ -902,7 +884,7 @@ tvarinsts:
       ( map (fun tv -> mk_binder (TVariable(tv)) tv.idRange Kind None) tvs )}
 
 typeDefinition:
-
+  
     {      ( (fun id binders kopt -> check_id id; TyconAbstract(id, binders, kopt)) )}
 | EQUALS typ
     {let (_1, t) = ((), $2) in
@@ -1151,7 +1133,7 @@ letqualifier:
   REC
     {let _1 = () in
                 ( Rec )}
-|
+| 
     {                ( NoLetQualifier )}
 
 aqual:
@@ -1213,13 +1195,6 @@ let pats =
       ( xs )
 in
       ( mk_pattern (PatList pats) (rhs2 parseState 1 3) )}
-| V_LBRACK loption_separated_nonempty_list_SEMICOLON_tuplePattern__ RBRACK
-    {let (_1, xs0, _3) = ((), $2, ()) in
-let pats =
-  let xs = xs0 in
-      ( xs )
-in
-      ( mk_pattern (PatVector pats) (rhs2 parseState 1 3) )}
 | LBRACE separated_nonempty_list_SEMICOLON_fieldPattern_ RBRACE
     {let (_1, record_pat, _3) = ((), $2, ()) in
       ( mk_pattern (PatRecord record_pat) (rhs2 parseState 1 3) )}
@@ -1873,7 +1848,7 @@ in
       ( let a = set_lid_range assume_lid (rhs parseState 1) in
         mkExplicitApp (mk_term (Var a) (rhs parseState 1) Expr) [e] (rhs2 parseState 1 2)
       )}
-| ASSERT atomicTerm option___anonymous_8_
+| ASSERT atomicTerm option___anonymous_9_
     {let (_1, e, tactic_opt) = ((), $2, $3) in
       (
         match tactic_opt with
@@ -1942,7 +1917,7 @@ in
       )}
 
 trigger:
-
+  
     {      ( [] )}
 | LBRACE_COLON_PATTERN disjunctivePats RBRACE
     {let (_1, pats, _3) = ((), $2, ()) in
@@ -2765,13 +2740,6 @@ projectionLHS:
           | Some (level, t) -> mk_term (Ascribed(e,{t with level=level},None)) (rhs2 parseState 1 4) level
         in mk_term (Paren e1) (rhs2 parseState 1 4) (e.level)
       )}
-| V_LBRACK right_flexible_list_SEMICOLON_noSeqTerm_ RBRACK
-    {let (_1, l0, _3) = ((), $2, ()) in
-let es =
-  let l = l0 in
-                                                  ( l )
-in
-      ( mkVConsList (rhs2 parseState 1 3) es )}
 | LBRACK right_flexible_list_SEMICOLON_noSeqTerm_ RBRACK
     {let (_1, l0, _3) = ((), $2, ()) in
 let es =
@@ -2995,7 +2963,7 @@ some_fsTypeArgs_:
         ( Some x )}
 
 right_flexible_list_SEMICOLON_noSeqTerm_:
-
+  
     {        ( [] )}
 | noSeqTerm
     {let x = $1 in
@@ -3005,7 +2973,7 @@ right_flexible_list_SEMICOLON_noSeqTerm_:
                                            ( x :: xs )}
 
 right_flexible_list_SEMICOLON_recordFieldDecl_:
-
+  
     {        ( [] )}
 | recordFieldDecl
     {let x = $1 in
@@ -3015,7 +2983,7 @@ right_flexible_list_SEMICOLON_recordFieldDecl_:
                                            ( x :: xs )}
 
 right_flexible_list_SEMICOLON_simpleDef_:
-
+  
     {        ( [] )}
 | simpleDef
     {let x = $1 in
@@ -3041,7 +3009,7 @@ right_flexible_nonempty_list_SEMICOLON_simpleDef_:
                                            ( x :: xs )}
 
 reverse_left_flexible_list_BAR___anonymous_7_:
-
+  
     {   ( [] )}
 | patternBranch
     {let pb0 = $1 in
@@ -3059,7 +3027,7 @@ in
    ( x :: xs )}
 
 reverse_left_flexible_list_BAR___anonymous_8_:
-
+  
     {   ( [] )}
 | patternBranch
     {let pb0 = $1 in
@@ -3095,3 +3063,4 @@ in
    ( x :: xs )}
 
 %%
+

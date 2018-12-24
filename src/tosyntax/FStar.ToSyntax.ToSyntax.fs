@@ -358,7 +358,6 @@ let rec gather_pattern_bound_vars_maybe_top fail_on_patconst acc p =
   | PatTvar (x, _)
   | PatVar (x, _) -> set_add x acc
   | PatList pats
-  | PatVector pats
   | PatTuple  (pats, _)
   | PatOr pats -> gather_pattern_bound_vars_from_list pats
   | PatRecord guarded_pats -> gather_pattern_bound_vars_from_list (List.map snd guarded_pats)
@@ -711,17 +710,6 @@ let rec desugar_data_pat env p : (env_t * bnd * list<annotated_pat>) =
             let r = Range.union_ranges hd.p tl.p in
             pos_r r <| Pat_cons(S.lid_as_fv C.cons_lid delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
                         (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.nil_lid delta_constant (Some Data_ctor), [])) in
-        let x = S.new_bv (Some p.prange) tun in
-        loc, env, LocalBinder(x, None), pat, annots, false
-
-      | PatVector pats ->
-        let loc, env, annots, pats = List.fold_right (fun pat (loc, env, annots, pats) ->
-          let loc,env,_,pat, ans, _ = aux loc env pat in
-          loc, env, ans@annots, pat::pats) pats (loc, env, [], []) in
-        let pat = List.fold_right (fun hd tl ->
-            let r = Range.union_ranges hd.p tl.p in
-            pos_r r <| Pat_cons(S.lid_as_fv C.vcons_lid Delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
-                        (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.vnil_lid Delta_constant (Some Data_ctor), [])) in
         let x = S.new_bv (Some p.prange) tun in
         loc, env, LocalBinder(x, None), pat, annots, false
 
@@ -1262,7 +1250,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       let ite = AST.mk_term (If(lambda_var, t, e)) i.range e.level in
       let lambda = AST.mk_term (Abs([lambda_pat], ite)) t.range e.level in
       let ifBind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen"; "Cost"; "ifBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
-      desugar_term env (AST.mkExplicitApp ifBind [i; lambda] top.range)
+      desugar_term_aq env (AST.mkExplicitApp ifBind [i; lambda] top.range)
 
     | MatchBind(e, branches) ->
       let lambda_pat_id = Ident.gen Range.dummyRange in
