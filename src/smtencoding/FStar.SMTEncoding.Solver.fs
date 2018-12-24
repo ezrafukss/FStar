@@ -343,7 +343,7 @@ let query_info settings z3result =
                 BU.string_of_int settings.query_fuel;
                 BU.string_of_int settings.query_ifuel;
                 BU.string_of_int settings.query_rlimit;
-                stats ] 
+                stats ]
         end
         else ();
         errs |> List.iter (fun (_, msg, range) ->

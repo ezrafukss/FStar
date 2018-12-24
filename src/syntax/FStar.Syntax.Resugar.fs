@@ -868,6 +868,10 @@ and resugar_pat' env (p:S.pat) (branch_bv: set<bv>) : A.pattern =
              (string_of_int <| List.length args')));
          resugar_plain_pat_cons fv args)
 
+    | Pat_cons(fv, args) when lid_equals fv.fv_name.v C.vcons_lid ->
+       let args = List.map(fun (p, b) -> aux p (Some b)) args in
+       mk (A.PatVector(args))
+
     | Pat_cons(fv, args) when (is_tuple_constructor_lid fv.fv_name.v
                                && may_drop_implicits args) ->
       let args =

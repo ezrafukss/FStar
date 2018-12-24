@@ -4,7 +4,7 @@
 		<id>ZFStar</id>
 		<version>0.0.27-alpha002</version>
 		<authors>Zen Protocol, Microsoft Research, INRIA</authors>
-		<title>ZFStar</title>		
+		<title>ZFStar</title>
 		<description>Zen Protocol dialect of FStar</description>
 	</metadata>
 	<files>

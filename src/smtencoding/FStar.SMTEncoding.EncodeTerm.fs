@@ -315,7 +315,7 @@ let rec encode_const c env =
     | Const_int (repr, Some sw) ->
       let syntax_term = FStar.ToSyntax.ToSyntax.desugar_machine_integer env.tcenv.dsenv repr sw Range.dummyRange in
       encode_term syntax_term env
-    | Const_string(s, _) -> varops.string_const s, []
+    | Const_string(s, _) -> boxString (mkStringConstant s), []
     | Const_range _ -> mk_Range_const (), []
     | Const_effect -> mk_Term_type, []
     | c -> failwith (BU.format1 "Unhandled constant: %s" (Print.const_to_string c))
@@ -862,6 +862,8 @@ and encode_term (t:typ) (env:env_t) : (term         (* encoding of t, expects t 
         | _ when is_BitVector_primitive head args_e ->
             encode_BitVector_term env head args_e
 
+        | _ when is_String_primitive head args_e ->
+            encode_string_term env head args_e
         | Tm_fvar fv, _
         | Tm_uinst({n=Tm_fvar fv}, _), _
             when (not env.encoding_quantifier)

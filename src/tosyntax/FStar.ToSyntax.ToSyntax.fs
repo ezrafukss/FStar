@@ -358,6 +358,7 @@ let rec gather_pattern_bound_vars_maybe_top fail_on_patconst acc p =
   | PatTvar (x, _)
   | PatVar (x, _) -> set_add x acc
   | PatList pats
+  | PatVector pats
   | PatTuple  (pats, _)
   | PatOr pats -> gather_pattern_bound_vars_from_list pats
   | PatRecord guarded_pats -> gather_pattern_bound_vars_from_list (List.map snd guarded_pats)
@@ -548,6 +549,8 @@ let rec desugar_maybe_non_constant_universe t
       in aux t []
   | _ -> raise_error (Errors.Fatal_UnexpectedTermInUniverse, ("Unexpected term " ^ term_to_string t ^ " in universe context")) t.range
 
+
+
 let rec desugar_universe t : Syntax.universe =
     let u = desugar_maybe_non_constant_universe t in
     match u with
@@ -710,6 +713,17 @@ let rec desugar_data_pat env p : (env_t * bnd * list<annotated_pat>) =
             let r = Range.union_ranges hd.p tl.p in
             pos_r r <| Pat_cons(S.lid_as_fv C.cons_lid delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
                         (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.nil_lid delta_constant (Some Data_ctor), [])) in
+        let x = S.new_bv (Some p.prange) tun in
+        loc, env, LocalBinder(x, None), pat, annots, false
+
+      | PatVector pats ->
+        let loc, env, annots, pats = List.fold_right (fun pat (loc, env, annots, pats) ->
+          let loc,env,_,pat, ans, _ = aux loc env pat in
+          loc, env, ans@annots, pat::pats) pats (loc, env, [], []) in
+        let pat = List.fold_right (fun hd tl ->
+            let r = Range.union_ranges hd.p tl.p in
+            pos_r r <| Pat_cons(S.lid_as_fv C.vcons_lid delta_constant (Some Data_ctor), [(hd, false);(tl, false)])) pats
+                        (pos_r (Range.end_range p.prange) <| Pat_cons(S.lid_as_fv C.vnil_lid delta_constant (Some Data_ctor), [])) in
         let x = S.new_bv (Some p.prange) tun in
         loc, env, LocalBinder(x, None), pat, annots, false
 
@@ -930,16 +944,16 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       let e = mk_term (Op(Ident.mk_ident ("==", r), args)) top.range top.level in
       desugar_term_aq env (mk_term(Op(Ident.mk_ident ("~",r), [e])) top.range top.level)
 
-    (* if op_Star has not been rebound, then it's reserved for tuples *)
-    | Op(op_star, [lhs;rhs]) when
-      (Ident.text_of_id op_star = "**" &&
-       op_as_term env 2 top.range op_star |> Option.isNone) ->
+    (* if op_Star_Star has not been rebound, then it's reserved for tuples *)
+    | Op(op_star_star, [_;_]) when
+      Ident.text_of_id op_star_star = "**" &&
+      (op_as_term env 2 top.range op_star_star |> Option.isNone) ->
       (* See the comment in parse.mly to understand why this implicitly relies
        * on the presence of a Paren node in the AST. *)
       let rec flatten t = match t.tm with
         // * is left-associative
         | Op({idText = "**"}, [t1;t2]) when
-           op_as_term env 2 top.range op_star |> Option.isNone ->
+           op_as_term env 2 top.range op_star_star |> Option.isNone ->
           flatten t1 @ [ t2 ]
         | _ -> [t]
       in
@@ -1184,6 +1198,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
                 | [p, _] -> Some p // NB: We ignore the type annotation here, the typechecker catches that anyway in tc_abs
                 | _ ->
                   raise_error (Errors.Fatal_UnsupportedDisjuctivePatterns, "Disjunctive patterns are not supported in abstractions") p.prange
+
             in
             let b, sc_pat_opt =
                 match b with
@@ -1237,7 +1252,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
 
     | Bind(x, t1, t2) ->
       let k = AST.mk_term (Abs([x], t2)) t2.range t2.level in
-      let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["letBang"] x.prange)) x.prange AST.Expr in
+      let bind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen"; "Cost"; "letBang"] x.prange)) x.prange AST.Expr in
       desugar_term_aq env (AST.mkExplicitApp bind [t1; k] top.range)
 
     | IfBind(i, t, e) ->
@@ -1261,7 +1276,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       let lambda_var = AST.mk_term lambda_var' e.range e.level in
       let mtc = AST.mk_term (Match(lambda_var, branches)) e.range e.level in
       let lambda = AST.mk_term (Abs([lambda_pat], mtc)) e.range e.level in
-      let mtcBind = AST.mk_term (AST.Var(Ident.lid_of_path ["matchBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
+      let mtcBind = AST.mk_term (AST.Var(Ident.lid_of_path ["Zen"; "Cost"; "matchBang"] lambda_pat.prange)) lambda_pat.prange AST.Expr in
       desugar_term_aq env (AST.mkExplicitApp mtcBind [e; lambda] top.range)
 
     | Seq(t1, t2) ->

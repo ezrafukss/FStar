@@ -867,6 +867,8 @@ and p_atomicPattern p = match p.pat with
     end
   | PatList pats ->
     surround 2 0 lbracket (separate_break_map semi p_tuplePattern pats) rbracket
+  | PatVector pats ->
+    surround 2 0 ( str "V" ^^ lbracket) (separate_break_map semi p_tuplePattern pats) (rbracket)
   | PatRecord pats ->
     let p_recordFieldPat (lid, pat) = infix2 equals (p_qlident lid) (p_tuplePattern pat) in
     soft_braces_with_nesting (separate_break_map semi p_recordFieldPat pats)
@@ -1505,6 +1507,9 @@ and p_projectionLHS e = match e.tm with
     surround 2 0 lbracket (separate_map_or_flow_last (semi ^^ break1) (fun ps -> p_noSeqTerm ps false) (extract_from_list e)) rbracket
   | _ when is_lex_list e ->
     surround 2 1 (percent ^^ lbracket) (separate_map_or_flow_last (semi ^^ break1) (fun ps -> p_noSeqTerm ps false) (extract_from_list e)) rbracket
+  | _ when is_zvector e ->
+    let es = extract_from_list e in
+    surround 2 0 (str "V" ^^ lbracket) (separate_map_or_flow_last (semi ^^ break1) (fun ps -> p_noSeqTerm ps false) es) rbracket
   | _ when is_ref_set e ->
     let es = extract_from_ref_set e in
     surround 2 0 (bang ^^ lbrace) (separate_map_or_flow (comma ^^ break1) p_appTerm es) rbrace

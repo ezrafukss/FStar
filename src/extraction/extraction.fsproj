@@ -92,6 +92,10 @@
       <HintPath>..\VS\packages\FSharp.Core.4.3.4/lib/net45/FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FSharp.Core" >
+      <HintPath>..\VS\packages\FSharp.Core.4.3.4/lib/net45/FSharp.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FSharp.PPrint">
       <HintPath>..\VS\packages\PPrintForFSharp.0.0.2\lib\net40\FSharp.PPrint.dll</HintPath>
       <Private>True</Private>

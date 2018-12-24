@@ -175,6 +175,7 @@ let () =
    "|", BAR;
    "}", RBRACE;
    "$", DOLLAR;
+   "V[", V_LBRACK;
      (* New Unicode equivalents *)
    "∀", FORALL;
    "∃", EXISTS;
@@ -206,7 +207,7 @@ let () =
    "∁", OPPREFIX "∁";
    "∂", OPPREFIX "∂";
    "√", OPPREFIX "√";
-    ] in
+   ] in
    List.iter (fun (k,v) -> Hashtbl.add operators k v) l
 
 let current_range lexbuf =

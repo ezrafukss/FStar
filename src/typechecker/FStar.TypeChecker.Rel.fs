@@ -2150,6 +2150,10 @@ and solve_t' (env:Env.env) (problem:tprob) (wl:worklist) : solution =
             (if need_unif then "need unification" else "match")
             (Print.term_to_string t1) (Print.tag_of_term t1)
             (Print.term_to_string t2) (Print.tag_of_term t2);
+        if debug env <| Options.Other "Rel"
+        then BU.print4 "Head matches after call to head_matches_delta: %s (%s) and %s (%s)\n"
+            (Print.term_to_string t1) (Print.tag_of_term t1)
+            (Print.term_to_string t2) (Print.tag_of_term t2);
         let head1, args1 = U.head_and_args t1 in
         let head2, args2 = U.head_and_args t2 in
         let solve_head_then wl k =

@@ -553,6 +553,7 @@ val eq_pat : pat -> pat -> bool
 //Some common constants
 ///////////////////////////////////////////////////////////////////////
 module C = FStar.Parser.Const
+
 val delta_constant  : delta_depth
 val delta_equational: delta_depth
 val fvconst         : lident -> fv

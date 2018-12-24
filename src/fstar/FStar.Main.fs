@@ -156,12 +156,11 @@ let go _ =
 
         (* --print: Emit files in canonical source syntax *)
         else if Options.indent () then
-          if FStar.Platform.is_fstar_compiler_using_ocaml
-          then FStar.Indent.generate filenames
-          else failwith "You seem to be using the F#-generated version ofthe compiler ; \
-                         reindenting is not known to work yet with this version"
-
-        (* Normal, batch mode compiler *)
+          FStar.Indent.generate filenames
+          //if FStar.Platform.is_fstar_compiler_using_ocaml
+          //then FStar.Indent.generate filenames
+          //else failwith "You seem to be using the F#-generated version ofthe compiler ; \
+          //               reindenting is not known to work yet with this version"
         else if List.length filenames >= 1 then begin //normal batch mode
           let filenames, dep_graph = FStar.Dependencies.find_deps_if_needed filenames in
           let tcrs, env, delta_env = Universal.batch_mode_tc filenames dep_graph in
