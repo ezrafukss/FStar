@@ -945,7 +945,7 @@ and desugar_term_maybe_top (top_level:bool) (env:env_t) (top:term) : S.term * an
       desugar_term_aq env (mk_term(Op(Ident.mk_ident ("~",r), [e])) top.range top.level)
 
     (* if op_Star_Star has not been rebound, then it's reserved for tuples *)
-    | Op(op_star_star, [_;_]) when
+    | Op(op_star_star, [lhs;rhs]) when
       Ident.text_of_id op_star_star = "**" &&
       (op_as_term env 2 top.range op_star_star |> Option.isNone) ->
       (* See the comment in parse.mly to understand why this implicitly relies
