@@ -385,6 +385,34 @@ let rec doc_of_expr (currentModule : mlsymbol) (outer : level) (e : mlexpr) : do
         let body = doc_of_expr  currentModule (min_op_prec, NonAssoc) body in
         parens (combine hardline [pre; doc; reduce1 [text "in"; body]])
 
+    // handle machine integers here;
+    // machine integers desugar to eg. FStar.UInt32.__uint_to_t 1234,
+    // and FStar.UInt32.__uint_to_t is then normalised to FStar.UInt32.int_to_t.
+    | MLE_App ({expr=MLE_Name(["FStar"; "UInt8"], "uint_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Unsigned, Int8))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "UInt16"], "uint_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Unsigned, Int16))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "UInt32"], "uint_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Unsigned, Int32))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "UInt64"], "uint_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Unsigned, Int64))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "Int8"], "int_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Signed, Int8))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "Int16"], "int_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Signed, Int16))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "Int32"], "int_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Signed, Int32))))
+    | MLE_App ({expr=MLE_Name(["FStar"; "Int64"], "int_to_t")},
+              [{expr=MLE_Const(MLC_Int(repr, None))}]) ->
+              text (string_of_mlconstant (MLC_Int(repr, Some (Signed, Int64))))
+    
     | MLE_App (e, args) -> begin
         match e.expr, args with
         | MLE_Name p, [

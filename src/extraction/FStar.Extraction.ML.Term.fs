@@ -767,7 +767,8 @@ let rec extract_one_pat (imp : bool)
     in
     match p.v with
     | Pat_constant (Const_int (c, swopt))
-      when Options.codegen() <> Some Options.Kremlin ->
+      when Options.codegen() <> Some Options.Kremlin
+        && Options.codegen() <> Some Options.FSharp ->
       //Kremlin supports native integer constants in patterns
       //Don't convert them into `when` clauses
         let mlc, ml_ty =
