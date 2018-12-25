@@ -240,9 +240,9 @@ let string_of_mlconstant (sctt : mlconstant) =
   | MLC_Unit -> "()"
   | MLC_Bool true  -> "true"
   | MLC_Bool false -> "false"
-  | MLC_Char c -> 
-    let nc = Char.int_of_char c in 
-    hex_string_of_byte (byte_of_char c) ^ "uy" 
+  | MLC_Char c ->
+    let nc = Char.int_of_char c in
+    hex_string_of_byte (byte_of_char c) ^ "uy"
     ^(if nc >= 32 && nc <= 127 && nc <> 34 then " (*" ^ (string_of_char c) ^ "*)" else "")
   | MLC_Int (s, Some (Signed, Int8)) -> s ^"y"
   | MLC_Int (s, Some (Signed, Int16)) -> s ^"s"
@@ -760,9 +760,9 @@ let rec doc_of_mllib_r (MLLib mllib) =
         let target_mod_name = Util.flatten_mlpath mod_name in
         let maybe_open_pervasives =
             match mod_name with
-            | ["Zen"], "Pervasives" -> []
+            | ["FStar"], "Pervasives" -> []
             | _ ->
-              let pervasives = Util.flatten_mlpath (["Zen"], "Pervasives") in
+              let pervasives = Util.flatten_mlpath (["FStar"], "Pervasives") in
               [hardline;
                text ("open " ^ pervasives)]
         in

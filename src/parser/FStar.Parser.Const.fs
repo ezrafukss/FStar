@@ -27,12 +27,12 @@ module U = FStar.Util
 let p2l l = lid_of_path l dummyRange
 
 let pconst s              = p2l ["Prims";s]
-let psconst s             = p2l ["Zen"; "Pervasives"; s]
-let psnconst s            = p2l ["Zen"; "Pervasives" ; "Native" ; s]
+let psconst s             = p2l ["FStar"; "Pervasives"; s]
+let psnconst s            = p2l ["FStar"; "Pervasives" ; "Native" ; s]
 let prims_lid             = p2l ["Prims"]
-let pervasives_native_lid = p2l ["Zen"; "Pervasives"; "Native"]
-let pervasives_lid        = p2l ["Zen"; "Pervasives"]
-let fstar_ns_lid          = p2l ["Zen"]
+let pervasives_native_lid = p2l ["FStar"; "Pervasives"; "Native"]
+let pervasives_lid        = p2l ["FStar"; "Pervasives"]
+let fstar_ns_lid          = p2l ["FStar"]
 
 (* Primitive types *)
 let bool_lid        = pconst "bool"
@@ -60,13 +60,13 @@ let inl_lid         = psconst "Inl"
 let inr_lid         = psconst "Inr"
 
 let int8_lid   = p2l ["FStar"; "Int8"; "t"]
-let uint8_lid  = p2l ["Zen"; "UInt8"; "t"]
+let uint8_lid  = p2l ["FStar"; "UInt8"; "t"]
 let int16_lid   = p2l ["FStar"; "Int16"; "t"]
 let uint16_lid  = p2l ["FStar"; "UInt16"; "t"]
 let int32_lid   = p2l ["FStar"; "Int32"; "t"]
-let uint32_lid  = p2l ["Zen"; "UInt32"; "t"]
-let int64_lid   = p2l ["Zen"; "Int64"; "t"]
-let uint64_lid  = p2l ["Zen"; "UInt64"; "t"]
+let uint32_lid  = p2l ["FStar"; "UInt32"; "t"]
+let int64_lid   = p2l ["FStar"; "Int64"; "t"]
+let uint64_lid  = p2l ["FStar"; "UInt64"; "t"]
 
 let salloc_lid = p2l ["FStar"; "ST"; "salloc"]
 let swrite_lid = p2l ["FStar"; "ST"; "op_Colon_Equals"]
@@ -76,7 +76,7 @@ let max_lid = p2l ["max"]
 
 let float_lid  = p2l ["FStar"; "Float"; "float"]
 
-let char_lid  = p2l ["Zen"; "Char"; "char"]
+let char_lid  = p2l ["FStar"; "Char"; "char"]
 
 let heap_lid   = p2l ["FStar"; "Heap"; "heap"]
 
@@ -124,21 +124,15 @@ let list_append_lid = p2l ["FStar"; "List"; "append"]
 (* list_tot_append_lid is used to desugar @ everywhere else *)
 let list_tot_append_lid = p2l ["FStar"; "List"; "Tot"; "Base"; "append"]
 let strlen_lid      = p2l ["Prims"; "strlen"]
-let strcat_lid      = p2l ["Zen"; "String"; "strcat"]
+let strcat_lid      = p2l ["FStar"; "String"; "strcat"]
 //let strcat_lid'     = p2l ["Prims"; "strcat"]
-let strat_lid       = p2l ["Zen"; "String"; "at"]
+let strat_lid       = p2l ["FStar"; "String"; "at"]
 let str_make_lid    = p2l ["FStar"; "String"; "make"]
 let let_in_typ      = p2l ["Prims"; "Let"]
 let string_of_int_lid = p2l ["Prims"; "string_of_int"]
 let string_of_bool_lid = p2l ["Prims"; "string_of_bool"]
 let string_compare = p2l ["FStar"; "String"; "compare"]
 let order_lid       = p2l ["FStar"; "Order"; "order"]
-
-
-(* ZVectors *)
-let vnil_lid  = p2l ["Zen"; "Vector"; "VNil"]
-let vcons_lid = p2l ["Zen"; "Vector"; "VCons"]
-let vector_lid = p2l ["Zen"; "Vector"; "vector"]
 
 (* Primitive operators *)
 let op_Eq              = pconst "op_Equality"
@@ -240,7 +234,7 @@ let range_of_lid   = pconst "range_of"
 let labeled_lid    = pconst "labeled"
 let range_0        = pconst "range_0"
 let guard_free     = pconst "guard_free"
-let inversion_lid  = p2l ["Zen"; "Pervasives"; "inversion"]
+let inversion_lid  = p2l ["FStar"; "Pervasives"; "inversion"]
 let with_type_lid  = psconst "with_type"
 
 (* Constants for marking terms with normalization hints *)
@@ -263,11 +257,11 @@ let steps_unfoldattr    = psconst "delta_attr"
 let steps_nbe           = psconst "nbe"
 
 (* attributes *)
-let deprecated_attr = p2l ["Zen"; "Pervasives"; "deprecated"]
-let inline_let_attr = p2l ["Zen"; "Pervasives"; "inline_let"]
-let plugin_attr     = p2l ["Zen"; "Pervasives"; "plugin"]
-let tcnorm_attr    =  p2l ["Zen"; "Pervasives"; "tcnorm"]
-let dm4f_bind_range_attr = p2l ["Zen"; "Pervasives"; "dm4f_bind_range"]
+let deprecated_attr = p2l ["FStar"; "Pervasives"; "deprecated"]
+let inline_let_attr = p2l ["FStar"; "Pervasives"; "inline_let"]
+let plugin_attr     = p2l ["FStar"; "Pervasives"; "plugin"]
+let tcnorm_attr    =  p2l ["FStar"; "Pervasives"; "tcnorm"]
+let dm4f_bind_range_attr = p2l ["FStar"; "Pervasives"; "dm4f_bind_range"]
 let must_erase_for_extraction_attr = psconst "must_erase_for_extraction"
 let fail_attr      = psconst "expect_failure"
 let fail_lax_attr  = psconst "expect_lax_failure"
@@ -314,7 +308,7 @@ let mk_tuple_lid n r =
 let lid_tuple2   = mk_tuple_lid 2 dummyRange
 
 let is_tuple_constructor_string (s:string) :bool =
-  U.starts_with s "Zen.Pervasives.Native.tuple"
+  U.starts_with s "FStar.Pervasives.Native.tuple"
 
 let is_tuple_constructor_lid lid = is_tuple_constructor_string (text_of_id lid)
 
@@ -325,7 +319,7 @@ let mk_tuple_data_lid n r =
 let lid_Mktuple2 = mk_tuple_data_lid 2 dummyRange
 
 let is_tuple_datacon_string (s:string) :bool =
-  U.starts_with s "Zen.Pervasives.Native.Mktuple"
+  U.starts_with s "FStar.Pervasives.Native.Mktuple"
 
 let is_tuple_data_lid f n =
   lid_equals f (mk_tuple_data_lid n dummyRange)
@@ -344,7 +338,7 @@ let mk_dtuple_lid n r =
   set_lid_range ((mod_prefix_dtuple n) t) r
 
 let is_dtuple_constructor_string (s:string) :bool =
-  s = "Prims.dtuple2" || U.starts_with s "Zen.Pervasives.dtuple"
+  s = "Prims.dtuple2" || U.starts_with s "FStar.Pervasives.dtuple"
 
 let is_dtuple_constructor_lid lid = is_dtuple_constructor_string lid.str
 
@@ -353,7 +347,7 @@ let mk_dtuple_data_lid n r =
   set_lid_range ((mod_prefix_dtuple n) t) r
 
 let is_dtuple_datacon_string (s:string) :bool =
-  s = "Prims.Mkdtuple2" || U.starts_with s "Zen.Pervasives.Mkdtuple"
+  s = "Prims.Mkdtuple2" || U.starts_with s "FStar.Pervasives.Mkdtuple"
 
 let is_dtuple_data_lid f n =
   lid_equals f (mk_dtuple_data_lid n dummyRange)

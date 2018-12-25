@@ -108,7 +108,6 @@ and pattern' =
   | PatName     of lid
   | PatTvar     of ident * aqual
   | PatList     of list<pattern>
-  | PatVector   of list<pattern>
   | PatTuple    of list<pattern> * bool (* dependent if flag is set *)
   | PatRecord   of list<(lid * pattern)>
   | PatAscribed of pattern * (term * option<term>)
@@ -296,13 +295,6 @@ let mkConsList r elts =
 let mkLexList r elts =
   let nil = mk_term (Construct(C.lextop_lid, [])) r Expr in
   List.fold_right (fun e tl -> lexConsTerm r e tl) elts nil
-
-// ZVectors
-let vconsPat r hd tl = PatApp(mk_pattern (PatName C.vcons_lid) r, [hd;tl])
-let vconsTerm r hd tl = mk_term (Construct(C.vcons_lid, [(hd, Nothing);(tl, Nothing)])) r Expr
-let mkVConsList r elts =
-  let vnil = mk_term (Construct(C.vnil_lid, [])) r Expr in
-    List.fold_right (fun e tl -> vconsTerm r e tl) elts vnil
 
 let ml_comp t =
     let ml = mk_term (Name C.effect_ML_lid) t.range Expr in
@@ -656,7 +648,6 @@ and pat_to_string x = match x.pat with
   | PatVar (i,  aq) -> Util.format2 "%s%s" (aqual_to_string aq) i.idText
   | PatName l -> l.str
   | PatList l -> Util.format1 "[%s]" (to_string_l "; " pat_to_string l)
-  | PatVector l -> Util.format1 "[|%s|]" (to_string_l "; " pat_to_string l)
   | PatTuple (l, false) -> Util.format1 "(%s)" (to_string_l ", " pat_to_string l)
   | PatTuple (l, true) -> Util.format1 "(|%s|)" (to_string_l ", " pat_to_string l)
   | PatRecord l -> Util.format1 "{%s}" (to_string_l "; " (fun (f,e) -> Util.format2 "%s=%s" (f.str) (e |> pat_to_string)) l)
